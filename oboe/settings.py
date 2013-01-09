@@ -4,9 +4,12 @@ import dj_database_url
 import os
 import os.path
 import context_processors
+from memcacheify import memcacheify
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+CACHES = memcacheify()
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 
@@ -163,6 +166,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'sorl.thumbnail',
     'oboe',
 )
 
