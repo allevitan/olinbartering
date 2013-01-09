@@ -8,11 +8,16 @@ import context_processors
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'worldpeaceagentforchange@gmail.com'
-EMAIL_HOST_PASSWORD = 'Aquilla77~'
-EMAIL_PORT = 587
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+AWS_SES_ACCESS_KEY_ID = 'AKIAI45QD6OFLDQ47ZZA'
+AWS_SES_SECRET_ACCESS_KEY = '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'
+
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST_USER = 'worldpeaceagentforchange@gmail.com'
+#EMAIL_HOST_PASSWORD = 'Aquilla77~'
+#EMAIL_PORT = 587
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -22,16 +27,16 @@ MANAGERS = ADMINS
 
 DIRNAME = os.path.dirname(__file__)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add '', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'testdatabase',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3', # Add '', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'testdatabase',                      # Or path to database file if using sqlite3.
+#        'USER': '',                      # Not used with sqlite3.
+#        'PASSWORD': '',                  # Not used with sqlite3.
+#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#    }
+#}
 
 #print dj_database_url.config()
 DATABASES['default'] = dj_database_url.config()
