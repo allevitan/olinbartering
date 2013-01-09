@@ -1,6 +1,11 @@
+{% load thumbnail %}
+
 {% for bulletin in bulletins %}
 <div class="bcon">
   <div class="thumbbox">
+    {% thumbnail user.userdata.pic "65x65" as im %}
+    <img src="{{ im.url }}">
+    {% endthumbnail %}
     <img src="" class="profthumb">
   </div>
   <div class="filter">
