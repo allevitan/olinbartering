@@ -205,8 +205,8 @@ def contact(request):
 			subject = cleaned_data['subject']
 			message = cleaned_data['message']
 			toAddress = cleaned_data['emailAddress']
-			send_mail(subject, message, 'worldpeaceagentforchange@gmail.com',
-    ['allevitan@gmail.com', 'madison.may@students.olin.edu'], fail_silently=False)
+			send_mail(subject, message, 'allevitan@gmail.com',
+    ['allevitan@gmail.com'], fail_silently=False)
 			return HttpResponseRedirect('/')
 	else:
 		if request.user.is_active:
