@@ -9,9 +9,12 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
-AWS_SES_ACCESS_KEY_ID = 'AKIAI45QD6OFLDQ47ZZA'
-AWS_SES_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIAI45QD6OFLDQ47ZZA'
+AWS_SECRET_ACCESS_KEY = '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'
+
+AWS_STORAGE_BUCKET_NAME = 'oboe'
 
 #EMAIL_USE_TLS = True
 #EMAIL_HOST = 'smtp.gmail.com'
@@ -66,7 +69,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(DIRNAME, 'media')
+MEDIA_ROOT = 'media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
