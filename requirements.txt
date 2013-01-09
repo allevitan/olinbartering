@@ -4,9 +4,12 @@ argparse==1.2.1
 boto==2.6.0
 distribute==0.6.31
 dj-database-url==0.2.1
+django-heroku-memcacheify==0.4
+django-pylibmc-sasl==0.2.4
 django-ses==0.4.1
 django-storages==1.1.6
 gunicorn==0.16.1
 psycopg2==2.4.6
+pylibmc==1.2.3
 sorl-thumbnail==11.12
 wsgiref==0.1.2
