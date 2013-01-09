@@ -1,0 +1,30 @@
+base.html :This is the top-level template - with few exceptions, every template extends this.
+
+home.html: This is the home view, with Do you want? and Can you help? lists.
+
+create.html: This is the bulletin creation page
+
+about.html: This is our about page
+
+my_bulletins.html: This is a for listing the currently logged in user's bulletins (that they created and replied to? we should figure this out - we'll need a new many-to-many field in Bulletin to store that info)
+
+bulletin.html: This would be all relevant information about a bulletin, along with update and resolve abilities if you own the bulletin
+
+registration.html: This is the signup form
+
+login.html: This is the login form
+
+contact.html: This is a contact/feedback form
+
+search.html: This is a search results page
+
+Open questions:
+
+Should we include filtering in my_bulletins? i.e., bulletins I created, bulletins I've replied to, etc?
+
+If we're already filtering the home view, we might as well apply it to my_bulletins (or at least provide the options.)
+
+Does this setup work?  Works with me.  
+
+Should we allow users to access the profiles of others to see what they have to offer / would like?
+	
