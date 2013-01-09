@@ -4,9 +4,12 @@ import dj_database_url
 import os
 import os.path
 import context_processors
+from memcacheify import memcacheify
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+CACHES = memcacheify()
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 
@@ -71,7 +74,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"\
 #NOT USED with S3, so safe to keep in all the time
-MEDIA_ROOT = os.path.join(DIRNAME, '/devenvironment/media/')
+MEDIA_ROOT = os.path.join(DIRNAME, 'devenvironment/media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -163,6 +166,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'sorl.thumbnail',
     'oboe',
 )
 

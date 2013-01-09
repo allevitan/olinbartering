@@ -13,7 +13,6 @@ from datetime import datetime
 
 def home(request):
 	if not (request.user.is_authenticated() and request.user.userdata.filterhelp):
-		#helps = Help_Bulletin.objects.filter(resolved=False).order_by("-update")
 		helps = Bulletin.objects.filter(resolved=False, helpbulletin=True).order_by("-update")
 	else:
 		helpfilters = request.user.userdata.filters.filter(helpfilter=True)
@@ -56,9 +55,6 @@ def login(request):
 def logout(request):
 	auth.logout(request) #log user out, no questions asked.
 	return HttpResponseRedirect('/')
-
-def basetest(request): #test base form
-	return render(request, 'base.html')
 
 def passwordsMatch(password, confirmPassword):
 	return password == confirmPassword
@@ -135,8 +131,6 @@ def editProfile(request):
 	
 	return render(request, 'editProfile.html', {'form':form})
 
-def homescreen(request):
-	return render(request, 'homescreen.html',  {'range':range(1, 11), 'form':form})
 
 def changePassword(request):
 	if request.method == 'POST':
