@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/center.js" with ident=".wrapper" %}
+</script>
+
+<!--<script> 
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+
+<div class="hero-unit extra_space">
+
+<h2 style="text-align:center;"><b>Login</b></h2>
+
+<hr>
+
+<form action="" method="post" class="form-horizontal inner_form"> 
+	{% csrf_token %}
+
+	 {% if form.errors %}
+        <p class="base_error">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    {{ form.non_field_errors }}
+
+    <div class="control-group">
+        {% for error in form.username.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_email">Username:</label>
+		<div class="controls">
+			{{ form.username }}
+		</div>
+    </div>
+
+    <div class="control-group">
+        {% for error in form.password.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_password">Password:</label>
+		<div class="controls">
+			{{ form.password }}
+		</div>
+    </div>
+
+<hr>
+
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" value="Login" class="btn btn-success"/>
+		</div>
+    </div>
+
+</form>
+
+</div>
+
+{% if incorrectPassword == 0 %}
+	<div class="hero-unit" style="margin-left:auto; margin-right:auto; width:425px; text-align:center; padding:60px; margin-bottom: 15px;">
+	<h2><b>Don't have an account?</b></h2>
+	<hr>
+	<a href="/register" class="btn btn-success"/>Sign up!</a>
+	</div>
+{% else %}
+	<div class="hero-unit" style="margin-left:auto; margin-right:auto; width:425px;text-align:center; margin-bottom: 15px;">
+	<h2><b>Forgot your password?</b></h2>
+	<hr>
+	<a href="/resetPassword" class="btn btn-success"/>Reset Password</a>
+	</div>
+
+</div>
+{% endif %}
+
+{% endblock %}
+
+

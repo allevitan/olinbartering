@@ -1,0 +1,46 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid" style="min-width:940px">
+      <a class="brand" href="/">OBOE<sup>alpha</sup></a>
+      <div class="nav-collapse collapse">
+        <ul class="nav pull-right">
+	  {% if user.username %}
+	  <li>
+	    <a href="/people/me/" class="navbar-link">
+	      Hi, 
+	      {% if user.first_name %}
+	        {{ user.first_name|capfirst }}
+	      {% else %}
+	        {{ user.username }}
+	      {% endif %}
+	    </a>
+	  </li>
+	  <li>
+	    <a href="/logout" class="navbar-link">Log Out</a>
+	  </li>
+	  {% else %}
+	    {% if site_area == "register" %}<li class="active">
+	      {% else %}<li>{% endif %}<a href="/register">Sign Up</a></li>
+	    {% if site_area == "login" %}<li class="active">
+	      {% else %}<li>{% endif %}<a href="/login" class="navbar-link">Log In</a></li>
+	      {% endif %}
+        </ul>
+        <ul class="nav">
+	  {% if site_area == "home" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/">Home</a></li>
+	  {% if site_area == "people" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/people/">People</a></li>
+	  {% if site_area == "new" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/new/">New</a></li>
+	  {% if site_area == "about" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/about/">About</a></li>
+	  {% if site_area == "contact" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/contact/">Contact</a></li>
+        </ul>
+	<form class="navbar-search pull-left">
+ 	  <input type="text" class="search-query" placeholder="Search the Archives">
+	</form>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+</div>

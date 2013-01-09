@@ -1,0 +1,9 @@
+{% load thumbnail %}
+
+{% for userdata in users %}
+<div class="hero-unit well span3">
+	<span class="thumbbox">
+		<img src="{% thumbnail userdata.pic 60x60 crop %}" class="profthumb">
+	</span>
+</div> 
+{% endfor %}

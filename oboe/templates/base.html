@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>OBOE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <!-- Le styles -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    
+    
+    <style type="text/css">
+    
+      {% include "djangocss/base.css" %}
+      
+      {% block css %}
+      {% endblock %}
+
+    </style>
+
+    <!--  Icon -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.png">
+
+    <style type="text/css"></style></head>
+  
+  <body>
+
+    {% include "elements/navbar.html" %}
+
+    {% block content %}
+    {% endblock %}
+    
+  </body>
+
+    <!-- Javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    {% block scripts %}
+    {% endblock %}
+
+</html>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/center.js" with ident=".hero-unit" %}
+</script>
+
+<!--<script>
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+<div class="hero-unit extra_space">
+
+<h2 style="text-align:center;"><b>Create an Account</b></h2>
+
+<hr>
+
+<form action="" method="post" class="form-horizontal inner_form"> 
+	{% csrf_token %}
+    {{ form.non_field_errors }}
+
+	<div class="control-group">
+        {{ form.first_name.errors }}
+        <label class="control-label" for="id_email">First Name:</label>
+		<div class="controls">
+			{{ form.first_name }}
+		</div>
+    </div>
+
+	<div class="control-group">
+        {{ form.last_name.errors }}
+        <label class="control-label" for="id_email">Last Name:</label>
+		<div class="controls">
+			{{ form.last_name }}
+		</div>
+    </div>
+
+
+    <div class="control-group">
+        {{ form.emailAddress.errors }}
+        <label class="control-label" for="id_email">Email Address:</label>
+		<div class="controls">
+			{{ form.emailAddress }}
+		</div>
+    </div>
+
+    <div class="control-group">
+        {{ form.password.errors }}
+        <label class="control-label" for="id_message">Password:</label>
+		<div class="controls">
+			{{ form.password }}
+		</div>
+    </div>
+
+	<div class="control-group">
+        {{ form.confirmPassword.errors }}
+        <label class="control-label" for="id_message">Password:</label>
+		<div class="controls">
+			{{ form.confirmPassword }}
+		</div>
+    </div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn btn-success">Register</button>   
+		</div>
+    </div>
+
+</form>
+</div>
+{% endblock %}
+

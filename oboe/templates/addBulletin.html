@@ -1,0 +1,117 @@
+<!--Add bulletin-->
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/showPrice.js" %}
+</script>
+
+<script>
+{% include "djangojs/center.js" with ident=".hero-unit" %}
+</script>
+
+
+<!--<script>
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="hero-unit extra_space">
+
+<h2 style="text-align:center;"><b>Create a Bulletin</b></h2>
+
+<hr>
+
+<form action="" method="post" class="form-horizontal inner_form" enctype="multipart/form-data"> 
+	{% csrf_token %}
+
+	{% if form.errors %}
+        <p class="base_error">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    {{ form.non_field_errors }}
+
+	<div class="control-group">
+        {% for error in form.subject.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_subject">Subject:</label>
+		<div class="controls">
+			{{ form.subject }}
+		</div>
+    </div>
+
+	<div class="control-group">
+        {{ form.bulletinType.errors }}
+        <label class="control-label" for="id_type">Bulletin Type:</label>
+		<div class="controls">
+			{{ form.bulletinType }}
+		</div>
+    </div>
+	
+	<div class="control-group price">
+        {{ form.price.errors }}
+        <label class="control-label" for="id_price">Price:</label>
+		<div class="controls">
+			{{ form.price }}
+		</div>
+    </div>
+	
+
+	<div class="control-group">
+        {% for error in form.relevance.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_relevance">Relevant Until:</label>
+		<div class="controls">
+			{{ form.relevance }}
+		</div>
+    </div>
+
+    <div class="control-group">
+        {{ form.location.errors }}
+        <label class="control-label" for="id_location">Location:</label>
+		<div class="controls">
+			{{ form.location }}
+		</div>
+    </div>
+
+	<div class="control-group">
+        {{ form.filters.errors }}
+        <label class="control-label" for="id_filter">Filters:</label>
+		<div class="controls">
+			{{ form.filters }}
+		</div>
+    </div>
+
+
+	<div class="control-group">
+		{% for error in form.message.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_message">Message:</label>
+		<div class="controls">
+			{{ form.message }}
+		</div>
+    </div>
+
+
+	<hr>
+
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" value="Create Bulletin" class="btn btn-success"/>
+		</div>
+    </div>
+
+</form>
+</div>
+{% endblock %}
+
