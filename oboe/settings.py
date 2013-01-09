@@ -74,7 +74,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"\
 #NOT USED with S3, so safe to keep in all the time
-MEDIA_ROOT = os.path.join(DIRNAME, '/devenvironment/media/')
+MEDIA_ROOT = os.path.join(DIRNAME, 'devenvironment/media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
