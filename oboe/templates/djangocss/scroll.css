@@ -1,0 +1,27 @@
+.well-scroll{
+    padding:0px;
+    overflow:hidden;
+}
+
+/* where the scrolling & scrollbar hiding happens*/
+.scrollbox {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left:25px;
+    padding-right:25px;
+    {% if not webkit %}
+    margin-right:-25px;
+    {% endif %}
+}
+
+/* if the browser is webkit, we can hide the scrollbar easily*/
+.scrollbox::-webkit-scrollbar{
+    display:none
+}
+
+/* to provide propper padding on the bottom*/
+.scrollbox-inner {
+    padding-top:20px;
+    padding-bottom:20px;
+}
+

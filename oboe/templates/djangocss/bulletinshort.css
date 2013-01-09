@@ -1,0 +1,69 @@
+.bcon{
+    height:65px;
+    padding-top:5px;
+}
+
+.thumbbox{
+    width:72px;
+    float:left;
+}
+
+.profthumb{
+    border:1px;
+    padding:0px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+}
+
+.filter{
+    float:right;
+    color:#909090;
+    font-size:16px;
+}
+
+.updateflag{
+    color:#505050;
+}
+
+.bulltitle{
+    height:22px;
+    font-size:16px;
+    padding-right:5px;
+    margin:0px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.location{
+    float:right;
+    border:solid 1px;
+    padding:2px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+}
+
+.message{
+    padding-right:10px;
+    font-size:12px;
+    line-height:18px;
+    height:40px;
+    overflow:hidden;
+}
+
+.creatorname{
+    display:inline;
+}
+
+.timebox{
+    float:right;
+    font-size:12px;
+}
+
+.extrainfo{
+    color:#808080;
+}
+
+.timesince{
+    font-weight:bold;
+}

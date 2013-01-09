@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/jquery.dotdotdot.js"></script>
+<script src="/static/js/bootstrap.js"></script>
+<script>
+
+{% if not webkit %}
+{% include "djangojs/scroll.js" %}
+{% endif %}
+
+{% include "djangojs/fill.js" with ident=".scrollbox" %}
+
+{% include "djangojs/buttonhandler.js" with helpbutton="#helpbtn" helpmebutton="#helpmebtn" helpbox="#helpbox" wantbutton="#wantbtn" carpebutton="#carpebtn" wantbox="#wantbox" truncate=".message" %}
+
+$(document).ready(function(){
+    $(".message").dotdotdot({
+        watch:true
+    });
+});
+
+</script>
+
+{% endblock %}
+
+
+{% block css %}
+
+{% include "djangocss/scroll.css" %}
+
+{% include "djangocss/bulletinshort.css" %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid show">
+
+  <div class="page-header show" style="text-align:center;">
+    <h1>
+       <small>Welcome to Olin Bartering - Now with 100% more kittens</small>
+    </h1>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="btn-toolbar" style="position:relative;">
+	<button id="carpebtn" class="btn btn-small" data-without-text="+Carpe" data-with-text="-Carpe" style="position:absolute; left:0; bottom:0;">{% if user.userdata.includecarpe %}-Carpe{% else %}+Carpe{% endif %}</button>
+	<button id="wantbtn" class="btn btn-small " data-raw-text="Filter" data-filtered-text="Go Raw" style="position:absolute; right:0; bottom:0;">{% if user.userdata.filterwant %}Go Raw{% else %}Filter{% endif %}</button>
+	<h3 style="text-align:center;">Do You Want?</h3>
+      </div>
+      <div class="well well-large well-scroll">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner" id="wantbox">
+	    {% include "elements/wantwidget.html" with bulletins=wants %}
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <div class="span6">
+      <div class="btn-toolbar" style="position:relative;">
+	<button id="helpmebtn" class="btn btn-small" data-without-text="+HelpMe" data-with-text="-HelpMe" style="position:absolute; left:0; bottom:0;">{% if user.userdata.includehelpme %}-Helpme{% else %}+HelpMe{% endif %}</button>
+	<button id="helpbtn" class="btn btn-small" data-raw-text="Filter" data-filtered-text="Go Raw" style="position:absolute; right:0; bottom:0;">{% if user.userdata.filterhelp %}Go Raw{% else %}Filter{% endif %}</button>
+	<h3 style="text-align:center;">Can you Help?</h3>
+      </div>
+      <div class="well well-large well-scroll">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner" id="helpbox">
+	    {% include "elements/helpwidget.html" with bulletins=helps %}
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

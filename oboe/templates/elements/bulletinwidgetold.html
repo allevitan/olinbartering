@@ -1,0 +1,69 @@
+{% load thumbnail %}
+
+<table>
+  {% for bulletin in bulletins %}
+  <tr>
+    <table width="100%">
+      <tr height="72px">
+	<td width="72px">
+	  <img src="{% thumbnail bulletin.creator.pic 65x65 crop %}" class="profpicthumb">
+	</td>
+	<td align="left" valign="top" style="padding-left:10px;">
+	  <table width="100%">
+      	    <tr>
+	      <td>
+		<table width="100%">
+		  <td align="left" valign="top">
+		    <h5 style="display:inline;">
+		      <div class="bulltitle">
+			{% if bulletin.missive_set.all|length > 1 %}
+			<p class="updateflag">UPDATE: </p>{{ bulletin.subject|title|truncatechars:30 }}
+			{% else %}
+			{{ bulletin.subject|title|truncatechars:40 }}
+			{% endif %}
+		      </div>
+		    </h5>
+		  </td>
+		  <td align="right" valign="top">
+		    <p class="filter">{{ bulletin.filters.get.name|upper }}</p>
+		  </td>
+		</table>
+	      </td>
+	    </tr>
+      	    <tr>
+	      <td>
+		<table width="100%">
+		  <tr>
+		    <td align="left" valign="top">
+		      <div class="message">
+			{{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:"120" }}
+		      </div>
+		    </td>
+		    <td style="width:40px"align="right" valign="top">
+		      <p class="location">{{ bulletin.location }}</p>
+		    </td>
+		  </tr>
+		</table>
+	      </td>
+            </tr>
+	  </table>
+	</td>
+      </tr>
+    </table>
+    <table width="100%" padding="0px">
+      <tr>
+	<td align="left">
+	  <h5 class="creatorname">{{ bulletin.creator }}</h5>
+	</td>
+	<td align="right">
+	  <p class="extrainfo">{% block extrainfo %}{% endblock %} - </p>
+	  <h6 class="timesince">{{ bulletin.creation|timesince }} ago</h6>
+	</td>
+      </tr>
+    </table>
+    {% if not forloop.last %}
+    <hr style="margin:5px">
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>

@@ -1,0 +1,40 @@
+{% load thumbnail %}
+
+{% for bulletin in bulletins %}
+<div class="bcon">
+  <div class="thumbbox">
+    <img src="{% thumbnail bulletin.creator.pic 60x60 crop %}" class="profthumb">
+  </div>
+  <div class="filter">
+    {{ bulletin.tag.name|upper }}
+  </div>
+  <h5 class="bulltitle">
+    {% if bulletin.missive_set.all|length > 1 %}
+    <span class="updateflag">UPDATE
+      {% if bulletin.missive_set.all|length > 2 %} {{ bulletin.missive_set.all|length|add:"-1" }}{% endif %}: 
+    </span>{{ bulletin.subject|title }}
+    {% else %}
+    {{ bulletin.subject|title }}
+    {% endif %}
+  </h5>
+  <div class="location">
+    {{ bulletin.location }}
+  </div>
+  <div class="message">
+    {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200 }}
+  </div>
+</div>
+<h5 class="creatorname">{{ bulletin.creator }}</h5>
+<span class="timebox">
+  <span class="extrainfo">{% block extrainfo %}{% endblock %} - </span>
+  <span class="timesince">
+    {% if bulletin.missive_set.all|length > 1 %}
+    Updated {{ bulletin.update|timesince|truncatewords:"2"|cut:", ..." }}
+    {% else %}
+    {{ bulletin.creation|timesince|truncatewords:"2"|cut:", ..." }}{% endif %} ago
+  </span>
+</span>
+{% if not forloop.last %}
+<hr style="margin:5px">
+{% endif %}
+{% endfor %}

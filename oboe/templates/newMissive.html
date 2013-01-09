@@ -1,0 +1,82 @@
+<!--Add bulletin-->
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/center.js" with ident=".hero-unit" %}
+</script>
+
+<script>
+{% include "djangojs/showPrice.js" %}
+</script>
+
+<!--<script>
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="hero-unit extra_space">
+
+<h2 style="text-align:center;"><b>Update a Bulletin</b></h2>
+
+<hr>
+
+<form action="" method="post" class="form-horizontal inner_form" enctype="multipart/form-data"> 
+	{% csrf_token %}
+
+	{% if form.errors %}
+        <p class="base_error">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    {{ form.non_field_errors }}
+
+	<div class="control-group">
+        {% for error in form.bulletin.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_bulletin">Bulletin:</label>
+		<div class="controls">
+			{{ form.bulletin }}
+		</div>
+    </div>
+
+	<div class="control-group">
+        {% for error in form.price.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_bulletin">Price:</label>
+		<div class="controls">
+			{{ form.price }}
+		</div>
+    </div>
+
+	<div class="control-group">
+		{% for error in form.message.errors %}
+			<p class="field_error">{{ error }}</p>
+		{% endfor %}
+        <label class="control-label" for="id_message">Message:</label>
+		<div class="controls">
+			{{ form.message }}
+		</div>
+    </div>
+
+
+	<hr>
+
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" value="Update" class="btn btn-success"/>
+		</div>
+    </div>
+
+</form>
+</div>
+{% endblock %}
+

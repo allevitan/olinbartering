@@ -1,0 +1,49 @@
+body {
+    padding-top:60px;
+    padding-bottom:0px;
+    padding-left:30px;
+    padding-right:30px;
+    background-color:#FBFBFB;
+	/*background-image: url(/media/profiledata/back.ground/pic_1.png);*/
+	background-repeat: repeat;
+}
+
+.container-fluid{
+    margin-left:auto;
+    margin-right:auto;
+    min-width:880px;
+    max-width:1200px;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color:#202020;
+}
+
+.popover-title { 
+    display: none;
+}
+      
+.extra_space {
+	margin-top:0px;
+	margin-left:auto; 
+	margin-right:auto; 
+	text-align:center; 
+	width:425px;
+}
+
+.inner_form {
+	margin-left:auto; 
+	margin-right:auto; 
+	width:425px; 
+	text-align:left;
+}
+
+.base_error {
+	text-align:center;
+	color:black;
+}
+
+.field_error {
+	text-align:center;
+	color:red;
+}
