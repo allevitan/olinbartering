@@ -23,7 +23,11 @@
 
 <div class="hero-unit extra_space">
 
+{% if edit %}
+<h2 style="text-align:center;"><b>Edit Your Bulletin</b></h2>
+{% else %}
 <h2 style="text-align:center;"><b>Create a Bulletin</b></h2>
+{% endif %}
 
 <hr>
 
@@ -107,7 +111,11 @@
 
 	<div class="control-group">
 		<div class="controls">
+		 	{% if edit %}
+			<input type="submit" value="Save Edits" class="btn btn-success"/>
+			{% else %}
 			<input type="submit" value="Create Bulletin" class="btn btn-success"/>
+			{% endif %}
 		</div>
     </div>
 

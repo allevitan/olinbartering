@@ -87,7 +87,7 @@ class MultiProfileDisplay(forms.Form):
 	filters = [("None", "None")] + filters
 	filters = forms.ChoiceField(choices=(filters))
 	filterType = forms.ChoiceField(choices=(
-				("Do you want? ", "Do you want?"),
+				("Do you want?", "Do you want?"),
 				("Can you help?", "Can you help?"),
 				))
 

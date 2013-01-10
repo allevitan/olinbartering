@@ -86,15 +86,13 @@ def addBulletin(request):
 				price = cleaned_data['price']
 				bulletinFilter = getFilter(filters, helpfilter=False)
 				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance,
-					resolved=False, reply_count = 0,
-                                        free=price, tag=bulletinFilter)
+					location = location, relevance = relevance, resolved=False, reply_count = 0,
+                	free=price, tag=bulletinFilter)
 			elif bulletinType == "Help?":
 				bulletinFilter = getFilter(filters, helpfilter=True)
 				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
 					location = location, relevance = relevance, 
-					resolved=False, reply_count = 0,
-					tag=bulletinFilter)
+					resolved=False, reply_count = 0, tag=bulletinFilter)
 			else:
 				raise ValidationError
 			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), 
@@ -107,6 +105,53 @@ def addBulletin(request):
 	
 	return render(request, 'addBulletin.html', {'form':form})
 
+def editBulletin(request):	
+	if request.method == 'POST':
+		form = BulletinForm(request.POST, request.FILES)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			user = User.objects.get(username = request.user)
+			userdata = user.userdata
+			email = user.email
+			subject = cleaned_data['subject']
+			message = cleaned_data['message']
+			location = cleaned_data['location']
+			relevance = cleaned_data['relevance']
+			filters = cleaned_data['filters']
+			bulletinType = cleaned_data['bulletinType']
+			if bulletinType == "Want?":
+				price = cleaned_data['price']
+				bulletinFilter = getFilter(filters, helpfilter=False)
+				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
+					location = location, relevance = relevance, resolved=False, reply_count = 0,
+                	free=price, tag=bulletinFilter)
+			elif bulletinType == "Help?":
+				bulletinFilter = getFilter(filters, helpfilter=True)
+				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
+					location = location, relevance = relevance, 
+					resolved=False, reply_count = 0, tag=bulletinFilter)
+			else:
+				raise ValidationError
+			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), 
+				message = message)
+			bulletin.save()
+			missive.save()
+			return HttpResponseRedirect('/')
+	else:
+		bulletin = request.session['bulletin']
+		missive = Missive.objects.filter(bulletin=bulletin).order_by("timestamp")[0]
+		data = {'subject': bulletin.subject, 'relevance':bulletin.relevance, 
+				'location':bulletin.location, 'filters': bulletin.tag.name, 'message':missive.message}
+		if bulletin.helpbulletin:
+			data['bulletinType']= 'Help?'
+		else:
+			data['bulletinType']= 'Want?'
+			data['price'] = bulletin.free
+
+		form = BulletinForm(initial = data)
+	
+	return render(request, 'editBulletin.html', {'form':form, 'edit':True})
+
 def selectBulletin(request):	
 	if request.method == 'POST':
 		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
@@ -117,7 +162,8 @@ def selectBulletin(request):
 			userdata = user.userdata
 			subject = request.POST.get('bulletin', '')
 			bulletin = Bulletin.objects.get(subject=subject)
-			return HttpResponseRedirect('/')
+			request.session['bulletin'] = bulletin
+			return HttpResponseRedirect('/editBulletin')
 	else:
 		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
 		form = selectBulletinForm(request.POST or None, bulletins=bulletins)

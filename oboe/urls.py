@@ -30,6 +30,7 @@ urlpatterns = patterns('',
 	url(r'^newMissive/$', contentview.newMissive),
 	url(r'^people/$', contentview.people),
 	url(r'^selectBulletin/$', contentview.selectBulletin),
+	url(r'^editBulletin/$', contentview.editBulletin),
 )
 
 urlpatterns += staticfiles_urlpatterns()
