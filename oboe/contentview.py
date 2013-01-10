@@ -106,6 +106,9 @@ def addBulletin(request):
 	
 	return render(request, 'addBulletin.html', {'form':form})
 
+def selectBulletin(request):
+	return render(request, 'selectBulletin.html')
+
 
 def newMissive(request):	
 	if request.method == 'POST':

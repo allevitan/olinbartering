@@ -1,0 +1,62 @@
+<!--Select bulletin-->
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/showPrice.js" %}
+</script>
+
+<script>
+{% include "djangojs/center.js" with ident=".hero-unit" %}
+</script>
+
+
+<!--<script>
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="hero-unit extra_space">
+
+<h2 style="text-align:center;"><b>Create a Bulletin</b></h2>
+
+<hr>
+
+<form action="" method="post" class="form-horizontal inner_form" enctype="multipart/form-data"> 
+	{% csrf_token %}
+
+	{% if form.errors %}
+        <p class="base_error">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    {{ form.non_field_errors }}
+
+
+	<div class="control-group">
+        {{ form.bulletin.errors }}
+        <label class="control-label" for="id_filter">Select bulletin to edit:</label>
+		<div class="controls">
+			{{ form.bulletin }}
+		</div>
+    </div>
+
+
+	<hr>
+
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" value="Create Bulletin" class="btn btn-success"/>
+		</div>
+    </div>
+
+</form>
+</div>
+{% endblock %}
+

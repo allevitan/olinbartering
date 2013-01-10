@@ -3,8 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.static import * 
 from django.conf import settings
-import views
-import ajaxviews
+import homeview, contentview, userview, ajaxviews
 
 admin.autodiscover()
 
