@@ -1,6 +1,7 @@
 #homeview.py
 from django.shortcuts import render
 from models import Bulletin
+from django.http import HttpResponseRedirect
 
 def home(request):
 	if not (request.user.is_authenticated() and request.user.userdata.filterhelp):

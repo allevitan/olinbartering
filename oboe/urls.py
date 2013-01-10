@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^elements/want/filtered/', ajaxviews.want_filtered),
 	url(r'^newMissive/$', contentview.newMissive),
 	url(r'^people/$', contentview.people),
+	url(r'^selectBulletin/$', contentview.selectBulletin),
 )
 
 urlpatterns += staticfiles_urlpatterns()

@@ -106,8 +106,21 @@ def addBulletin(request):
 	
 	return render(request, 'addBulletin.html', {'form':form})
 
-def selectBulletin(request):
-	return render(request, 'selectBulletin.html')
+def selectBulletin(request):	
+	if request.method == 'POST':
+		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
+		form = selectBulletinForm(request.POST or None, request.FILES, bulletins=bulletins)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			user = User.objects.get(username = request.user)
+			userdata = user.userdata
+			bulletin = Bulletin.objects.get(subject=subject)
+			missive.save()
+			return HttpResponseRedirect('/')
+	else:
+		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
+		form = selectBulletinForm(request.POST or None, bulletins=bulletins)
+	return render(request, 'newMissive.html', {'form':form})
 
 
 def newMissive(request):	

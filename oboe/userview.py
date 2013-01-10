@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import LoginForm, RegistrationForm, EditProfileForm, ChangePasswordForm
-from forms import PasswordResetForm, BulletinForm, MissiveForm, 
+from forms import PasswordResetForm, BulletinForm, MissiveForm 
 from models import UserData, Missive, Filter, Bulletin
 from django.core.mail import send_mail
 from passgen import generate_password

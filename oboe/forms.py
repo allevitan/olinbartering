@@ -90,6 +90,10 @@ class MultiProfileDisplay(forms.Form):
 				("Do you want? ", "Do you want?"),
 				("Can you help?", "Can you help?"),
 				))
-	
 
+class selectBulletinForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+		bulletins = kwargs.pop('bulletins')
+		super(selectBulletinForm, self).__init__(*args, **kwargs)
+		self.fields['bulletin'] = forms.ChoiceField(choices=(bulletins))
 
