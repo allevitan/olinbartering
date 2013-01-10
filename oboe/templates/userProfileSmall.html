@@ -3,7 +3,9 @@
 {% for userdata in users %}
 <div class="hero-unit well span3">
 	<span class="thumbbox">
-		<img src="{% thumbnail userdata.pic 60x60 crop %}" class="profthumb">
+	  {% thumbnail userdata.pic "65x65" crop="center" as im %}
+	  <img src="{{ im.url }}" class="profthumb">
+	  {% endthumbnail %}
 	</span>
 </div> 
 {% endfor %}
