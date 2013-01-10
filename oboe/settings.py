@@ -4,12 +4,17 @@ import dj_database_url
 import os
 import os.path
 import context_processors
-from memcacheify import memcacheify
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+THUMBNAIL_DEBUG = True
 
-CACHES = memcacheify()
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+		'LOCATION':'127.0.0.1:11211',
+	 }
+}
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 
@@ -43,9 +48,12 @@ DATABASES = {
     }
 }
 
+# if we're on the production server
 if dj_database_url.config():
 	DATABASES['default'] = dj_database_url.config()
 	DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+	from memcacheify import memcacheify
+	CACHES = memcacheify()
 
 
 # Local time zone for this installation. Choices can be found here:

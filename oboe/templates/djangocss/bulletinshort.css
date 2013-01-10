@@ -19,7 +19,7 @@
 .filter{
     float:right;
     color:#909090;
-    font-size:16px;
+    font-size:14px;
 }
 
 .updateflag{
@@ -27,8 +27,8 @@
 }
 
 .bulltitle{
-    height:22px;
-    font-size:16px;
+    height:20px;
+    font-size:14px;
     padding-right:5px;
     margin:0px;
     white-space:nowrap;
@@ -37,6 +37,7 @@
 }
 
 .location{
+    font-size:14px;
     float:right;
     border:solid 1px;
     padding:2px;

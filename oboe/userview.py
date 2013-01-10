@@ -68,7 +68,6 @@ def register(request):
 				user.first_name = first_name
 				user.last_name = last_name
 				userdata = UserData.objects.create(user=user,score=0,dorm=dorm, pic=pic)
-				userdata.pic = pic
 				user.save()
 				userdata.save()
 				user = auth.authenticate(username=username, password=password)
