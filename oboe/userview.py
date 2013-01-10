@@ -107,11 +107,14 @@ def editProfile(request):
 			userdata.save()
 			return HttpResponseRedirect('/')
 	else:
-		user = request.user
-		userdata = user.userdata
-		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-		form = EditProfileForm(initial = data)
-	
+		if not request.user.is_authenticated():
+			return HttpResponseRedirect('/login')
+		else:
+			user = request.user
+			userdata = user.userdata
+			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+			form = EditProfileForm(initial = data)
+
 	return render(request, 'editProfile.html', {'form':form})
 
 
@@ -124,11 +127,15 @@ def changePassword(request):
 			request.user.save()
 			return HttpResponseRedirect('successful/')
 	else:
+		if not request.user.is_authenticated():
+			return HttpResponseRedirect('/login')
 		form = ChangePasswordForm()
 	
 	return render(request, 'changePassword.html', {'form':form})
 
 def passwordChanged(request):
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/login')
 	return render(request, 'passwordChanged.html')
 
 def resetPassword(request):

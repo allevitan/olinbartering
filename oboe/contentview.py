@@ -47,7 +47,7 @@ def contact(request):
 			return HttpResponseRedirect('/')
 	else:
 		if request.user.is_active:
-			data = {'emailAddress':request.user.email, 'subject':"Nice site!"}
+			data = {'emailAddress':request.user.email}
 			form = ContactForm(initial=data)
 		else:
 			form = ContactForm()
@@ -71,7 +71,7 @@ def getFilter(name, helpfilter):
 def addBulletin(request):	
 	if request.method == 'POST':
 		form = BulletinForm(request.POST, request.FILES)
-		if form.is_valid():
+		if form.is_valid() and request.user.is_authenticated():
 			cleaned_data = form.clean()
 			user = User.objects.get(username = request.user)
 			userdata = user.userdata
@@ -100,6 +100,7 @@ def addBulletin(request):
 			bulletin.save()
 			missive.save()
 			return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/login')
 	else:
 		form = BulletinForm()
 	
