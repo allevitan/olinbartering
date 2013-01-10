@@ -87,11 +87,11 @@ def addBulletin(request):
 				bulletinFilter = getFilter(filters, helpfilter=False)
 				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
 					location = location, relevance = relevance, resolved=False, reply_count = 0,
-                	free=price, tag=bulletinFilter)
+                	free=price, tag=bulletinFilter, helpbulletin=False)
 			elif bulletinType == "Help?":
 				bulletinFilter = getFilter(filters, helpfilter=True)
 				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance, 
+					location = location, relevance = relevance, helpbulletin=True,
 					resolved=False, reply_count = 0, tag=bulletinFilter)
 			else:
 				raise ValidationError
@@ -108,6 +108,8 @@ def addBulletin(request):
 def editBulletin(request):	
 	if request.method == 'POST':
 		form = BulletinForm(request.POST, request.FILES)
+		bulletin = request.session['bulletin']
+		missive = Missive.objects.filter(bulletin=bulletin).order_by("timestamp")[0]
 		if form.is_valid():
 			cleaned_data = form.clean()
 			user = User.objects.get(username = request.user)
@@ -119,21 +121,22 @@ def editBulletin(request):
 			relevance = cleaned_data['relevance']
 			filters = cleaned_data['filters']
 			bulletinType = cleaned_data['bulletinType']
+			bulletin.subject = subject
+			missive.message = message
+			bulletin.location = location
+			bulletin.relevance = relevance			
 			if bulletinType == "Want?":
 				price = cleaned_data['price']
 				bulletinFilter = getFilter(filters, helpfilter=False)
-				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance, resolved=False, reply_count = 0,
-                	free=price, tag=bulletinFilter)
+				bulletin.tag = bulletinFilter
+				bulletin.helpbulletin = False
+				bulletin.price = price
 			elif bulletinType == "Help?":
 				bulletinFilter = getFilter(filters, helpfilter=True)
-				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance, 
-					resolved=False, reply_count = 0, tag=bulletinFilter)
+				bulletin.tag = bulletinFilter
+				bulletin.helpbulletin = True
 			else:
 				raise ValidationError
-			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), 
-				message = message)
 			bulletin.save()
 			missive.save()
 			return HttpResponseRedirect('/')
