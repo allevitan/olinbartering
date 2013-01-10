@@ -3,7 +3,7 @@
 {% for bulletin in bulletins %}
 <div class="bcon">
   <div class="thumbbox">
-    {% thumbnail bulletin.creator.pic "65x65" crop="smart" as im %}
+    {% thumbnail bulletin.creator.pic "65x65" crop="center" as im %}
     <img class="profthumb" src="{{ im.url }}">
     {% endthumbnail %}
     <img src="" class="profthumb">
