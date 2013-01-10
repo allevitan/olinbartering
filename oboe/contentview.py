@@ -115,13 +115,13 @@ def selectBulletin(request):
 			cleaned_data = form.clean()
 			user = User.objects.get(username = request.user)
 			userdata = user.userdata
+			subject = request.POST.get('bulletin', '')
 			bulletin = Bulletin.objects.get(subject=subject)
-			missive.save()
 			return HttpResponseRedirect('/')
 	else:
 		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
 		form = selectBulletinForm(request.POST or None, bulletins=bulletins)
-	return render(request, 'newMissive.html', {'form':form})
+	return render(request, 'selectBulletin.html', {'form':form})
 
 
 def newMissive(request):	
