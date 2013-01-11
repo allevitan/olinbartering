@@ -22,10 +22,11 @@ def people(request):
 		if form.is_valid():
 			cleaned_data = form.clean()
 			filterText = cleaned_data['filters']
+			filterType = cleaned_data['filterType']
 			if filterText == "None":
 				users = UserData.objects.all()
 			else:
-				chosenFilter = Filter.objects.filter(name=filterText)
+				chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
 				users = UserData.objects.filter(filters__id=chosenFilter)
 			form = MultiProfileDisplay()
 	else:

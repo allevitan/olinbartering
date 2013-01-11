@@ -87,8 +87,8 @@ class MultiProfileDisplay(forms.Form):
 	filters = [("None", "None")] + filters
 	filters = forms.ChoiceField(choices=(filters))
 	filterType = forms.ChoiceField(choices=(
-				("Do you want?", "Do you want?"),
-				("Can you help?", "Can you help?"),
+				(False, "Do you want?"),
+				(True, "Can you help?"),
 				))
 
 class selectBulletinForm(forms.Form):
