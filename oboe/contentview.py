@@ -191,6 +191,8 @@ def newMissive(request):
 			message = cleaned_data['message']
 			subject = request.POST.get('bulletin', '')
 			bulletin = Bulletin.objects.get(subject=subject)
+			bulletin.update = datetime.now()
+			bulletin.save()
 			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), message = message)
 			missive.save()
 			return HttpResponseRedirect('/')
