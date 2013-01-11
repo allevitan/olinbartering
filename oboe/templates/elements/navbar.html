@@ -27,14 +27,14 @@
         </ul>
         <ul class="nav">
 	  {% if site_area == "home" %}<li class="active">
-	    {% else %}<li>{% endif %}<a href="/">Home</a></li>
+	    {% else %}<li>{% endif %}<a href="/"><i class="icon-home"></i> Home</a></li>
 	  {% if site_area == "people" %}<li class="active">
-	    {% else %}<li>{% endif %}<a href="/people/">People</a></li>
+	    {% else %}<li>{% endif %}<a href="/people/"><i class="icon-user"></i> People</a></li>
 	  
 	  {% if site_area == "new" %}<li class="active dropdown">
 	  {% elif site_area == "newMissive" %}<li class="active dropdown">
 	  {% else %}<li class="dropdown">{% endif %}
-		<a href="" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
+		<a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-plus"></i> New <b class="caret"></b></a>
 		<ul class="dropdown-menu">
     		<li><a href="/new/">Bulletin</a></li>
 			<li><a href="/newMissive/">Update</a></li>
@@ -44,7 +44,7 @@
 	  {% if site_area == "editProfile" %}<li class="active">
 	  {% elif site_area == "editBulletin" %}<li class="active">
 	  {% else %}<li class="dropdown">{% endif %}
-		<a href="" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
+		<a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-edit"></i> Edit <b class="caret"></b></a>
 		<ul class="dropdown-menu">
     		<li><a href="/selectBulletin/">Bulletins</a></li>
 			<li><a href="/editProfile/">Profile</a></li>
@@ -52,9 +52,9 @@
 		</li>
 
 	  {% if site_area == "about" %}<li class="active">
-	    {% else %}<li>{% endif %}<a href="/about/">About</a></li>
+	    {% else %}<li>{% endif %}<a href="/about/"><i class="icon-info-sign"></i> About</a></li>
 	  {% if site_area == "contact" %}<li class="active">
-	    {% else %}<li>{% endif %}<a href="/contact/">Contact</a></li>
+	    {% else %}<li>{% endif %}<a href="/contact/"><i class="icon-envelope"></i> Contact</a></li>
         </ul>
 
 	<form class="navbar-search pull-left">
