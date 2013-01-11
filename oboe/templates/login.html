@@ -35,19 +35,27 @@
 
     {{ form.non_field_errors }}
 
-    <div class="control-group">
+	{% if form_error %}
+    <div class="control-group error">
+	{% else %}
+	<div class="control-group">
+	{% endif %}
         {% for error in form.username.errors %}
-			<p class="field_error">{{ error }}</p>
+			<p class="help-inline">{{ error }}</p>
 		{% endfor %}
         <label class="control-label" for="id_email">Username:</label>
 		<div class="controls">
 			{{ form.username }}
 		</div>
     </div>
-
-    <div class="control-group">
+	
+	{% if form_error %}
+    <div class="control-group error">
+	{% else %}
+	<div class="control-group">
+	{% endif %}
         {% for error in form.password.errors %}
-			<p class="field_error">{{ error }}</p>
+			<p class="help-inline">{{ error }}</p>
 		{% endfor %}
         <label class="control-label" for="id_password">Password:</label>
 		<div class="controls">
