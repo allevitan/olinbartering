@@ -24,38 +24,36 @@
 <form action="" method="post" class="inner_form"> 
 	{% csrf_token %}
 
-	 {% if form.errors %}
-        <p class="base_error">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
 
-    {{ form.non_field_errors }}
-
-    <div class="control-group">
-        {% for error in form.emailAddress.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% if form.emailAddress.errors %}
+    <div class="control-group error">
+	{% else %}
+	<div class="control-group">
+	{% endif %}
         <label class="control-label" for="id_email">Email Address:</label>
 		<div class="controls">
 			{{ form.emailAddress }}
 		</div>
     </div>
 
-    <div class="control-group">
-        {% for error in form.subject.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+    
+	{% if form.subject.errors %}
+    <div class="control-group error">
+	{% else %}
+	<div class="control-group">
+	{% endif %}
         <label class="control-label" for="id_subject">Subject:</label>
 		<div class="controls">
 			{{ form.subject }}
 		</div>
     </div>
 
-    <div class="control-group">
-        {% for error in form.message.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+
+	{% if form.message.errors %}
+    <div class="control-group error">
+	{% else %}
+	<div class="control-group">
+	{% endif %}
         <label class="control-label" for="id_subject">Message:</label>
 		<div class="controls">
 			{{ form.message }}

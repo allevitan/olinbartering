@@ -22,10 +22,10 @@ class RegistrationForm(forms.Form):
 	pic = forms.ImageField(required=False)
 
 class EditProfileForm(forms.Form):
-	first_name = forms.CharField(max_length=30, required=False)
-	last_name = forms.CharField(max_length=30, required=False)
-	emailAddress = forms.EmailField(required=False)
-	dorm = forms.CharField(max_length=5, required=False)
+	first_name = forms.CharField(max_length=30)
+	last_name = forms.CharField(max_length=30)
+	emailAddress = forms.EmailField()
+	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
 
 class ChangePasswordForm(forms.Form):
