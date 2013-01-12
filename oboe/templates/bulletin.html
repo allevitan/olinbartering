@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
+{% load comments %}
+
 {% block scripts %}
 <script src="/static/js/jquery.js"></script>
 <script src="/static/js/bootstrap.js"></script>
 <script>
 {% if not webkit %}
-{% include "djangojs/scroll.js" %}
+{% include "djangojs/scroll.js" with ident=".scrollbox" %}
 {% endif %}
 
 
 function half(){
 $("#bulletinbox").css({
-        height: ($(window).height() - $("#bulletinbox:last").offset().top) / 2 -60
+        height: ($(window).height() - $("#bulletinbox:last").offset().top) * 3 / 5 - 60
     });
 }
 
@@ -30,6 +32,29 @@ $(document).ready(function(){
 
 {% block css %}
 {% include "djangocss/scroll.css" %}
+
+#id_honeypot{
+    display:none;
+}
+
+#id_comment{
+    width:100%;
+    padding:0px;
+    height:60px;
+    border-radius:0px;
+    resize:none;
+    margin:0px;
+}
+
+#id_visibility{
+    float:right;
+    margin-right:10px;
+    margin-top:2px;
+}
+
+#id_submit{
+    float:right;
+}
 
 .faded{
     color:#909090;
@@ -67,16 +92,40 @@ $(document).ready(function(){
       </div>
     </div>
   </div>
-  <h3 style="margin-left:25px;">Send a Reply: <span style="color:#606060;">
-      {% if bulletin.reply_count = 0 %}
+  {% get_comment_count for bulletin as reply_count %}
+  <h3 style="margin-left:25px;">Replies: <span style="color:#606060;">
+      {% if reply_count = 0 %}
       (none yet)
       {% else %}
-      ({{ bulletin.reply_count }} already)
+      ({{ reply_count }} already)
       {% endif %}
-    </span></h3>
+  </span></h3>
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="replybox">
       <div class="scrollbox-inner">
+	{% get_comment_form for bulletin as form %}
+	<form action="{% comment_form_target %}" method="POST">
+	  <input type="submit" value="Reply" id="id_submit" >
+	  <div id="id_visibility">
+	    <input type="radio" name="visibility" value="Public" style="margin-top:-5px;">Public
+	    <input type="radio" name="visibility" value="Private" style="margin-top:-5px; margin-left:10px;" checked>Private
+	  </div>
+	  <h4>{{ user.get_full_name }}:</h4>
+	  {% csrf_token %}
+	  {{ form.honeypot }}
+	  {{ form.comment }}
+	  {{ form.content_type }}
+	  {{ form.object_pk }}
+	  {{ form.timestamp }}
+	  {{ form.security_hash }}
+	  <input type="hidden" name="next" value="{{ bulletin.get_absolute_url }}" />
+	</form>
+	{% get_comment_list for bulletin as replies %}
+	{% for reply in replies reversed %}
+	<hr style="margin:0px;">
+	<h5>{{ reply.user_name }}: <small>({{ reply.submit_date|timesince }} ago)</small></h5>
+	<p>{{ reply.comment }}</p>
+	{% endfor %}
       </div>
     </div>
   </div>	

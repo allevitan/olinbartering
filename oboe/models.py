@@ -53,7 +53,7 @@ class Bulletin(models.Model):
     helpbulletin = models.BooleanField(choices=(
             (True, 'Help'),
             (False, 'Want')))
-    
+
     #Help Specific Fields
     resolver = models.ForeignKey(UserData, null=True, blank=True, related_name="%(class)s_resolved")
     advice = models.CharField(max_length=200, blank=True)
@@ -62,6 +62,9 @@ class Bulletin(models.Model):
     free = models.BooleanField(choices=(
             (True,'Free'),
             (False,'Cheap')))    
+
+    def get_absolute_url(self):
+        return "/bulletin/%d/" % self.id
     
     def __unicode__(self):
         return self.subject
