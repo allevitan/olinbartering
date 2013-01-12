@@ -9,23 +9,23 @@ from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
 
 class LoginForm(forms.Form):
-	username = forms.CharField(required=True, max_length=30)
-	password = forms.CharField(widget=forms.PasswordInput())
+	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'first.last'}))
+	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
 
 class RegistrationForm(forms.Form):
-	first_name = forms.CharField(max_length=30)
-	last_name = forms.CharField(max_length=30)
-	emailAddress = forms.EmailField()
-	password = forms.CharField(widget=forms.PasswordInput())
-	confirmPassword = forms.CharField(widget=forms.PasswordInput())
-	dorm = forms.CharField(max_length=5)
+	first_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Franklin'}))
+	last_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Olin'}))
+	emailAddress = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'franklin.olin@students.olin.edu'}))
+	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
+	confirmPassword = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
+	dorm = forms.CharField(max_length=5, widget=forms.TextInput(attrs={'placeholder': 'WH101'}))
 	pic = forms.ImageField(required=False)
 
 class EditProfileForm(forms.Form):
-	first_name = forms.CharField(max_length=30, required=False)
-	last_name = forms.CharField(max_length=30, required=False)
-	emailAddress = forms.EmailField(required=False)
-	dorm = forms.CharField(max_length=5, required=False)
+	first_name = forms.CharField(max_length=30)
+	last_name = forms.CharField(max_length=30)
+	emailAddress = forms.EmailField()
+	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
 
 class ChangePasswordForm(forms.Form):
@@ -35,7 +35,7 @@ class ChangePasswordForm(forms.Form):
 
 class ContactForm(forms.Form):
 	emailAddress = forms.EmailField(required=True)
-	subject = forms.CharField(max_length = 60)
+	subject = forms.CharField(max_length = 60, widget=forms.TextInput(attrs={'placeholder': 'Nice Site!'}))
 	message = forms.CharField(widget=forms.Textarea(attrs={'class': "row-fluid", 'rows': 10}))
 
 class PasswordResetForm(forms.Form):
@@ -55,7 +55,7 @@ class BulletinForm(forms.Form):
 	subject = forms.CharField(max_length=50)
 	message = forms.CharField(widget=forms.Textarea(attrs={'class': "span3", 'rows': 5}))
 	week = datetime.now() + timedelta(7)
-	relevance = forms.DateTimeField(initial = week.strftime('%m/%d/%Y'))
+	relevance = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'placeholder':'01/01/01 12:00'}), initial = week.strftime('%m/%d/%Y'))
 	location = forms.ChoiceField(choices=(
 			('NA','Not Applicable'),
             ('AC','Academic Center'),
@@ -87,8 +87,8 @@ class MultiProfileDisplay(forms.Form):
 	filters = [("None", "None")] + filters
 	filters = forms.ChoiceField(choices=(filters))
 	filterType = forms.ChoiceField(choices=(
-				("Do you want?", "Do you want?"),
-				("Can you help?", "Can you help?"),
+				(False, "Do you want?"),
+				(True, "Can you help?"),
 				))
 
 class selectBulletinForm(forms.Form):

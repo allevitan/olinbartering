@@ -19,22 +19,24 @@ def login(request):
 			cleaned_data = form.clean()
 			username = cleaned_data['username']
    			password = cleaned_data['password']
-    		user = auth.authenticate(username=username, password=password)
-    		if user is not None and user.is_active:
-        		# Correct password, and the user is marked "active"
-        		auth.login(request, user)
-        		# Render home page.
-        		incorrectPassword = 0
-        		return HttpResponseRedirect('/')
+			if username and password:
+				user = auth.authenticate(username=username, password=password)
+				if user is not None and user.is_active:
+		    		# Correct password, and the user is marked "active"
+					auth.login(request, user)
+		    		# Render home page.
+		    		incorrectPassword = 0
+		    		return HttpResponseRedirect('/')
     		else:
         		# Return to login page.
 				incorrectPassword = 1
 				form = LoginForm()
-				return render(request, 'login.html', {'form': form, 'incorrectPassword': incorrectPassword})
+				return render(request, 'login.html', {'form': form, 'incorrectPassword': incorrectPassword, 'form_error':True})
+	
 	else:
 		incorrectPassword = 0
 		form = LoginForm() #reload blank form
-	return render(request, 'login.html', {'form': form, 'incorrectPassword': incorrectPassword})
+	return render(request, 'login.html', {'form': form, 'incorrectPassword': incorrectPassword, 'form_error':False})
 
 def logout(request):
 	auth.logout(request) #log user out, no questions asked.

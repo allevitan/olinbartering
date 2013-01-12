@@ -24,48 +24,47 @@
 <form action="" method="post" class="form-horizontal inner_form"> 
 	{% csrf_token %}
 
-	{% if form.errors %}
-        <p class="base_error">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
-
-    {{ form.non_field_errors }}
-
+	{% if form.first_name.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.first_name.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_first_name">First Name:</label>
 		<div class="controls">
 			{{ form.first_name }}
 		</div>
     </div>
 
+
+	{% if form.last_name.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.last_name.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_last_name">Last Name:</label>
 		<div class="controls">
 			{{ form.last_name }}
 		</div>
     </div>
 
+
+	{% if form.dorm.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.dorm.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_dorm">Dorm:</label>
 		<div class="controls">
 			{{ form.dorm }}
 		</div>
     </div>
 
+
+	{% if form.emailAddress.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.emailAddress.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_email">Email Address:</label>
 		<div class="controls">
 			{{ form.emailAddress }}
@@ -76,7 +75,7 @@
         {% for error in form.pic.errors %}
 			<p class="field_error">{{ error }}</p>
 		{% endfor %}
-        <label class="control-label" for="id_message">Profile Picture:</label>
+        <label class="control-label" for="id_pic">Profile Picture:</label>
 		<div class="controls">
 		{{ form.pic }}
 		</div>
@@ -86,6 +85,13 @@
 		<label class="control-label" for="id_password">Password: </label>
 		<div class="controls">
 			<a href="/changePassword/" type="submit" class="btn btn-alert" >Change</a>   
+		</div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label" for="id_preferences">Preferences: </label>
+		<div class="controls">
+			<a href="/editPreferences/" type="submit" class="btn btn-alert" >Change</a>   
 		</div>
     </div>
 

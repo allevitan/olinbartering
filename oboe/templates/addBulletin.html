@@ -34,18 +34,11 @@
 <form action="" method="post" class="form-horizontal inner_form" enctype="multipart/form-data"> 
 	{% csrf_token %}
 
-	{% if form.errors %}
-        <p class="base_error">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
-
-    {{ form.non_field_errors }}
-
+	{% if form.subject.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.subject.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_subject">Subject:</label>
 		<div class="controls">
 			{{ form.subject }}
@@ -69,10 +62,11 @@
     </div>
 	
 
+	{% if form.relevance.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-        {% for error in form.relevance.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_relevance">Relevant Until:</label>
 		<div class="controls">
 			{{ form.relevance }}
@@ -96,10 +90,11 @@
     </div>
 
 
+	{% if form.message.errors %}
+    <div class="control-group error">
+	{% else %}
 	<div class="control-group">
-		{% for error in form.message.errors %}
-			<p class="field_error">{{ error }}</p>
-		{% endfor %}
+	{% endif %}
         <label class="control-label" for="id_message">Message:</label>
 		<div class="controls">
 			{{ form.message }}

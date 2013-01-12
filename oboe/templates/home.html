@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block scripts %}
-<script src="/static/js/jquery.js"></script>
-<script src="/static/js/jquery.dotdotdot.js"></script>
-<script src="/static/js/bootstrap.js"></script>
+
 <script>
 
 {% if not webkit %}
@@ -37,7 +35,7 @@ $(document).ready(function(){
 
 <div class="container-fluid show">
 
-  <div class="page-header show" style="text-align:center;">
+  <div class="page-header show" style="text-align:center;margin-top:50px;margin-bottom:5px">
     <h1>
        <small>Welcome to Olin Bartering - <strong>Still in Development!</strong></small>
     </h1>
@@ -52,7 +50,7 @@ $(document).ready(function(){
       </div>
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="wantbox">
+	  <div class="scrollbox-inner" id="wantbox" style="padding-top:15px;padding-bottom:15px;">
 	    {% include "elements/wantwidget.html" with bulletins=wants %}
 	  </div>
 	</div>
@@ -67,7 +65,7 @@ $(document).ready(function(){
       </div>
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="helpbox">
+	  <div class="scrollbox-inner" id="helpbox" style="padding-top:15px;padding-bottom:15px;">
 	    {% include "elements/helpwidget.html" with bulletins=helps %}
 	  </div>
 	</div>

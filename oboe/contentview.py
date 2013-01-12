@@ -22,10 +22,11 @@ def people(request):
 		if form.is_valid():
 			cleaned_data = form.clean()
 			filterText = cleaned_data['filters']
+			filterType = cleaned_data['filterType']
 			if filterText == "None":
 				users = UserData.objects.all()
 			else:
-				chosenFilter = Filter.objects.filter(name=filterText)
+				chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
 				users = UserData.objects.filter(filters__id=chosenFilter)
 			form = MultiProfileDisplay()
 	else:
@@ -46,7 +47,7 @@ def contact(request):
     ['allevitan@gmail.com'], fail_silently=False)
 			return HttpResponseRedirect('/')
 	else:
-		if request.user.is_active:
+		if request.user.is_active and request.user.is_authenticated():
 			data = {'emailAddress':request.user.email}
 			form = ContactForm(initial=data)
 		else:
@@ -100,10 +101,11 @@ def addBulletin(request):
 			bulletin.save()
 			missive.save()
 			return HttpResponseRedirect('/')
-		return HttpResponseRedirect('/login')
 	else:
-		form = BulletinForm()
-	
+		if request.user.is_authenticated():
+			form = BulletinForm()
+		else:
+			return HttpResponseRedirect('/login')
 	return render(request, 'addBulletin.html', {'form':form})
 
 def editBulletin(request):	
@@ -111,7 +113,7 @@ def editBulletin(request):
 		form = BulletinForm(request.POST, request.FILES)
 		bulletin = request.session['bulletin']
 		missive = Missive.objects.filter(bulletin=bulletin).order_by("timestamp")[0]
-		if form.is_valid():
+		if form.is_valid() and request.user.is_authenticated():
 			cleaned_data = form.clean()
 			user = User.objects.get(username = request.user)
 			userdata = user.userdata
@@ -142,18 +144,20 @@ def editBulletin(request):
 			missive.save()
 			return HttpResponseRedirect('/')
 	else:
-		bulletin = request.session['bulletin']
-		missive = Missive.objects.filter(bulletin=bulletin).order_by("timestamp")[0]
-		data = {'subject': bulletin.subject, 'relevance':bulletin.relevance, 
-				'location':bulletin.location, 'filters': bulletin.tag.name, 'message':missive.message}
-		if bulletin.helpbulletin:
-			data['bulletinType']= 'Help?'
-		else:
-			data['bulletinType']= 'Want?'
-			data['price'] = bulletin.free
+		if request.user.is_authenticated():
+			bulletin = request.session['bulletin']
+			missive = Missive.objects.filter(bulletin=bulletin).order_by("timestamp")[0]
+			data = {'subject': bulletin.subject, 'relevance':bulletin.relevance, 
+					'location':bulletin.location, 'filters': bulletin.tag.name, 'message':missive.message}
+			if bulletin.helpbulletin:
+				data['bulletinType']= 'Help?'
+			else:
+				data['bulletinType']= 'Want?'
+				data['price'] = bulletin.free
 
-		form = BulletinForm(initial = data)
-	
+			form = BulletinForm(initial = data)
+		else:
+			return HttpResponseRedirect('/login')
 	return render(request, 'editBulletin.html', {'form':form, 'edit':True})
 
 def selectBulletin(request):	
@@ -169,8 +173,11 @@ def selectBulletin(request):
 			request.session['bulletin'] = bulletin
 			return HttpResponseRedirect('/editBulletin')
 	else:
-		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
-		form = selectBulletinForm(request.POST or None, bulletins=bulletins)
+		if request.user.is_authenticated():
+			bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
+			form = selectBulletinForm(request.POST or None, bulletins=bulletins)
+		else:
+			return HttpResponseRedirect('/login')
 	return render(request, 'selectBulletin.html', {'form':form})
 
 
@@ -185,13 +192,17 @@ def newMissive(request):
 			message = cleaned_data['message']
 			subject = request.POST.get('bulletin', '')
 			bulletin = Bulletin.objects.get(subject=subject)
+			bulletin.update = datetime.now()
+			bulletin.save()
 			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), message = message)
 			missive.save()
 			return HttpResponseRedirect('/')
 	else:
-		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
-		form = MissiveForm(request.POST or None, bulletins=bulletins)
-	
+		if request.user.is_authenticated():
+			bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
+			form = MissiveForm(request.POST or None, bulletins=bulletins)
+		else:
+			return HttpResponseRedirect('/login')
 	return render(request, 'newMissive.html', {'form':form})
 
 def viewBulletin(request, pk=-1, creator=''):
