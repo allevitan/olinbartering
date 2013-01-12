@@ -193,3 +193,12 @@ def newMissive(request):
 		form = MissiveForm(request.POST or None, bulletins=bulletins)
 	
 	return render(request, 'newMissive.html', {'form':form})
+
+def viewBulletin(request, pk=-1, creator=''):
+	if pk > 0:
+		bulletin = Bulletin.objects.get(pk=pk)
+		return render(request, 'bulletin.html', {'bulletin':bulletin})
+	#elif User.objects.filter():
+	#	bulletins = Bulletin.objects.filter(creator=request.user.userdata)
+	#	return render(request, 'userBulletins.html', {'bulletins':bulletins})
+	else: return render(request, '404.html', {});

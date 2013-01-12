@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/bootstrap.js"></script>
+<script>
+{% if not webkit %}
+{% include "djangojs/scroll.js" %}
+{% endif %}
+
+
+function half(){
+$("#bulletinbox").css({
+        height: ($(window).height() - $("#bulletinbox:last").offset().top) / 2 -60
+    });
+}
+
+$(window).resize(function(){
+    half();
+});
+
+$(document).ready(function(){
+    half();
+});
+
+{% include "djangojs/fill.js" with ident="#replybox" %}
+
+</script>
+{% endblock %}
+
+{% block css %}
+{% include "djangocss/scroll.css" %}
+
+.faded{
+    color:#909090;
+}
+
+#bulletinholder{
+    max-width:500px;
+}
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="bulletinholder">
+  <h2 style="margin-left:25px;">{{ bulletin.subject|title }}</h2>
+  <div class="well well-large well-scroll">
+    <div class="scrollbox" id="bulletinbox">
+      <div class="scrollbox-inner">
+	<h4 style="color:#404040;"><span class="faded">by</span> {{ bulletin.creator|title }} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} <span class="faded">for</span> {{ bulletin.get_free_display }}</h4>
+	<hr>
+	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
+	<h5>
+	{% if forloop.revcounter0 = 0 %}
+	Original:  
+	{% elif forloop.revcounter0 = 1 %}
+	Update: 
+	{% else %}
+	Update {{ forloop.revcounter0 }}: 
+	{% endif %}
+	<small>({{ missive.timestamp|timesince }} ago)</small></h5>
+	<p style="font-size:16px;">{{ missive.message }}</p>
+	<hr>
+	{% endfor %}
+      </div>
+    </div>
+  </div>
+  <h3 style="margin-left:25px;">Send a Reply: <span style="color:#606060;">
+      {% if bulletin.reply_count = 0 %}
+      (none yet)
+      {% else %}
+      ({{ bulletin.reply_count }} already)
+      {% endif %}
+    </span></h3>
+  <div class="well well-large well-scroll">
+    <div class="scrollbox" id="replybox">
+      <div class="scrollbox-inner">
+      </div>
+    </div>
+  </div>	
+</div>
+{% endblock %}
