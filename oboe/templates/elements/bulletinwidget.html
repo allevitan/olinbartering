@@ -11,6 +11,7 @@
   <div class="filter">
     {{ bulletin.tag.name|upper }}
   </div>
+<a href="/bulletin/{{ bulletin.id }}">
   <h5 class="bulltitle">
     {% if bulletin.missive_set.all|length > 1 %}
     <span class="updateflag">UPDATE
@@ -20,6 +21,7 @@
     {{ bulletin.subject|title }}
     {% endif %}
   </h5>
+  </a>
   <div class="location">
     {{ bulletin.location }}
   </div>

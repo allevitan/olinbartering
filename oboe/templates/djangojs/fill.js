@@ -1,6 +1,6 @@
 function abso(){
 $("{{ ident }}").css({
-        height: $(window).height() - $("{{ ident }}:last").offset().top - 30
+        height: $(window).height() - $("{{ ident }}:last").offset().top - 50
     });
 }
 

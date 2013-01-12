@@ -3,9 +3,20 @@ body {
     padding-bottom:0px;
     padding-left:30px;
     padding-right:30px;
-    background-color:#FBFBFB;
+    background-color:#7BD9FF;
+
+    /*background-color:#FBFBFB;*/
 	/*background-image: url(/media/profiledata/back.ground/pic_1.png);*/
 	background-repeat: repeat;
+}
+
+#contentbox{
+    background-color:#FBFBFB;
+    border:1px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+    padding:30px;
+    padding-bottom:10px;
 }
 
 .container-fluid{

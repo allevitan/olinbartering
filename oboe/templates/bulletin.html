@@ -35,19 +35,19 @@ $(document).ready(function(){
     color:#909090;
 }
 
-#bulletinholder{
+#contentbox{
     max-width:500px;
 }
 
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid" id="bulletinholder">
+<div class="container-fluid" id="contentbox">
   <h2 style="margin-left:25px;">{{ bulletin.subject|title }}</h2>
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="bulletinbox">
       <div class="scrollbox-inner">
-	<h4 style="color:#404040;"><span class="faded">by</span> {{ bulletin.creator|title }} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} <span class="faded">for</span> {{ bulletin.get_free_display }}</h4>
+	<h4 style="color:#404040;"><span class="faded">by</span> {{ bulletin.creator|title }} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
 	<hr>
 	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
 	<h5>
@@ -60,7 +60,9 @@ $(document).ready(function(){
 	{% endif %}
 	<small>({{ missive.timestamp|timesince }} ago)</small></h5>
 	<p style="font-size:16px;">{{ missive.message }}</p>
+	{% if forloop.revcounter0 != 0 %}
 	<hr>
+	{% endif %}
 	{% endfor %}
       </div>
     </div>
