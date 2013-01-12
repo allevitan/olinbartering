@@ -86,3 +86,21 @@ class Image(models.Model):
     
     def __unicode__(self):
         return '%s_pic' % self.missive.subject
+
+class Reply_Thread(models.Model):
+    users = models.ManyToManyField(UserData)
+    bulletin = models.ForeignKey(Bulletin)
+    
+    def __unicode__(self):
+        return "%s" % bulletin.subject
+
+
+class Reply(models.Model):
+    thread = models.ForeignKey(Reply_Thread)
+    sender = models.ForeignKey(UserData)
+    public = models.BooleanField(default=False)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    
+    def __unicode__(self):
+        return "%s" % message
