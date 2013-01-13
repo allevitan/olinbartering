@@ -109,3 +109,6 @@ class selectBulletinForm(forms.Form):
 
 class ReplyForm(forms.Form):
 	message = forms.CharField(widget=forms.Textarea())
+
+class UpdateBulletinForm(forms.Form):
+	missive = forms.CharField(widget=forms.Textarea())
