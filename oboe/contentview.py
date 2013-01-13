@@ -233,7 +233,7 @@ def viewBulletin(request, pk=-1, creator=''):
 				thread = Reply_Thread.objects.create(bulletin=bulletin)
 				thread.users.add(user)
 				thread.users.add(bulletin.creator)
-				thread.save()
+			thread.save()
 			reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
 			reply.save()
 	

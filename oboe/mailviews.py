@@ -29,6 +29,7 @@ def thread(request, pk):
             user = request.user.userdata
             message = cleaned_data['message']
             reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
+            thread.save()
             reply.save()
     
     form = ReplyForm()	

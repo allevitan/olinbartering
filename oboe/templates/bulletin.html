@@ -94,7 +94,6 @@ $("#id_message").focus(function(){
 	    <input type="radio" name="visibility" value="Private" style="margin-top:-3px; margin-left:10px;" checked>Private
 	  </div>
 	  <h4>{{ user.get_full_name }}:</h4>
-	  <input type="hidden" name="next" value="{{ bulletin.get_absolute_url }}" />
 	  {{ form.message }}
 	</form>
 	{% for reply in replies %}
