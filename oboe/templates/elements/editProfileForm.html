@@ -1,26 +1,3 @@
-{% extends "base.html" %}
-
-{% block content %}
-
-{% block scripts %}
-<script src="/static/js/jquery.js"></script>
-
-<script>
-{% include "djangojs/center.js" with ident=".hero-unit" %}
-</script>
-
-<!--<script>
-{% include "djangojs/show.js" with identity=".inner_form" %}
-</script>-->
-
-{% endblock %}
-
-<div class="hero-unit more_space">
-
-<h2 style="text-align:center;"><b>Edit Profile</b></h2>
-
-<hr>
-
 <form action="" method="post" class="form-horizontal inner_form"> 
 	{% csrf_token %}
 
@@ -103,6 +80,3 @@
 		</div>
     </div>
 </form>
-</div>
-{% endblock %}
-

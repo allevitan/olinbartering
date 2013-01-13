@@ -34,6 +34,14 @@ h1, h2, h3, h4, h5, h6{
 	width:425px;
 }
 
+.more_space {
+	margin-top:0px;
+	margin-left:auto; 
+	margin-right:auto; 
+	text-align:center; 
+	width:940px;
+}
+
 .inner_form {
 	margin-left:auto; 
 	margin-right:auto; 

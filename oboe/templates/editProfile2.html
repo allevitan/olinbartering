@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+
+<script>
+
+{% include "djangojs/fill.js" with ident=".scrollbox" %}
+
+$(document).ready(function(){
+    $(".message").dotdotdot({
+        watch:true
+    });
+});
+
+$('#myid').click(function() {
+    var myvariable1 = {{ filter }};
+    var newPage = $("<div>"+myvariable1+"</div>");
+    $('body').append(newPage);
+});
+
+</script>
+
+{% endblock %}
+
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid show" id="contentbox">
+
+  <div class="page-header show" style="text-align:center;margin-bottom:5px">
+    <h1>
+       <small><strong>Edit Profile</strong></small>
+    </h1>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="btn-toolbar" style="position:relative;">
+	<h3 style="text-align:center;">General Information</h3>
+      </div>
+      <div class="hero-unit well-scroll" style="padding-bottom:50px;">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner" id="wantbox" style="padding-top:15px;padding-bottom:15px;">
+		{% include "elements/editProfileForm.html" %}
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <div class="span6">
+      <div class="btn-toolbar" style="position:relative;">
+	<h3 style="text-align:center;">Can You Help?</h3>
+      </div>
+      <div class="hero-unit well-scroll" style="padding-bottom:50px;">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner" id="helpbox" style="padding-top:15px;padding-bottom:15px;">
+	    {% include "elements/filters.html" with bulletins=helps %}
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

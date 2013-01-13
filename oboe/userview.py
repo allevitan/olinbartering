@@ -117,7 +117,7 @@ def editProfile(request):
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = EditProfileForm(initial = data)
 
-	return render(request, 'editProfile.html', {'form':form})
+	return render(request, 'editProfile2.html', {'form':form})
 
 
 def changePassword(request):

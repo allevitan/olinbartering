@@ -27,6 +27,7 @@ class EditProfileForm(forms.Form):
 	emailAddress = forms.EmailField()
 	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
+	addFilter = forms.CharField()
 
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())
