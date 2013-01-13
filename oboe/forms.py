@@ -4,7 +4,7 @@ from django import forms
 from django.db import models
 from django.forms import ModelForm
 from oboe import pathfinders, models
-from django.forms.widgets import SplitDateTimeWidget, SelectMultiple
+from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, Select
 from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
 
@@ -22,12 +22,21 @@ class RegistrationForm(forms.Form):
 	pic = forms.ImageField(required=False)
 
 class EditProfileForm(forms.Form):
+	
+	filters = Filter.objects.all()
+	helpFilters = sorted([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
+	wantFilters = sorted([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
 	first_name = forms.CharField(max_length=30)
 	last_name = forms.CharField(max_length=30)
 	emailAddress = forms.EmailField()
 	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
-	addFilter = forms.CharField()
+	
+	addWantFilter = forms.ChoiceField(choices=(wantFilters))
+	addHelpFilter = forms.ChoiceField(choices=(helpFilters))
+
+
+	
 
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())

@@ -1,50 +1,37 @@
 <form action="" method="post" class=""> 
 	{% csrf_token %}
-	
-	<div style="text-align:center;">
-		
-		<p style="margin-top:0px;margin-bottom:5px;"><strong>Add filters</strong></p>
-		<div class="input-append" style="margin-bottom:20px;">
-			{{ form.addFilter }}  
-			<input type="submit" value="+" class="btn btn-success"/>
-		</div>
-		
-	</div>
-
-	<div style="text-align:center;">
-
-
-
+	<div>
 		<div id="left">
-			<p style="margin-top:0px;margin-bottom:0px;"><strong>Want filters</strong></p>
-
-			<div class="input-append" style="visibility:hidden;height:0px;">
-				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
-				<button class="btn btn-danger" type="submit">-</button>
+			<h4 style="margin-top:0px;margin-bottom:0px;margin-left:88px"><strong>Want filters</strong></h4>
+			<hr style="margin-top:10px;margin-bottom:10px;">
+			<div class="input-prepend" style="margin-bottom:20px;">
+				<button class="btn btn-success" onclick="addWantFilter()" type="button">+</button>
+				{{ form.addWantFilter }} 
 			</div>
 
 
 		{% for filter in wantfilters %}
-			<div class="input-append" style="margin-bottom:5px;">
-				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
-				<button class="btn btn-danger" type="submit">-</button>
+			<div class="input-prepend" style="margin-bottom:5px;">
+				<button class="btn btn-danger" onclick="delWantFilter()" type="button">-</button>
+				<input style="background-color:#FBFBFB;text-align:left;" id="wantFilter" type="text" value="{{ filter.name }}" readonly>
 			</div>
 		{% endfor %}
 		</div>
 
 
 		<div id="right">
-			<p style="margin-top:0px;margin-bottom:0px"><strong>Help filters</strong></p>
-
-			<div class="input-append" style="visibility:hidden;height:0px;">
-				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
-				<button class="btn btn-danger" type="submit">-</button>
+			<h4 style="margin-top:0px;margin-bottom:0px;margin-left:61px;"><strong>Help filters</strong></h4>
+			<hr style="margin-top:10px;margin-bottom:10px;">
+			<div class="input-append" style="margin-bottom:20px;">
+				{{ form.addHelpFilter }}
+				<button class="btn btn-success" onclick="addHelpFilter()" type="button">+</button>
 			</div>
+
 
 		{% for filter in helpfilters %}
 			<div class="input-append" style="margin-bottom:5px;">
-				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
-				<button class="btn btn-danger" type="submit">-</button>
+				<input style="background-color:#FBFBFB;text-align:left;" id="helpFilter" type="text" value="{{ filter.name }}" readonly>
+				<button class="btn btn-danger" onclick="delHelpFilter()" type="button">-</button>
 			</div>
 		{% endfor %}
 		</div>

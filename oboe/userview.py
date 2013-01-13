@@ -114,8 +114,8 @@ def editProfile(request):
 		else:
 			user = request.user
 			userdata = user.userdata
-			helpfilters = [filter for filter in userdata.filters.all() if filter.helpfilter]
-			wantfilters = [filter for filter in userdata.filters.all() if not filter.helpfilter]
+			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = EditProfileForm(initial = data)
 
