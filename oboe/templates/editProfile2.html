@@ -7,10 +7,6 @@
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
 
 $(document).ready(function(){
-	$('.delFilter').click(function() {
-   		$(this).parent().remove();
-	});
-
 	 $('.addHelpFilter').click(function () { 
 		filterValue = $('#id_addHelpFilter').val();
 		$('.helpfilters').prepend(
@@ -21,6 +17,10 @@ $(document).ready(function(){
 		filterValue = $('#id_addWantFilter').val();  
 		$('.wantfilters').prepend(
 			'<div class="input-prepend" id="{{ filter.name }}"><button class="btn btn-danger delFilter" type="button">-</button><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly></div>');
+	});
+
+	$('.delFilter').live('click', function(e) {
+   		$(this).parent().remove();
 	});
 });
 
