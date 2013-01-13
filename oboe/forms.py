@@ -98,3 +98,5 @@ class selectBulletinForm(forms.Form):
 		super(selectBulletinForm, self).__init__(*args, **kwargs)
 		self.fields['bulletin'] = forms.ChoiceField(choices=(bulletins))
 
+class ReplyForm(forms.Form):
+	message = forms.CharField(widget=forms.Textarea())

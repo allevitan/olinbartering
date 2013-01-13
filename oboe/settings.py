@@ -175,7 +175,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'sorl.thumbnail',
-    'django.contrib.comments',
     'oboe',
 )
 

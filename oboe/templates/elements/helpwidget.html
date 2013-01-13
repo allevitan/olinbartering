@@ -1,5 +1,5 @@
 {% extends "elements/bulletinwidget.html" %}
 
 {% block extrainfo %}
-{{ bulletin.reply_count }} Responses
+{{ bulletin.reply_thread_set.count }} Response{{ bulletin.reply_thread_set.count|pluralize }}
 {% endblock %}

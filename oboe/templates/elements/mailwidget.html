@@ -1,0 +1,13 @@
+{% for thread in mail %}
+{% with thread.reply_set.all|dictsort:"timestamp"|last as latestreply %}
+<div class="mcon">
+  <div style="float:right;">{% if latestreply.sender == user.userdata %}to 
+    {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}{% else %}from {{ latestreply.sender }}{% endif %}</div>
+  <h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><small>about</small> {{ thread.bulletin.subject|title }}</h5>
+  <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> {{ latestreply.message }} </div>
+</div>
+{% endwith %}
+{% if not forloop.last %}
+<hr>
+{% endif %}
+{% endfor %}

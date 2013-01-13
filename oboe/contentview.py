@@ -7,7 +7,8 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
 from forms import BulletinForm, MissiveForm, MultiProfileDisplay
-from models import UserData, Missive, Filter, Bulletin
+from forms import ReplyForm
+from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
 from datetime import datetime
@@ -208,8 +209,33 @@ def newMissive(request):
 def viewBulletin(request, pk=-1, creator=''):
 	if pk > 0:
 		bulletin = Bulletin.objects.get(pk=pk)
-		return render(request, 'bulletin.html', {'bulletin':bulletin})
+		allreplies = Reply.objects.filter(thread__bulletin=bulletin)
+		replies= allreplies.filter(public=True).order_by("-timestamp")
+		privatecount = allreplies.filter(public=False).exclude(sender=bulletin.creator).count()
+	else: return render(request, '404.html', {})	
+	
 	#elif User.objects.filter():
 	#	bulletins = Bulletin.objects.filter(creator=request.user.userdata)
 	#	return render(request, 'userBulletins.html', {'bulletins':bulletins})
-	else: return render(request, '404.html', {});
+
+	if request.method == 'POST':
+		form = ReplyForm(request.POST)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			if request.POST['visibility'] == 'Public':
+				public = True
+			else: public = False
+			user = request.user.userdata
+			message = cleaned_data['message']
+			if allreplies.filter(sender=user).exists():
+				thread = (allreplies.filter(sender=user)[0]).thread
+			else:
+				thread = Reply_Thread.objects.create(bulletin=bulletin)
+				thread.users.add(user)
+				thread.users.add(bulletin.creator)
+				thread.save()
+			reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
+			reply.save()
+	
+	form = ReplyForm()	
+	return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form})
