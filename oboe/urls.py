@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.static import * 
 from django.conf import settings
-import homeview, contentview, userview, ajaxviews
+import homeview, contentview, userview, ajaxviews, mailviews
 
 admin.autodiscover()
 
@@ -33,6 +33,7 @@ urlpatterns = patterns('',
 	url(r'^people/$', contentview.people),
 	url(r'^selectBulletin/$', contentview.selectBulletin),
 	url(r'^editBulletin/$', contentview.editBulletin),
+    url(r'^mail/box/$', mailviews.mailbox),
 )
 
 urlpatterns += staticfiles_urlpatterns()

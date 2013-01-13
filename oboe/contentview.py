@@ -209,8 +209,9 @@ def newMissive(request):
 def viewBulletin(request, pk=-1, creator=''):
 	if pk > 0:
 		bulletin = Bulletin.objects.get(pk=pk)
-		replies = Reply.objects.filter(thread__bulletin=bulletin).filter(public=True).order_by("-timestamp")
-		privatecount = Reply.objects.filter(thread__bulletin=bulletin).filter(public=False).count()
+		allreplies = Reply.objects.filter(thread__bulletin=bulletin)
+		replies= allreplies.filter(public=True).order_by("-timestamp")
+		privatecount = allreplies.filter(public=False).exclude(sender=bulletin.creator).count()
 	else: return render(request, '404.html', {})	
 	
 	#elif User.objects.filter():
@@ -226,8 +227,8 @@ def viewBulletin(request, pk=-1, creator=''):
 			else: public = False
 			user = request.user.userdata
 			message = cleaned_data['message']
-			if replies.filter(sender=user).exists():
-				thread = (replies.filter(sender=user)[0]).thread
+			if allreplies.filter(sender=user).exists():
+				thread = (allreplies.filter(sender=user)[0]).thread
 			else:
 				thread = Reply_Thread.objects.create(bulletin=bulletin)
 				thread.users.add(user)

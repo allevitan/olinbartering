@@ -90,7 +90,8 @@ class Image(models.Model):
 class Reply_Thread(models.Model):
     users = models.ManyToManyField(UserData)
     bulletin = models.ForeignKey(Bulletin)
-    
+    update = models.DateTimeField(auto_now=True, auto_now_add=True)
+
     def __unicode__(self):
         return "%s" % bulletin.subject
 
@@ -103,4 +104,4 @@ class Reply(models.Model):
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
     
     def __unicode__(self):
-        return "%s" % message
+        return "%s" % self.message
