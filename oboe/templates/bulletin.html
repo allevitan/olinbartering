@@ -39,6 +39,7 @@ $("#id_message").focus(function(){
 {% block css %}
 {% include "djangocss/scroll.css" %}
 {% include "djangocss/replyform.css" %}
+{% include "djangocss/bulletinform.css" %}
 
 .faded{
     color:#909090;
@@ -56,7 +57,20 @@ $("#id_message").focus(function(){
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="bulletinbox">
       <div class="scrollbox-inner">
-	<h4 style="color:#404040;"><span class="faded">by</span> {{ bulletin.creator|title }} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
+	<h4 style="color:#404040;"><span class="faded">by</span> {% if bulletin.creator = user.userdata %}You{% else %}{{ bulletin.creator|title }}{% endif %} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
+
+	{% if bulletin.creator = user.userdata %}
+	<form action="/update/{{ bulletin.id }}/" method="POST">
+	  <input type="submit" value="Update" id="id_submit" >
+	  {% csrf_token %}
+	  {% if not bulletin.helpbulletin and not bulletin.free %}
+	  <div id="id_free"><input type="checkbox" name="free" value="true" style="margin-top:-3px;">Make Free</div>
+	  {% endif %}
+	  <h4>{% if bulletin.missive_set.all|length > 1 %}Update {{ bulletin.missive_set.all|length }}:{% else %}Update:{% endif %}</h4>
+	  {{ bulletinform.missive }}
+	</form>	
+	{% endif %}
+
 	<hr>
 	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
 	<h5>

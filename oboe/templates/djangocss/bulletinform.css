@@ -1,0 +1,22 @@
+#id_honeypot{
+    display:none;
+}
+
+#id_missive{
+    width:100%;
+    padding:0px;
+    height:60px;
+    border-radius:0px;
+    resize:none;
+    margin:0px;
+}
+
+#id_submit{
+    float:right;
+}
+
+#id_free{
+    float:right;
+    margin-right:10px;
+    margin-top:2px;
+}

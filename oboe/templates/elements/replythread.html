@@ -1,8 +1,8 @@
 {% if thread %}
 <h3 style="float:right; color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h3>
-<h3>{{ thread.bulletin.subject }}</h3>
+<a href="/bulletin/{{ thread.bulletin.id }}"><h3>{{ thread.bulletin.subject }}</h3></a>
 <hr>
-<form id="replyform" action="{{ thread.pk }}" method="POST">
+<form id="replyform" action="{{ thread.id }}" method="POST">
   <input type="submit" value="Reply" id="id_submit" >
   {% csrf_token %}
   <div id="id_visibility">

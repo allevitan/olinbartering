@@ -7,7 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
 from forms import BulletinForm, MissiveForm, MultiProfileDisplay
-from forms import ReplyForm
+from forms import ReplyForm, UpdateBulletinForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
@@ -206,7 +206,7 @@ def newMissive(request):
 			return HttpResponseRedirect('/login')
 	return render(request, 'newMissive.html', {'form':form})
 
-def viewBulletin(request, pk=-1, creator=''):
+def viewBulletin(request, pk):
 	if pk > 0:
 		bulletin = Bulletin.objects.get(pk=pk)
 		allreplies = Reply.objects.filter(thread__bulletin=bulletin)
@@ -214,10 +214,6 @@ def viewBulletin(request, pk=-1, creator=''):
 		privatecount = allreplies.filter(public=False).exclude(sender=bulletin.creator).count()
 	else: return render(request, '404.html', {})	
 	
-	#elif User.objects.filter():
-	#	bulletins = Bulletin.objects.filter(creator=request.user.userdata)
-	#	return render(request, 'userBulletins.html', {'bulletins':bulletins})
-
 	if request.method == 'POST':
 		form = ReplyForm(request.POST)
 		if form.is_valid():
@@ -238,4 +234,25 @@ def viewBulletin(request, pk=-1, creator=''):
 			reply.save()
 	
 	form = ReplyForm()	
-	return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form})
+	if request.user.userdata == bulletin.creator:
+		bulletinform = UpdateBulletinForm()
+	else: bulletinform = {}
+	return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform})
+
+def updateBulletin(request, pk):
+	if pk > 0 and request.user.is_authenticated() and request.method == 'POST':
+		bulletin = Bulletin.objects.get(pk=pk)
+	else: return HttpResponseRedirect('/home/')
+	if request.user.userdata == bulletin.creator:
+		form = UpdateBulletinForm(request.POST)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			message = cleaned_data['missive']
+			missive = Missive.objects.create(message=message,bulletin=bulletin)
+			if request.POST['free']:
+				bulletin.free = "true"
+			bulletin.save()
+			missive.save()
+		else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
+	else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
+	return HttpResponseRedirect('/home/');

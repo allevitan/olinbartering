@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^mail/$', mailviews.base),
     url(r'^mail/box/$', mailviews.mailbox),
     url(r'^mail/thread/(?P<pk>\d+)/$', mailviews.thread),
+    url(r'^update/(?P<pk>\d+)/$',contentview.updateBulletin),
 )
 
 urlpatterns += staticfiles_urlpatterns()
