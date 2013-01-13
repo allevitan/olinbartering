@@ -7,15 +7,21 @@
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
 
 $(document).ready(function(){
-    $(".message").dotdotdot({
-        watch:true
-    });
-});
+	$('.delFilter').click(function() {
+   		$(this).parent().remove();
+	});
 
-$('#myid').click(function() {
-    var myvariable1 = {{ filter }};
-    var newPage = $("<div>"+myvariable1+"</div>");
-    $('body').append(newPage);
+	 $('.addHelpFilter').click(function () { 
+		filterValue = $('#id_addHelpFilter').val();
+		$('.helpfilters').prepend(
+			'<div class="input-append" id="{{ filter.name }}"><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly><button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button></div>');
+	});     
+         
+	$('.addWantFilter').click(function () { 
+		filterValue = $('#id_addWantFilter').val();  
+		$('.wantfilters').prepend(
+			'<div class="input-prepend" id="{{ filter.name }}"><button class="btn btn-danger delFilter" type="button">-</button><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly></div>');
+	});
 });
 
 </script>
@@ -25,6 +31,16 @@ $('#myid').click(function() {
 
 {% block css %}
 
+.custom_margin { margin-bottom:20px; }
+.custom_height { height:500px; }
+.custom_padding_general { padding-top:50px;padding-bottom:50px;min-width:525px; }
+.custom_padding_filters { padding-right:20px; padding-left:20px;min-width:525px; }
+.centered_margin { text-align:center;margin-bottom:5px; }
+.filter_padding { padding-top:8px;padding-bottom:15px; }
+.relative { position:relative; }
+.tight_hr { margin-top:10px;margin-bottom:10px; }
+.helpTitle { margin-top:0px;margin-bottom:0px;margin-left:61px; }
+.wantTitle { margin-top:0px;margin-bottom:0px;margin-left:88px; } 
 #left { float:left }
 #right { float:right }
 -webkit-text-fill-color:#880000;
@@ -35,7 +51,7 @@ $('#myid').click(function() {
 
 <div class="container-fluid show" id="contentbox">
 
-  <div class="page-header show" style="text-align:center;margin-bottom:5px">
+  <div class="page-header show centered_margin">
     <h1>
        <small><strong>Edit Profile</strong></small>
     </h1>
@@ -46,9 +62,9 @@ $('#myid').click(function() {
       <div class="btn-toolbar" style="position:relative;">
 	<h3 style="text-align:center;">General Information</h3>
       </div>
-      <div class="well well-large well-scroll" style="height:500px;">
+      <div class="well well-large well-scroll custom_height">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="wantbox" style="padding-top:50px;padding-bottom:50px;min-width:525px">
+	  <div class="scrollbox-inner custom_padding_general" id="wantbox" >
 		{% include "elements/editProfileForm.html" %}
 	  </div>
 	</div>
@@ -56,12 +72,12 @@ $('#myid').click(function() {
     </div>
 
     <div class="span6">
-      <div class="btn-toolbar" style="position:relative;">
+      <div class="btn-toolbar relative">
 	<h3 style="text-align:center;">Manage Filters</h3>
       </div>
-      <div class="well well-large well-scroll" style="height:500px;padding-right:20px; padding-left:20px;min-width:525px">
+      <div class="well well-large well-scroll custom_height custom_padding_filters">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="helpbox" style="padding-top:8px;padding-bottom:15px;">
+	  <div class="scrollbox-inner filter_padding" id="helpbox">
 	    {% include "elements/filters.html" with bulletins=helps %}
 	  </div>
 	</div>

@@ -2,38 +2,40 @@
 	{% csrf_token %}
 	<div>
 		<div id="left">
-			<h4 style="margin-top:0px;margin-bottom:0px;margin-left:88px"><strong>Want filters</strong></h4>
-			<hr style="margin-top:10px;margin-bottom:10px;">
-			<div class="input-prepend" style="margin-bottom:20px;">
-				<button class="btn btn-success" onclick="addWantFilter()" type="button">+</button>
+			<h4 class="wantTitle"><strong>Want filters</strong></h4>
+			<hr class="tight_hr">
+			<div class="input-prepend custom_margin">
+				<button class="btn btn-success addWantFilter" type="button">+</button>
 				{{ form.addWantFilter }} 
 			</div>
 
-
+		<div class="wantfilters">
 		{% for filter in wantfilters %}
-			<div class="input-prepend" style="margin-bottom:5px;">
-				<button class="btn btn-danger" onclick="delWantFilter()" type="button">-</button>
-				<input style="background-color:#FBFBFB;text-align:left;" id="wantFilter" type="text" value="{{ filter.name }}" readonly>
+			<div class="input-prepend" id="{{ filter.name }}">
+				<button class="btn btn-danger delFilter" type="button">-</button>
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
 			</div>
 		{% endfor %}
+		</div>
 		</div>
 
 
 		<div id="right">
-			<h4 style="margin-top:0px;margin-bottom:0px;margin-left:61px;"><strong>Help filters</strong></h4>
-			<hr style="margin-top:10px;margin-bottom:10px;">
-			<div class="input-append" style="margin-bottom:20px;">
+			<h4 class="helpTitle"><strong>Help filters</strong></h4>
+			<hr class="tight_hr">
+			<div class="input-append custom_margin">
 				{{ form.addHelpFilter }}
-				<button class="btn btn-success" onclick="addHelpFilter()" type="button">+</button>
+				<button class="btn btn-success addHelpFilter" type="button">+</button>
 			</div>
 
-
+		<div class="helpfilters">
 		{% for filter in helpfilters %}
-			<div class="input-append" style="margin-bottom:5px;">
-				<input style="background-color:#FBFBFB;text-align:left;" id="helpFilter" type="text" value="{{ filter.name }}" readonly>
-				<button class="btn btn-danger" onclick="delHelpFilter()" type="button">-</button>
+			<div class="input-append" id="{{ filter.name }}">
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+				<button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
 			</div>
 		{% endfor %}
+		</div>
 		</div>
 
 
