@@ -25,6 +25,9 @@ $('#myid').click(function() {
 
 {% block css %}
 
+#left { float:left }
+#right { float:right }
+
 {% endblock %}
 
 {% block content %}
@@ -53,11 +56,11 @@ $('#myid').click(function() {
 
     <div class="span6">
       <div class="btn-toolbar" style="position:relative;">
-	<h3 style="text-align:center;">Can You Help?</h3>
+	<h3 style="text-align:center;">Filters</h3>
       </div>
-      <div class="hero-unit well-scroll" style="padding-bottom:50px;">
+      <div class="hero-unit well-scroll" style="padding-bottom:392px;padding-right:20px; padding-left:20px;">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="helpbox" style="padding-top:15px;padding-bottom:15px;">
+	  <div class="scrollbox-inner" id="helpbox" style="padding-top:8px;padding-bottom:15px;">
 	    {% include "elements/filters.html" with bulletins=helps %}
 	  </div>
 	</div>

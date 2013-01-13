@@ -1,15 +1,56 @@
-<form action="" method="post" class="form-horizontal"> 
+<form action="" method="post" class=""> 
 	{% csrf_token %}
 	
-	{% if form.addFilter.errors %}
-    <div class="control-group error">
-	{% else %}
-	<div class="control-group">
-	{% endif %}
-        <label class="control-label" for="id_addFilter">Add Filter:</label>
-		<div class="controls">
+	<div style="text-align:center;">
+		
+		<p style="margin-top:0px;margin-bottom:5px;"><strong>Add filters</strong></p>
+		<div class="input-append" style="margin-bottom:20px;">
 			{{ form.addFilter }}  
-			<input type="submit" value="Save" class="btn btn-success"/>
+			<input type="submit" value="+" class="btn btn-success"/>
 		</div>
-    </div>
+		
+	</div>
+
+	<div style="text-align:center;">
+
+
+
+		<div id="left">
+			<p style="margin-top:0px;margin-bottom:0px;"><strong>Want filters</strong></p>
+
+			<div class="input-append" style="visibility:hidden;height:0px;">
+				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
+				<button class="btn btn-danger" type="submit">-</button>
+			</div>
+
+
+		{% for filter in wantfilters %}
+			<div class="input-append" style="margin-bottom:5px;">
+				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
+				<button class="btn btn-danger" type="submit">-</button>
+			</div>
+		{% endfor %}
+		</div>
+
+
+		<div id="right">
+			<p style="margin-top:0px;margin-bottom:0px"><strong>Help filters</strong></p>
+
+			<div class="input-append" style="visibility:hidden;height:0px;">
+				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
+				<button class="btn btn-danger" type="submit">-</button>
+			</div>
+
+		{% for filter in helpfilters %}
+			<div class="input-append" style="margin-bottom:5px;">
+				<input id="appendedInputButton" type="text" value="{{ filter.name }}">
+				<button class="btn btn-danger" type="submit">-</button>
+			</div>
+		{% endfor %}
+		</div>
+
+
+	</div>
+
+	
 </form>

@@ -114,10 +114,12 @@ def editProfile(request):
 		else:
 			user = request.user
 			userdata = user.userdata
+			helpfilters = [filter for filter in userdata.filters.all() if filter.helpfilter]
+			wantfilters = [filter for filter in userdata.filters.all() if not filter.helpfilter]
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = EditProfileForm(initial = data)
 
-	return render(request, 'editProfile2.html', {'form':form})
+	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 
 def changePassword(request):
