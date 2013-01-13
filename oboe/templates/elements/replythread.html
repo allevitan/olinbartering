@@ -1,0 +1,28 @@
+{% if thread %}
+<h3 style="float:right; color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h3>
+<h3>{{ thread.bulletin.subject }}</h3>
+<hr>
+<form id="replyform" action="{{ thread.pk }}" method="POST">
+  <input type="submit" value="Reply" id="id_submit" >
+  {% csrf_token %}
+  <div id="id_visibility">
+    <input type="radio" name="visibility" value="Public" style="margin-top:-3px;">Public
+    <input type="radio" name="visibility" value="Private" style="margin-top:-3px; margin-left:10px;" checked>Private
+  </div>
+  <h4>{{ user.get_full_name }}:</h4>
+  {{ form.message }}
+</form>
+<hr>
+{% with replies=thread.reply_set.all|dictsortreversed:"timestamp" %}
+{% for reply in replies %}
+<div style="float:right;">{{ reply.timestamp }}</div>
+<h5>{% if reply.public %}<span style="color:#606060;">Public: </span>{% endif %}{{ reply.sender }}</h5>
+<div class="reply">
+  {{ reply.message }}
+</div>
+{% if not forloop.last %}<hr>{% endif %}
+{% endfor %}
+{% endwith %}
+{% else %}
+<h1>Hey, that's not your mail!</h1>
+{% endif %}
