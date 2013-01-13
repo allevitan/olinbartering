@@ -23,17 +23,33 @@ class RegistrationForm(forms.Form):
 
 class EditProfileForm(forms.Form):
 	
-	filters = Filter.objects.all()
-	helpFilters = sorted([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
-	wantFilters = sorted([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
+	def genUserFilters(self):
+		userFilters = self._user.userdata.filters.all()
+		userHelpFilters = set([(userHelpFilter.name, userHelpFilter.name) for userHelpFilter in userFilters if userHelpFilter.helpfilter])
+		userWantFilters = set([(userWantFilter.name, userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
+		filters = Filter.objects.all()
+		helpFilters = set([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
+		helpFilters = helpFilters-userHelpFilters
+		wantFilters = set([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
+		wantFilters = wantFilters - userWantFilters
+		return helpFilters, wantFilters
+		
+		
+
+	def __init__(self, user=None, *args, **kwargs):
+		super(EditProfileForm, self).__init__(*args, **kwargs)
+		self._user = user
+		helpFilters, wantFilters = self.genUserFilters()
+		self.fields['addWantFilter'] = forms.ChoiceField(choices=(wantFilters))
+		self.fields['addHelpFilter'] = forms.ChoiceField(choices=(helpFilters))
+		
 	first_name = forms.CharField(max_length=30)
 	last_name = forms.CharField(max_length=30)
 	emailAddress = forms.EmailField()
 	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
 	
-	addWantFilter = forms.ChoiceField(choices=(wantFilters))
-	addHelpFilter = forms.ChoiceField(choices=(helpFilters))
+
 
 
 	

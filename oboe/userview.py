@@ -117,7 +117,7 @@ def editProfile(request):
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = EditProfileForm(initial = data)
+			form = EditProfileForm(initial = data, user = user)
 
 	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
