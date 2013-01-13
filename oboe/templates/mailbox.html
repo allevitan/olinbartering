@@ -12,6 +12,24 @@
 
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
 
+function loadthread(pk){
+  var URI = "/mail/thread/" + pk + "/";
+  $("#bigbox").load(URI);
+}
+
+$(document).ready(function(){
+  loadthread({{ mail.0.id }});
+});
+
+$("#replyform").live("submit", function(){
+  $.post("/mail/thread/" + $("#replyform").attr("action"), $("#replyform").serialize(), function(data){
+    $("#bigbox").html(data);
+    $('<span id="tofrom' + $("#replyform").attr("action") + '">to</span>').replaceAll("#tofrom" + $("#replyform").attr("action"));
+  });
+  return false;
+});
+
+
 </script>
 {% endblock %}
 
@@ -19,6 +37,7 @@
 {% block css %}
 
 {% include "djangocss/scroll.css" %}
+{% include "djangocss/replyform.css" %}
 
 {% endblock %}
 
@@ -33,8 +52,8 @@
     <div class="span4">
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="unresolvedbox" style="padding-top:15px;padding-bottom:15px;">
-	    {% include "elements/mailwidget.html" with mail=mail %}
+	  <div class="scrollbox-inner" id="smallbox" style="padding-top:15px;padding-bottom:15px;">
+	    {% include "elements/mailwidget.html" %}
 	  </div>
 	</div>
       </div>
@@ -42,7 +61,7 @@
     <div class="span8">
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="resolvedbox" style="padding-top:15px;padding-bottom:15px;">
+	  <div class="scrollbox-inner" id="bigbox" style="padding-top:15px;padding-bottom:15px;">
 	  </div>
 	</div>
       </div>

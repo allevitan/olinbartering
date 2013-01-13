@@ -38,29 +38,7 @@ $("#id_message").focus(function(){
 
 {% block css %}
 {% include "djangocss/scroll.css" %}
-
-#id_honeypot{
-    display:none;
-}
-
-#id_message{
-    width:100%;
-    padding:0px;
-    height:60px;
-    border-radius:0px;
-    resize:none;
-    margin:0px;
-}
-
-#id_visibility{
-    float:right;
-    margin-right:10px;
-    margin-top:2px;
-}
-
-#id_submit{
-    float:right;
-}
+{% include "djangocss/replyform.css" %}
 
 .faded{
     color:#909090;
