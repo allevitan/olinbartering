@@ -70,9 +70,10 @@ class EditFilterForm(forms.Form):
 		wantFilters = wantFilters - userWantFilters
 		return helpFilters, wantFilters
 		
-	def __init__(self, user=None, *args, **kwargs):
+	def __init__(self, user, *args, **kwargs):
 		super(EditFilterForm, self).__init__(*args, **kwargs)
 		self._user = user
+		print user
 		helpFilters, wantFilters = self.genUserFilters()
 		self.fields['addWantFilter'] = forms.ChoiceField(choices=(wantFilters))
 		self.fields['addHelpFilter'] = forms.ChoiceField(choices=(helpFilters))
