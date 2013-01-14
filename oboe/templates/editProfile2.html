@@ -9,8 +9,6 @@
 $(document).ready(function(){
 	 $('.addHelpFilter').live('click', function () { 
 		filterValue = $('#id_addHelpFilter').val();
-		$('.helpfilters').prepend(
-			'<div class="input-append" id="{{ filter.name }}"><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly><button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button></div>');
 		$.post('/elements/edit_filters/help/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});
@@ -18,8 +16,6 @@ $(document).ready(function(){
          
 	$('.addWantFilter').live('click', function () { 
 		filterValue = $('#id_addWantFilter').val();  
-		$('.wantfilters').prepend(
-			'<div class="input-prepend" id="{{ filter.name }}"><button class="btn btn-danger delFilter" type="button">-</button><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly></div>');
 		$.post('/elements/edit_filters/want/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});
