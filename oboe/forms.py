@@ -31,7 +31,7 @@ class EditProfileForm(forms.Form):
 		userWantFilters = set([(userWantFilter.name, userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
 		filters = Filter.objects.all()
 		helpFilters = set([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
-		helpFilters = helpFilters-userHelpFilters
+		helpFilters = helpFilters - userHelpFilters
 		wantFilters = set([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
 		wantFilters = wantFilters - userWantFilters
 		return helpFilters, wantFilters

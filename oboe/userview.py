@@ -135,12 +135,15 @@ def editUserProfile(request):
 def editFilters(request, help=False, delete=False):	
 	if request.user.is_authenticated():
 		user = request.user
+		"""for field in [u'addHelpFilter', u'addWantFilter']:
+			if field not in request.POST:
+				request.POST[field] = 0
+			print field, field in request.POST"""
 		form = EditFilterForm(user, request.POST)
 		if form.is_valid():
 			cleaned_data = form.clean()
 			user = request.user
 			userdata = user.userdata
-			print cleaned_data
 			if help:
 				userdata.filters.add(Filter.objects.get(name=cleaned_data['addHelpFilter'], helpfilter=True))
 			elif not delete:
