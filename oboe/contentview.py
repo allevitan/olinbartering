@@ -249,7 +249,7 @@ def updateBulletin(request, pk):
 			cleaned_data = form.clean()
 			message = cleaned_data['missive']
 			missive = Missive.objects.create(message=message,bulletin=bulletin)
-			if request.POST['free']:
+			if request.POST.get('free',''):
 				bulletin.free = "true"
 			bulletin.save()
 			missive.save()
