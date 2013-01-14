@@ -97,8 +97,8 @@ def editProfile(request):
 	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 def editUserProfile(request):	
-	if request.method == 'POST':
-		form = EditProfileForm(request.POST, request.FILES)
+	if request.user.is_authenticated():
+		form = UserProfileForm(request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
 			first_name = cleaned_data['first_name'].strip()
@@ -108,29 +108,23 @@ def editUserProfile(request):
 			pic = request.FILES.get('pic','')
 			user = User.objects.get(username = request.user)
 			userdata = user.userdata
-			if first_name.strip():
-				user.first_name = first_name
-			if last_name.strip():
-				user.last_name = last_name
-			if email.strip():
-				user.email = email
-			if dorm.strip():
-				userdata.dorm = dorm
+			user.first_name = first_name
+			user.last_name = last_name
+			user.email = email
+			userdata.dorm = dorm
 			if pic:
 				userdata.pic = pic
 			user.save()
 			userdata.save()
 			return render(request, 'editProfileForm.html', {'form':form})
-	else:
-		if not request.user.is_authenticated():
-			return HttpResponseRedirect('/login')
 		else:
 			user = request.user
 			userdata = user.userdata
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = UserProfileForm(initial = data)
+			form = EditProfileForm(initial = data, user=user)
+	else:
+		return HttpResponseRedirect('/login')
 
-	return render(request, 'editProfileForm.html', {'form':form})
 
 def editFilters(request):	
 	if request.method == 'POST':

@@ -23,11 +23,11 @@ $(document).ready(function(){
 
 	$('.delFilter').live('click', function(e) {
    		$(this).parent().remove();
-		$('.filterbox').load('/elements/edit_filters');
+		$('.filterbox').load('/elements/edit_filters/');
 	});
 
 	$('.editProfile').live('click', function(e) {
-		$('.generalbox').load('/elements/general_info', function() {});
+		$('.generalbox').load('/elements/general_info/', function() {});
 	});
 
 });
