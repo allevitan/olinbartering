@@ -84,6 +84,19 @@ def register(request):
 	return render(request, 'registration.html', {'form':form})
 
 def editProfile(request):	
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/login')
+	else:
+		user = request.user
+		userdata = user.userdata
+		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+		form = EditProfileForm(initial = data, user = user)
+
+	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+
+def editUserProfile(request):	
 	if request.method == 'POST':
 		form = EditProfileForm(request.POST, request.FILES)
 		if form.is_valid():
@@ -107,7 +120,31 @@ def editProfile(request):
 				userdata.pic = pic
 			user.save()
 			userdata.save()
-			return HttpResponseRedirect('/')
+			return render(request, 'editProfileForm.html', {'form':form})
+	else:
+		if not request.user.is_authenticated():
+			return HttpResponseRedirect('/login')
+		else:
+			user = request.user
+			userdata = user.userdata
+			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+			form = UserProfileForm(initial = data)
+
+	return render(request, 'editProfileForm.html', {'form':form})
+
+def editFilters(request):	
+	if request.method == 'POST':
+		form = EditProfileForm(request.POST, request.FILES)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			user = request.user
+			userdata = user.userdata
+			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+			user.save()
+			userdata.save()
+			form = EditFilterForm(user = user)
+			render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 	else:
 		if not request.user.is_authenticated():
 			return HttpResponseRedirect('/login')
@@ -116,10 +153,10 @@ def editProfile(request):
 			userdata = user.userdata
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
-			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = EditProfileForm(initial = data, user = user)
+			form = EditFilterForm(user = user)
 
-	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+	return render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+
 
 
 def changePassword(request):
