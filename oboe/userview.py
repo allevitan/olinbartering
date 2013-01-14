@@ -12,6 +12,7 @@ from forms import PasswordResetForm, BulletinForm, MissiveForm
 from models import UserData, Missive, Filter, Bulletin
 from django.core.mail import send_mail
 from passgen import generate_password
+from django.views.decorators.csrf import csrf_exempt
 
 def login(request): 
 	if request.method == 'POST':  #check to see if form has been submitted
@@ -97,6 +98,7 @@ def editProfile(request):
 
 	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
+@csrf_exempt
 def editUserProfile(request):	
 	if request.user.is_authenticated():
 		form = UserProfileForm(request.POST, request.FILES)
@@ -117,19 +119,21 @@ def editUserProfile(request):
 				userdata.pic = pic
 			user.save()
 			userdata.save()
-			return render(request, 'editProfileForm.html', {'form':form})
-		else:
+			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+			form = UserProfileForm(initial=data)
+			return render(request, 'elements/editProfileForm.html', {'form':form})
+		else: 
 			user = request.user
 			userdata = user.userdata
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = EditProfileForm(initial = data, user=user)
-			return render(request, 'editProfileForm.html', {'form':form})
+			return render(request, 'elements/editProfileForm.html', {'form':form})
 	else:
 		return HttpResponseRedirect('/login')
 
-
+@csrf_exempt
 def editFilters(request):	
-	if request.method == 'POST':
+	if request.user.is_authenticated():
 		form = EditProfileForm(request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
@@ -141,18 +145,16 @@ def editFilters(request):
 			userdata.save()
 			form = EditFilterForm(user = user)
 			render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
-	else:
-		if not request.user.is_authenticated():
-			return HttpResponseRedirect('/login')
 		else:
 			user = request.user
 			userdata = user.userdata
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			form = EditFilterForm(user = user)
+			render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
-	return render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
-
+	else:
+			return HttpResponseRedirect('/login')
 
 
 def changePassword(request):

@@ -26,8 +26,10 @@ $(document).ready(function(){
 		$('.filterbox').load('/elements/edit_filters/');
 	});
 
-	$('.editProfile').live('click', function(e) {
-		$('.generalbox').load('/elements/general_info/');
+	$('.editProfile').live('click', function() {
+		$.post('/elements/general_info/', $('.epf').serialize(), function(data){
+		 $('.epf').html(data)
+		});
 	});
 });
 

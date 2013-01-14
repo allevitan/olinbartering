@@ -8,6 +8,8 @@ from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, Select
 from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
 
+
+
 class LoginForm(forms.Form):
 	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'first.last'}))
 	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
