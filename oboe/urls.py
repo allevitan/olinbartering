@@ -37,6 +37,7 @@ urlpatterns = patterns('',
 	url(r'^elements/general_info/$', userview.editUserProfile),
 	url(r'^elements/edit_filters/want/$', userview.editWantFilters),
 	url(r'^elements/edit_filters/help/$', userview.editHelpFilters),
+	url(r'^elements/edit_filters/del/$', userview.delFilters),
 )
 
 urlpatterns += staticfiles_urlpatterns()
