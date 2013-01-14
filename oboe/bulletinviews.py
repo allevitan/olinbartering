@@ -22,23 +22,23 @@ def create(request):
             location = data['hiddenloc']
             
             if location not in ["NA","EH","WH","AC","CC","MH","LP"]:
-                errors.append("Error: Not a real location")
+                errors.append("that's not a real location")
             
             if data['hiddentype'] == "Help":
                 helpbulletin = True
                 try: tag = Filter.objects.filter(helpfilter=True).get(name=data['tag'])
-                except: errors.append("Error: Not a help tag")
+                except: errors.append("that tag isn't a help tag")
             elif data['hiddentype'] == "Want":
                 helpbulletin = False
                 try: tag = Filter.objects.filter(helpfilter=False).get(name=data['tag'])
-                except: errors.append("Error: Not a want tag")
-            else: errors.append("Error: Not a type of bulletin")
+                except: errors.append("that tag isn't a want tag")
+            else: errors.append("that's not a type of bulletin!")
 
             if data['hiddenprice'] == "Free":
                 free = True
             elif data['hiddenprice'] == "Cheap":
                 free = False
-            else: errors.append("Error: Not a valid price")            
+            else: errors.append("please enter a valid price.")            
             
             message = data['missive']
             
@@ -49,6 +49,13 @@ def create(request):
                 missive.save()
                 return HttpResponseRedirect("/home/")
             
+        else:
+            if not request.POST.get('subject',''):
+                errors.append('please enter a subject.')
+            if not request.POST.get('missive',''):
+                errors.append('please enter a message.')
+            if not request.POST.get('tag',''):
+                errors.append('please enter a tag.')
     else: form = CreateBulletinForm()
     print errors
     helptags = Filter.objects.filter(helpfilter=True)
