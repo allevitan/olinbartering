@@ -66,6 +66,10 @@ $("#id_tag").typeahead({
   <div class="well well-large well-scroll">
     <div class="scrollbox">
       <div class="scrollbox-inner">
+	<div class="alert alert-error">
+	  <strong>Error:</strong>{% for error in errors %} {% if forloop.first %}{{ error|capfirst }}{% else %}{{ error }}{% endif %}{% if not forloop.last %} Also,{% endif %}{% endfor %}
+
+	</div>
 	<form style="margin-bottom:-10px;" action="" method="post" enctype="multipart/form-data">
 	  {% csrf_token %}
 	  {{ form.hiddentype }}
