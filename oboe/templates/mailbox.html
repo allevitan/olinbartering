@@ -22,7 +22,7 @@ $(document).ready(function(){
 });
 
 $("#replyform").live("submit", function(){
-  $.post("/mail/thread/" + $("#replyform").attr("action"), $("#replyform").serialize(), function(data){
+  $.post("/mail/thread/" + $("#replyform").attr("action") + "/", $("#replyform").serialize(), function(data){
     $("#bigbox").html(data);
     $('<span id="tofrom' + $("#replyform").attr("action") + '">to</span>').replaceAll("#tofrom" + $("#replyform").attr("action"));
   });
