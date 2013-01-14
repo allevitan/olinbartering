@@ -11,17 +11,25 @@ $(document).ready(function(){
 		filterValue = $('#id_addHelpFilter').val();
 		$('.helpfilters').prepend(
 			'<div class="input-append" id="{{ filter.name }}"><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly><button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button></div>');
+		$('.filterbox').load('/elements/edit_filters');
 	});     
          
 	$('.addWantFilter').click(function () { 
 		filterValue = $('#id_addWantFilter').val();  
 		$('.wantfilters').prepend(
 			'<div class="input-prepend" id="{{ filter.name }}"><button class="btn btn-danger delFilter" type="button">-</button><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly></div>');
+		$('.filterbox').load('/elements/edit_filters');
 	});
 
 	$('.delFilter').live('click', function(e) {
    		$(this).parent().remove();
+		$('.filterbox').load('/elements/edit_filters/');
 	});
+
+	$('.editProfile').live('click', function(e) {
+		$('.generalbox').load('/elements/general_info/', function() {});
+	});
+
 });
 
 </script>
@@ -64,7 +72,7 @@ $(document).ready(function(){
       </div>
       <div class="well well-large well-scroll custom_height">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner custom_padding_general" id="wantbox" >
+	  <div class="scrollbox-inner custom_padding_general generalbox" id="wantbox" >
 		{% include "elements/editProfileForm.html" %}
 	  </div>
 	</div>
@@ -77,8 +85,8 @@ $(document).ready(function(){
       </div>
       <div class="well well-large well-scroll custom_height custom_padding_filters">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner filter_padding" id="helpbox">
-	    {% include "elements/filters.html" with bulletins=helps %}
+	  <div class="scrollbox-inner filter_padding filterbox" id="helpbox">
+	    {% include "elements/filters.html" %}
 	  </div>
 	</div>
       </div>
