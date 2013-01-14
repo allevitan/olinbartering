@@ -132,30 +132,44 @@ def editUserProfile(request):
 		return HttpResponseRedirect('/login')
 
 @csrf_exempt
-def editFilters(request):	
+def editFilters(request, help):	
 	if request.user.is_authenticated():
-		form = EditProfileForm(request.POST, request.FILES)
+		user = request.user
+		print request.POST
+		form = EditFilterForm(user, request.POST)
 		if form.is_valid():
 			cleaned_data = form.clean()
 			user = request.user
 			userdata = user.userdata
+			print cleaned_data
+			if help:
+				userdata.filters.add(Filter.objects.get(name=cleaned_data['addHelpFilter'], helpfilter=True))
+			else:
+				userdata.filters.add(Filter.objects.get(name=cleaned_data['addWantFilter'], helpfilter=False))
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			user.save()
 			userdata.save()
 			form = EditFilterForm(user = user)
-			render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 		else:
 			user = request.user
 			userdata = user.userdata
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			form = EditFilterForm(user = user)
-			render(request, 'filter.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 	else:
 			return HttpResponseRedirect('/login')
 
+def editWantFilters(request):
+	help = False
+	return editFilters(request, help)
+
+def editHelpFilters(request):
+	help = True
+	return editFilters(request, help)
 
 def changePassword(request):
 	if request.method == 'POST':

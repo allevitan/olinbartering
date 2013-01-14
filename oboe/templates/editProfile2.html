@@ -7,28 +7,34 @@
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
 
 $(document).ready(function(){
-	 $('.addHelpFilter').click(function () { 
+	 $('.addHelpFilter').live('click', function () { 
 		filterValue = $('#id_addHelpFilter').val();
 		$('.helpfilters').prepend(
 			'<div class="input-append" id="{{ filter.name }}"><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly><button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button></div>');
-		$('.filterbox').load('/elements/edit_filters/');
+		$.post('/elements/edit_filters/help/', $('.eff').serialize(), function(data){
+			$('.eff').html(data)
+		});
 	});     
          
-	$('.addWantFilter').click(function () { 
+	$('.addWantFilter').live('click', function () { 
 		filterValue = $('#id_addWantFilter').val();  
 		$('.wantfilters').prepend(
 			'<div class="input-prepend" id="{{ filter.name }}"><button class="btn btn-danger delFilter" type="button">-</button><input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value=' + filterValue + ' readonly></div>');
-		$('.filterbox').load('/elements/edit_filters/');
+		$.post('/elements/edit_filters/want/', $('.eff').serialize(), function(data){
+			$('.eff').html(data)
+		});
 	});
 
-	$('.delFilter').live('click', function(e) {
+	$('.delFilter').live('click', function() {
    		$(this).parent().remove();
-		$('.filterbox').load('/elements/edit_filters/');
+		$.post('/elements/edit_filters/', $('.eff').serialize(), function(data){
+			$('.eff').html(data)
+		});
 	});
 
 	$('.editProfile').live('click', function() {
 		$.post('/elements/general_info/', $('.epf').serialize(), function(data){
-		 $('.epf').html(data)
+			$('.epf').html(data)
 		});
 	});
 });
