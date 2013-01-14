@@ -7,6 +7,44 @@
 {% if not webkit %}
 {% include "djangojs/scroll.js" %}
 {% endif %}
+
+
+$("#id_type").button();
+
+$("#id_type").click(function(){
+    var btn = $(this);
+    var name = $(this).attr('data-toggle-name')
+    if(btn.attr("value") == 'Help!'){
+        $("#price_toggle").slideDown(function(){
+            btn.button('want')
+            $('input[name="type"]').val('Want');
+        });
+    } else {
+        $("#price_toggle").slideUp(function(){
+            btn.button('help')
+            $('input[name="type"]').val('Help');
+        });
+    }
+});
+
+jQuery(function($) {
+  $('div.btn-group[data-toggle-name]').each(function(){
+    var group   = $(this);
+    var form    = group.parents('form').eq(0);
+    var name    = group.attr('data-toggle-name');
+    var hidden  = $('input[name="' + name + '"]', form);
+    $('input.btn', group).each(function(){
+      var button = $(this);
+      button.live('click', function(){
+          hidden.val($(this).val());
+      });
+      if(button.val() == hidden.val()) {
+        button.addClass('active');
+      }
+    });
+  });
+});
+
 </script>
 
 {% endblock %}
@@ -26,7 +64,9 @@ input.sharp{
 }
 
 #id_type{
-  padding:1px;
+  padding:2px;
+  border-radius:0px;
+  width:15%;
 }
 
 #id_loc, #id_price, #id_rel{
@@ -52,12 +92,14 @@ input.sharp{
       <div class="scrollbox-inner">
 	<form style="margin-bottom:-10px;" action="" method="post" enctype="multipart/form-data">
 	  {% csrf_token %}
+	  <input type="hidden" name="type" value="Help">
+	  <input type="hidden" name="loc" value="NA">
+	  <input type="hidden" name="rel" value="24">
+	  <input type="hidden" name="price" value="Free">	  
 	  <div class="row-fluid">
-	    <div class="span1">
-	      <input class="btn sharp" type="button" id="id_type" name="type" value="Help!" style="width:110%">
-	    </div>
-	    <div class="span7">
-	      <input class="textsharp" type="text" id="id_subject" placeholder="Subject..." style="width:100%;">
+	    <div class="span8 input-prepend">
+	      <input class="btn" type="button" id="id_type" value="Help!" data-help-text="Help!" data-want-text="Want?">
+	      <input class="textsharp" type="text" id="id_subject" placeholder="Subject..." style="width:85%">
 	    </div>
 	    <div class="span4">
 	      <input class="textsharp" type="text" id="id_tag" placeholder="Tag..." style="width:100%;">
@@ -65,32 +107,33 @@ input.sharp{
 	  </div>
 	  <div class="row-fluid" style="margin-bottom:3px;">
 	    <div class="span8">
-	      <div class="btn-group" style="float:left;" data-toggle="buttons-radio">
-		<input class="btn sharp" disabled type="button" name="loc" value="Location: " id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="EH" id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="WH" id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="AC" id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="CC" id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="MH" id="id_loc">
-		<input class="btn sharp" type="button" name="loc" value="LP" id="id_loc">
+	      <div class="btn-group" data-toggle-name="loc" style="float:left;" data-toggle="buttons-radio">
+		<input class="btn sharp" disabled type="button" value="Location: " id="id_loc">Location:
+		<input class="btn sharp" type="button" value="NA" id="id_loc">
+		<input class="btn sharp" type="button" value="EH" id="id_loc">
+		<input class="btn sharp" type="button" value="WH" id="id_loc">
+		<input class="btn sharp" type="button" value="AC" id="id_loc">
+		<input class="btn sharp" type="button" value="CC" id="id_loc">
+		<input class="btn sharp" type="button" value="MH" id="id_loc">
+		<input class="btn sharp" type="button" value="LP" id="id_loc">
 	      </div>
-	      <div style="float:right; margin-right:-4px;" class="btn-group" data-toggle="buttons-radio">
-		<input class="btn sharp" disabled type="button" id="id_rel" name="rel" value="Relevance: ">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="2" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="4" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="6" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="12" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="24" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="48" style="width:23px;">
-		<input class="btn sharp" type="button" id="id_rel" name="rel" value="96" style="width:23px;">
-		<input class="btn sharp" disabled type="button" id="id_rel" name="rel" value="Hours">
+	      <div style="float:right; margin-right:-3px;" class="btn-group" data-toggle-name="rel" data-toggle="buttons-radio">
+		<input class="btn sharp" disabled type="button" id="id_rel" value="Relevance: ">
+		<input class="btn sharp" type="button" id="id_rel" value="2" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="4" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="6" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="12" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="24" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="48" style="width:23px;">
+		<input class="btn sharp" type="button" id="id_rel" value="96" style="width:23px;">
+		<input class="btn sharp" disabled type="button" id="id_rel" value="Hours">
 	      </div>
 	    </div>
-	    <div class="span2 btn-group" data-toggle="buttons-radio">
-		<input class="btn sharp" type="button" id="id_price" name="price" value="Free" style="width:75px;">
-		<input class="btn sharp" type="button" id="id_price" name="price" value="Cheap" style="width:75px;">
-	    </div>
-	    <div class="span2">
+	    <div class="span4">
+	      <div class="btn-group" style="display:none; float:left;" id="price_toggle" data-toggle-name="price" data-toggle="buttons-radio">
+		<input class="btn sharp" type="button" id="id_price" value="Free" style="width:75px;">
+		<input class="btn sharp" type="button" id="id_price" value="Cheap" style="width:75px;">
+	      </div>
 	      <input class="btn sharp" type="submit" value="Post" id="id_submit" style="width:50px; float:right; margin-right:-4px;">
 	    </div>
 	  </div>

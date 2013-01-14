@@ -6,4 +6,8 @@ from django.contrib.auth.models import User
 from models import Bulletin, Missive
 
 def create(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        print request.POST
     return render(request, 'create.html', {})

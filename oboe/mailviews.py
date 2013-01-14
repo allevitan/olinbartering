@@ -15,7 +15,6 @@ def mailbox(request):
     return render(request, 'mailbox.html', {'mail':mail})
 
 def thread(request, pk):
-    print 'sup'
     thread = Reply_Thread.objects.get(id=pk);
     if request.user.is_authenticated() and request.user.userdata in thread.users.all(): info = {'thread':thread}
     else: info = {}
