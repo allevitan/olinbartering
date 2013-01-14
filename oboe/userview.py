@@ -132,10 +132,9 @@ def editUserProfile(request):
 		return HttpResponseRedirect('/login')
 
 @csrf_exempt
-def editFilters(request, help):	
+def editFilters(request, help=False, delete=False):	
 	if request.user.is_authenticated():
 		user = request.user
-		print request.POST
 		form = EditFilterForm(user, request.POST)
 		if form.is_valid():
 			cleaned_data = form.clean()
@@ -144,8 +143,14 @@ def editFilters(request, help):
 			print cleaned_data
 			if help:
 				userdata.filters.add(Filter.objects.get(name=cleaned_data['addHelpFilter'], helpfilter=True))
-			else:
+			elif not delete:
 				userdata.filters.add(Filter.objects.get(name=cleaned_data['addWantFilter'], helpfilter=False))
+			else:
+				if request.POST.get('helpfilter', '') == "True":
+					helpfilter = True
+				else:
+					helpfilter = False
+				userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			user.save()
@@ -170,6 +175,11 @@ def editWantFilters(request):
 def editHelpFilters(request):
 	help = True
 	return editFilters(request, help)
+
+def delFilters(request):
+	help = False
+	delete = True
+	return editFilters(request, help, delete)
 
 def changePassword(request):
 	if request.method == 'POST':

@@ -26,8 +26,10 @@ $(document).ready(function(){
 	});
 
 	$('.delFilter').live('click', function() {
+		var id = $(this).parent().attr("id");
+		var helpfilter = $(this).parent().attr("helpfilter");
    		$(this).parent().remove();
-		$.post('/elements/edit_filters/', $('.eff').serialize(), function(data){
+		$.post('/elements/edit_filters/del/', $('.eff').serialize() + "&name=" + id + "&helpfilter=" + helpfilter, function(data){
 			$('.eff').html(data)
 		});
 	});

@@ -11,7 +11,7 @@
 
 		<div class="wantfilters">
 		{% for filter in wantfilters %}
-			<div class="input-prepend" id="{{ filter.name }}">
+			<div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
 				<button class="btn btn-danger delFilter" type="button">-</button>
 				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
 			</div>
@@ -30,7 +30,7 @@
 
 		<div class="helpfilters">
 		{% for filter in helpfilters %}
-			<div class="input-append" id="{{ filter.name }}">
+			<div class="input-append" id="{{ filter.name }}" helpfilter="True">
 				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
 				<button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
 			</div>
