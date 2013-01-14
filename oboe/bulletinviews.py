@@ -23,13 +23,15 @@ def create(request):
             
             if location not in ["NA","EH","WH","AC","CC","MH","LP"]:
                 errors.append("Error: Not a real location")
-            try: tag = Filter.objects.get(name=data['tag'])
-            except: errors.append("Error: Not a real tag")
             
             if data['hiddentype'] == "Help":
                 helpbulletin = True
+                try: tag = Filter.objects.filter(helpfilter=True).get(name=data['tag'])
+                except: errors.append("Error: Not a help tag")
             elif data['hiddentype'] == "Want":
                 helpbulletin = False
+                try: tag = Filter.objects.filter(helpfilter=False).get(name=data['tag'])
+                except: errors.append("Error: Not a want tag")
             else: errors.append("Error: Not a type of bulletin")
 
             if data['hiddenprice'] == "Free":
@@ -48,6 +50,7 @@ def create(request):
                 return HttpResponseRedirect("/home/")
             
     else: form = CreateBulletinForm()
+    print errors
     helptags = Filter.objects.filter(helpfilter=True)
     wanttags = Filter.objects.filter(helpfilter=False)
     return render(request, 'create.html', {'form':form, 'helptags':helptags, 'wanttags':wanttags, 'errors':errors})

@@ -148,10 +148,10 @@ class selectBulletinForm(forms.Form):
 		self.fields['bulletin'] = forms.ChoiceField(choices=(bulletins))
 
 class ReplyForm(forms.Form):
-	message = forms.CharField(widget=forms.Textarea())
+	message = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Reply...'}))
 
 class UpdateBulletinForm(forms.Form):
-	missive = forms.CharField(widget=forms.Textarea())
+	missive = forms.CharField(widget=forms.Textarea(attrs={'placeholder':"You've changed..."}))
 
 class CreateBulletinForm(forms.Form):
 	subject = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'Subject...','class':'textsharp'}))

@@ -23,14 +23,6 @@ $(document).ready(function(){
     half();
 });
 
-$(document).ready(function(){
-    $("#id_message").text("Reply..");
-});
-
-$("#id_message").focus(function(){
-  this.value = "";
-});
-
 {% include "djangojs/fill.js" with ident="#replybox" %}
 
 </script>
