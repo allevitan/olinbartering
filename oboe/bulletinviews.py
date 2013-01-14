@@ -10,10 +10,10 @@ import datetime
 def create(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/')
+    errors = []
     if request.method == 'POST':
         form = CreateBulletinForm(request.POST)
         if form.is_valid():
-            errors = []
             data = form.cleaned_data
             creator = request.user.userdata
             subject = data['subject']
