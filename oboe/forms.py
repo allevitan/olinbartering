@@ -155,7 +155,7 @@ class UpdateBulletinForm(forms.Form):
 class CreateBulletinForm(forms.Form):
 	subject = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'Subject...','class':'textsharp'}))
 	tag = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'autocomplete':'off','placeholder':'Tag...','class':'textsharp'}))
-	missive = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Message...','class':'sharp'}))
+	missive = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Message...','class':'textsharp'}))
         hiddentype = forms.CharField(widget=forms.HiddenInput(attrs={'value':'Help'}))
 	hiddenloc = forms.CharField(widget=forms.HiddenInput(attrs={'value':'NA'}))
         hiddenrel = forms.IntegerField(min_value=2, max_value=96, widget=forms.HiddenInput(attrs={'value':24}))
