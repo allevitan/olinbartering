@@ -28,34 +28,14 @@
         <ul class="nav">
 	  {% if site_area == "home" %}<li class="active">
 	    {% else %}<li>{% endif %}<a href="/">Home</a></li>
+	  {% if site_area == "new" %}<li class="active">
+	    {% else %}<li>{% endif %}<a href="/new/">Create</a></li>
 	  {% if site_area == "mail" %}<li class="active">
 	    {% else %}<li>{% endif %}<a href="/mail/box">Mail</a></li>
 	  {% if site_area == "people" %}<li class="active">
 	    {% else %}<li>{% endif %}<a href="/people/">People</a></li>
-	  {% if site_area == "new" %}<li class="active dropdown">
-	  {% elif site_area == "newMissive" %}<li class="active dropdown">
-	  {% else %}<li class="dropdown">{% endif %}
-		<a href="" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-    		<li><a href="/new/">Bulletin</a></li>
-			<li><a href="/newMissive/">Update</a></li>
-    	</ul>
-		</li>
-
-	  {% if site_area == "editProfile" %}<li class="active dropdown">
-	  {% elif site_area == "selectBulletin" %}<li class="active dropdown">
-	  {% elif site_area == "editBulletin" %}<li class="active dropdown">
-	  {% else %}<li class="dropdown">{% endif %}
-		<a href="" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-    		<li><a href="/selectBulletin/">Bulletins</a></li>
-			<li><a href="/editProfile/">Profile</a></li>
-    	</ul>
-		</li>
-
 	  {% if site_area == "about" %}<li class="active">
 	    {% else %}<li>{% endif %}<a href="/about/">About</a></li>
-
 	  {% if site_area == "contact" %}<li class="active">
 	    {% else %}<li>{% endif %}<a href="/contact/">Contact</a></li>
         </ul>

@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.static import * 
 from django.conf import settings
-import homeview, contentview, userview, ajaxviews, mailviews
+import homeview, contentview, userview, ajaxviews, mailviews, bulletinviews
 
 admin.autodiscover()
 
@@ -23,16 +23,13 @@ urlpatterns = patterns('',
     url(r'^changePassword/successful/$', userview.passwordChanged),
     url(r'^resetPassword/$', userview.resetPassword),
     url(r'^resetPassword/successful/$', userview.passwordReset),
-    url(r'^new/$', contentview.addBulletin),
+    url(r'^new/$', bulletinviews.create),
     url(r'^elements/help/raw/$', ajaxviews.help_raw),
     url(r'^elements/help/filtered/$', ajaxviews.help_filtered),
     url(r'^elements/want/raw/$', ajaxviews.want_raw),
     url(r'^elements/want/filtered/$', ajaxviews.want_filtered),
     url(r'^bulletin/(?P<pk>\d+)/$',contentview.viewBulletin),
-	url(r'^newMissive/$', contentview.newMissive),
-	url(r'^people/$', contentview.people),
-	url(r'^selectBulletin/$', contentview.selectBulletin),
-	url(r'^editBulletin/$', contentview.editBulletin),
+    url(r'^people/$', contentview.people),
     url(r'^mail/$', mailviews.base),
     url(r'^mail/box/$', mailviews.mailbox),
     url(r'^mail/thread/(?P<pk>\d+)/$', mailviews.thread),
