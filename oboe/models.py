@@ -37,7 +37,7 @@ class Bulletin(models.Model):
     creation = models.DateTimeField(auto_now=False, auto_now_add=True)
     update = models.DateTimeField(auto_now=True, auto_now_add=True)
     relevance = models.DateTimeField(auto_now=False, auto_now_add=False)
-    resolved = models.BooleanField()
+    resolved = models.BooleanField(default=False)
     location = models.CharField(max_length=2,choices=(
             ('AC','Academic Center'),
             ('CC','Campus Center'),
