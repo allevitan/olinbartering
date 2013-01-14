@@ -16,13 +16,15 @@ $("#id_type").click(function(){
     var name = $(this).attr('data-toggle-name')
     if(btn.attr("value") == 'Help!'){
         $("#price_toggle").slideDown(function(){
-            btn.button('want')
+            btn.button('want');
             $('input[name="type"]').val('Want');
+            $('#id_tag').typeahead({source: wanttagdata});
         });
     } else {
         $("#price_toggle").slideUp(function(){
-            btn.button('help')
+            btn.button('help');
             $('input[name="type"]').val('Help');
+            $('#id_tag').typeahead({source: helptagdata});
         });
     }
 });
@@ -44,6 +46,20 @@ jQuery(function($) {
     });
   });
 });
+
+var helptagdata = [{% for tag in helptags %}'{{ tag }}',{% endfor %}];
+var wanttagdata = [{% for tag in wanttags %}'{{ tag }}',{% endfor %}];
+
+$("#id_tag").typeahead({
+  source: function(){
+    if($("#id_type").attr("value") == 'Help!'){
+      return helptagdata;
+    } else {
+      return wanttagdata;
+    }
+  }
+});
+
 
 </script>
 
@@ -99,10 +115,10 @@ input.sharp{
 	  <div class="row-fluid">
 	    <div class="span8 input-prepend">
 	      <input class="btn" type="button" id="id_type" value="Help!" data-help-text="Help!" data-want-text="Want?">
-	      <input class="textsharp" type="text" id="id_subject" placeholder="Subject..." style="width:85%">
+	      <input class="textsharp" type="text" autocomplete="off" id="id_subject" placeholder="Subject..." style="width:85%">
 	    </div>
 	    <div class="span4">
-	      <input class="textsharp" type="text" id="id_tag" placeholder="Tag..." style="width:100%;">
+	      <input class="textsharp" type="text" autocomplete="off" id="id_tag" placeholder="Tag..." style="width:100%;">
 	    </div>
 	  </div>
 	  <div class="row-fluid" style="margin-bottom:3px;">
