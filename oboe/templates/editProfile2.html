@@ -21,14 +21,16 @@ $(document).ready(function(){
 		$('.filterbox').load('/elements/edit_filters/');
 	});
 
-	$('.delFilter').live('click', function(e) {
+	$('.delFilter').live('click', function() {
    		$(this).parent().remove();
-		$('.filterbox').load('/elements/edit_filters/');
+		$.post('/elements/edit_filters/', $('.eff').serialize(), function(data){
+			$('.eff').html(data)
+		});
 	});
 
 	$('.editProfile').live('click', function() {
 		$.post('/elements/general_info/', $('.epf').serialize(), function(data){
-		 $('.epf').html(data)
+			$('.epf').html(data)
 		});
 	});
 });
