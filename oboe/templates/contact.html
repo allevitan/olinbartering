@@ -1,11 +1,34 @@
 {% extends "base.html" %}
 
+{% block css %}
+
+.extra_space {
+	padding-left:75px;
+	padding-right:85px;
+	padding-bottom:50px;
+	padding-top:50px;
+}
+
+#email {
+	float:left;
+	margin-left: -5px;
+}
+
+#subject {
+	float:right;
+	margin-right:-20px;
+
+#message {
+	margin: 0 auto;
+}
+
+{% endblock %}
 
 {% block scripts %}
 <script src="/static/js/jquery.js"></script>
 
 <script>
-{% include "djangojs/center.js" with ident=".hero-unit" %}
+{% include "djangojs/center.js" with ident=".well-large" %}
 </script>
 
 <!--<script>
@@ -15,7 +38,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="hero-unit extra_space">
+<div class="well well-large extra_space">
 
 <h2 style="text-align:center;"><b>Contact Us</b></h2>
 
@@ -26,11 +49,10 @@
 
 
 	{% if form.emailAddress.errors %}
-    <div class="control-group error">
+    <div class="control-group error" id="email">
 	{% else %}
-	<div class="control-group">
+	<div class="control-group" id="email">
 	{% endif %}
-        <label class="control-label" for="id_email">Email Address:</label>
 		<div class="controls">
 			{{ form.emailAddress }}
 		</div>
@@ -38,11 +60,10 @@
 
     
 	{% if form.subject.errors %}
-    <div class="control-group error">
+    <div class="control-group error" id="subject">
 	{% else %}
-	<div class="control-group">
+	<div class="control-group" id="subject">
 	{% endif %}
-        <label class="control-label" for="id_subject">Subject:</label>
 		<div class="controls">
 			{{ form.subject }}
 		</div>
@@ -50,11 +71,10 @@
 
 
 	{% if form.message.errors %}
-    <div class="control-group error">
+    <div class="control-group error row-fluid" id="message">
 	{% else %}
-	<div class="control-group">
+	<div class="control-group row-fluid" id="message">
 	{% endif %}
-        <label class="control-label" for="id_subject">Message:</label>
 		<div class="controls">
 			{{ form.message }}
 		</div>

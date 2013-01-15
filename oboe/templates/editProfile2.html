@@ -8,14 +8,14 @@
 
 $(document).ready(function(){
 	 $('.addHelpFilter').live('click', function () { 
-		filterValue = $('#id_addHelpFilter').val();
+		filterValue = $('#id_helptag').val();
 		$.post('/elements/edit_filters/help/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});
 	});     
          
 	$('.addWantFilter').live('click', function () { 
-		filterValue = $('#id_addWantFilter').val();  
+		filterValue = $('#id_wanttag').val();  
 		$.post('/elements/edit_filters/want/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});

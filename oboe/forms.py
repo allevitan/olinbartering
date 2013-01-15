@@ -7,6 +7,7 @@ from oboe import pathfinders, models
 from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, Select
 from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
+from django.utils.safestring import mark_safe
 
 
 
@@ -40,8 +41,10 @@ class EditProfileForm(forms.Form):
 		super(EditProfileForm, self).__init__(*args, **kwargs)
 		self._user = user
 		helpFilters, wantFilters = self.genUserFilters()
-		self.fields['addWantFilter'] = forms.ChoiceField(choices=(wantFilters))
-		self.fields['addHelpFilter'] = forms.ChoiceField(choices=(helpFilters))
+		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
+		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
+		self.fields['wanttag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}))
+		self.fields['helptag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}))
 		
 	first_name = forms.CharField(max_length=30)
 	last_name = forms.CharField(max_length=30)
@@ -71,22 +74,24 @@ class EditFilterForm(forms.Form):
 		return helpFilters, wantFilters
 		
 	def __init__(self, user, *args, **kwargs):
+		print args, kwargs
 		super(EditFilterForm, self).__init__(*args, **kwargs)
 		self._user = user
-		print user
 		helpFilters, wantFilters = self.genUserFilters()
-		self.fields['addWantFilter'] = forms.ChoiceField(choices=(wantFilters))
-		self.fields['addHelpFilter'] = forms.ChoiceField(choices=(helpFilters))
-		
+		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
+		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
+		self.fields['wanttag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}), required=False) #mark_safe and .replace method needed to override html formatting
+		self.fields['helptag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}), required=False)
+
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())
 	newPassword = forms.CharField(widget=forms.PasswordInput())
 	confirmPassword = forms.CharField(widget=forms.PasswordInput())
 
 class ContactForm(forms.Form):
-	emailAddress = forms.EmailField(required=True)
-	subject = forms.CharField(max_length = 60, widget=forms.TextInput(attrs={'placeholder': 'Nice Site!'}))
-	message = forms.CharField(widget=forms.Textarea(attrs={'class': "row-fluid", 'rows': 10}))
+	emailAddress = forms.EmailField(widget=forms.TextInput(attrs = {'placeholder':"Email...", 'size':'20'}))
+	subject = forms.CharField(max_length = 60, widget=forms.TextInput(attrs={'placeholder': 'Subject...', 'size':'20'}))
+	message = forms.CharField(widget=forms.Textarea(attrs={'class':"row-fluid", 'placeholder':"Message..."}))
 
 class PasswordResetForm(forms.Form):
 	emailAddress = forms.EmailField()

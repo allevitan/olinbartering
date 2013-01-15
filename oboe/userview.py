@@ -135,19 +135,15 @@ def editUserProfile(request):
 def editFilters(request, help=False, delete=False):	
 	if request.user.is_authenticated():
 		user = request.user
-		"""for field in [u'addHelpFilter', u'addWantFilter']:
-			if field not in request.POST:
-				request.POST[field] = 0
-			print field, field in request.POST"""
-		form = EditFilterForm(user, request.POST)
+		form = EditFilterForm(user, request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
 			user = request.user
 			userdata = user.userdata
 			if help:
-				userdata.filters.add(Filter.objects.get(name=cleaned_data['addHelpFilter'], helpfilter=True))
+				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
 			elif not delete:
-				userdata.filters.add(Filter.objects.get(name=cleaned_data['addWantFilter'], helpfilter=False))
+				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
 			else:
 				if request.POST.get('helpfilter', '') == "True":
 					helpfilter = True
@@ -161,6 +157,7 @@ def editFilters(request, help=False, delete=False):
 			form = EditFilterForm(user = user)
 			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 		else:
+			raise AssertionError
 			user = request.user
 			userdata = user.userdata
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
