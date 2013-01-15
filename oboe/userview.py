@@ -223,3 +223,9 @@ def resetPassword(request):
 def passwordReset(request):
 	return render(request, 'passwordReset.html')
 
+def profilepage(request):
+	filters = request.user.userdata.filters
+	print filters.all()
+	helpfilters = [filterName.name for filterName in filters.all() if filterName.helpfilter]
+	wantfilters = [filterName.name for filterName in filters.all() if not filterName.helpfilter]
+	return render(request, 'profilepage.html', {'name':request.user, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
