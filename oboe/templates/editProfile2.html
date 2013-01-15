@@ -5,6 +5,7 @@
 <script>
 
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
+{% include "djangojs/bootstrap-fileupload.js" %}
 
 $(document).ready(function(){
 	 $('.addHelpFilter').live('click', function () { 
@@ -44,6 +45,8 @@ $(document).ready(function(){
 
 {% block css %}
 
+{% include "djangocss/bootstrap-fileupload.css" %}
+{% include "djangocss/bootstrap-fileupload.min.css" %}
 .custom_margin { margin-bottom:20px; }
 .custom_height { height:500px; }
 .custom_padding_general { padding-top:50px;padding-bottom:50px;min-width:525px; }
