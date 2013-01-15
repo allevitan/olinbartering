@@ -7,7 +7,7 @@
 	        <img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:5px;border-radius:5px;">
 		{% endthumbnail%}
 	</span>
-	<a href = "/profile/{{ userdata.user.first_name }}.{{ userdata.user.last_name }}/">
+	<a href = "/profile/{{ userdata.user.first_name|lower }}.{{ userdata.user.last_name|lower }}/">
 	<span class="span" style="text-align:center;">
 		<p><b>{{ userdata.user.first_name }} {{ userdata.user.last_name }}<b><p>
 		<hr style="margin-top:5px;margin-bottom:5px;">

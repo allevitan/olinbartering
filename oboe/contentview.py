@@ -33,7 +33,7 @@ def people(request):
 				chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
 				users = UserData.objects.filter(filters__id=chosenFilter)
 			'''
-			return HttpResponseRedirect('/profile/'+username)
+			return HttpResponseRedirect('/profile/'+username+'/')
 	else:
 		users = UserData.objects.all().order_by("user")
 		form = MultiProfileDisplay()
