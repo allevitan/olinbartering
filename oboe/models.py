@@ -93,7 +93,7 @@ class Reply_Thread(models.Model):
     update = models.DateTimeField(auto_now=True, auto_now_add=True)
 
     def __unicode__(self):
-        return "%s" % bulletin.subject
+        return "%s" % self.bulletin.subject
 
 
 class Reply(models.Model):

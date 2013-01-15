@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
-from models import Bulletin, Missive, Filter
+from models import Bulletin, Missive, Filter, Reply_Thread
 from forms import CreateBulletinForm
 import datetime
 
@@ -57,7 +57,42 @@ def create(request):
             if not request.POST.get('tag',''):
                 errors.append('please enter a tag.')
     else: form = CreateBulletinForm()
-    print errors
+    if len(errors) >= 3:
+        errors.append('get your life together.')
     helptags = Filter.objects.filter(helpfilter=True)
     wanttags = Filter.objects.filter(helpfilter=False)
     return render(request, 'create.html', {'form':form, 'helptags':helptags, 'wanttags':wanttags, 'errors':errors})
+
+
+def resolve(request):
+    if request.user.is_authenticated and request.method == 'POST':
+        pk = int(request.POST.get('thread',''))
+        thread = Reply_Thread.objects.get(pk=pk)
+        bulletin = thread.bulletin
+        if bulletin.helpbulletin:
+            if bulletin.resolved:
+                bulletin.resolved = False
+                if bulletin.resolver:
+                    bulletin.resolver.score = bulletin.resolver.score - 1
+                    bulletin.resolver.save()
+                bulletin.save()
+                return HttpResponse('Resolve + Credit')
+            else:
+                resolver = thread.users.exclude(user=request.user).get()
+                bulletin.resolved = True
+                bulletin.resolver = resolver
+                bulletin.save()
+                resolver.score = resolver.score + 1
+                resolver.save()
+                return HttpResponse('Unresolve')
+        else:
+           if bulletin.resolved:
+                bulletin.resolved = False
+                bulletin.save()
+                return HttpResponse('Resolve')
+           else:
+                bulletin.resolved = True
+                bulletin.save()
+                return HttpResponse('Unresolve')
+    else:
+        return HttpResponseRedirect('/')

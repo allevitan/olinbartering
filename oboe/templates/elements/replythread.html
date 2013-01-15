@@ -1,6 +1,9 @@
 {% if thread %}
-<h3 style="float:right; color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h3>
-<a href="/bulletin/{{ thread.bulletin.id }}"><h3>{{ thread.bulletin.subject }}</h3></a>
+{% if user.userdata == thread.bulletin.creator %}
+<button class="btn sharp pull-right" id="replycredit" type="button" thread="{{ thread.id }}" style="margin-top:5px;">{% if thread.bulletin.resolved %}Unresolve{% elif thread.bulletin.helpbulletin %}Resolve + Credit{% else %}Resolve{% endif %}</button>
+{% endif %}
+<a href="/bulletin/{{ thread.bulletin.id }}"><h3 style="margin-top:0px;">{{ thread.bulletin.subject }}</h3></a>
+<h4 style="color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h4>
 <hr>
 <form id="replyform" action="{{ thread.id }}" method="POST">
   <input type="submit" value="Reply" id="id_submit" >
@@ -9,14 +12,14 @@
     <input type="radio" name="visibility" value="Public" style="margin-top:-3px;">Public
     <input type="radio" name="visibility" value="Private" style="margin-top:-3px; margin-left:10px;" checked>Private
   </div>
-  <h4>{{ user.get_full_name }}:</h4>
+  <h5>{{ user.get_full_name }}:</h5>
   {{ form.message }}
 </form>
 <hr>
 {% with replies=thread.reply_set.all|dictsortreversed:"timestamp" %}
 {% for reply in replies %}
 <div style="float:right;">{{ reply.timestamp }}</div>
-<h5>{% if reply.public %}<span style="color:#606060;">Public: </span>{% endif %}{{ reply.sender }}</h5>
+<h5>{% if reply.public %}<span style="color:#606060;">Public: </span>{% endif %}{{ reply.sender }}:</h5>
 <div class="reply">
   {{ reply.message }}
 </div>

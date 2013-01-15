@@ -16,14 +16,14 @@ $("#id_type").click(function(){
     var btn = $(this);
     var name = $(this).attr('data-toggle-name')
     if(btn.attr("value") == 'Help!'){
+        btn.button('want');
         $("#price_toggle").slideDown(function(){
-            btn.button('want');
             $('input[name="hiddentype"]').val('Want');
             $('#id_tag').typeahead({source: wanttagdata});
         });
     } else {
+        btn.button('help');
         $("#price_toggle").slideUp(function(){
-            btn.button('help');
             $('input[name="hiddentype"]').val('Help');
             $('#id_tag').typeahead({source: helptagdata});
         });

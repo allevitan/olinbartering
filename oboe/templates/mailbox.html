@@ -3,8 +3,6 @@
 
 {% block scripts %}
 
-
-
 <script>
 {% if not webkit %}
 {% include "djangojs/scroll.js" %}
@@ -29,6 +27,13 @@ $("#replyform").live("submit", function(){
   return false;
 });
 
+$('#replycredit').live("click", function(){
+$.post("/resolve/", { 'thread': $('#replycredit').attr("thread"),
+                      'csrfmiddlewaretoken': '{{ csrf_token }}' },
+   function(data){
+      $('#replycredit').text(data);
+    });
+});
 
 </script>
 {% endblock %}
@@ -38,6 +43,11 @@ $("#replyform").live("submit", function(){
 
 {% include "djangocss/scroll.css" %}
 {% include "djangocss/replyform.css" %}
+
+.sharp {
+  padding:4px;
+  border-radius:0px;
+}
 
 {% endblock %}
 
