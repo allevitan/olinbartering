@@ -226,17 +226,17 @@ def viewBulletin(request, pk):
 				public = True
 			else: public = False
 			user = request.user.userdata
-			message = cleaned_data['message']
-			if allreplies.filter(sender=user).exists():
-				thread = (allreplies.filter(sender=user)[0]).thread
-			else:
-				thread = Reply_Thread.objects.create(bulletin=bulletin)
-				thread.users.add(user)
-				thread.users.add(bulletin.creator)
-			thread.save()
-			reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
-			reply.save()
-	
+			if user != bulletin.creator or public:
+				message = cleaned_data['message']
+				if allreplies.filter(sender=user).exists():
+					thread = (allreplies.filter(sender=user)[0]).thread
+				else:
+					thread = Reply_Thread.objects.create(bulletin=bulletin)
+					thread.users.add(user)
+					thread.users.add(bulletin.creator)
+				thread.save()
+				reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
+				reply.save()
 	form = ReplyForm()
 	resolveform = ResolverCreditForm()
 	if request.user.userdata == bulletin.creator:
