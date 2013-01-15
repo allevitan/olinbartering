@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block css %}
+
+.custom_margin {
+	margin-top: px;
+}
+
+{% endblock %}
 {% block scripts %}
 <script src="/static/js/jquery.js"></script>
 
@@ -7,55 +14,22 @@
 {% include "djangojs/center.js" with ident=".profiles-wrapper" %}
 </script>
 
-
-<!--<script>
-{% include "djangojs/show.js" with identity=".inner_form" %}
-</script>-->
-
 {% endblock %}
 
 {% block content %}
-{% load thumbnail %}
-<div style="margin-right:50px;margin-left:50px;">
-{% for userdata in users %}
-<div class="well span3">
-	<span class="thumbbox span">
-		{% thumbnail userdata.pic "65x65" crop="center" as im %}
-	        <img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:5px;border-radius:5px;">
-		{% endthumbnail%}
-	</span>
-	<span class="span" style="text-align:center;">
-		<p><b>{{ userdata.user.first_name }} {{ userdata.user.last_name }}<b><p>
-		<hr style="margin-top:5px;margin-bottom:5px;">
-		<p>{{ userdata.dorm }}<p>	
-	</span>
-</div> 
-{% endfor %}
-</div>
 
-<form action="" method="post" style="text-align:center;position:fixed;bottom:5px;left:10px;right:10px;" enctype="multipart/form-data"> 
+<form action="" method="post" style="text-align:center;margin-right:50px;margin-left:30px;margin-top:0px;" enctype="multipart/form-data"> 
 	{% csrf_token %}
 
-
-
-<div class="control-group">
-    {{ form.filters.errors }}
-    <label class="control-label" for="id_filters">Current Filter: {{ filterText }}</label>
-	<div class="controls">
-		{{ form.filterType }}
+	<div class="input-append custom_margin">
+		{{ form.username }}
+		<button class="btn btn-success addHelpFilter" type="button">Go</button>
 	</div>
-	<div class="controls">
-		{{ form.filters }}
-	</div>
-</div>
-
-<div class="control-group">
-	<div class="controls">
-		<input type="submit" value="Filter" class="btn btn-success"/>
-	</div>
-</div>
 
 </form>
+
+{% include "elements/profilesearch.html" %}
+
 {% endblock %}
 
 <!--<div class="profiles-wrapper">

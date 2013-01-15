@@ -43,8 +43,8 @@ class EditProfileForm(forms.Form):
 		helpFilters, wantFilters = self.genUserFilters()
 		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
 		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
-		self.fields['wanttag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}))
-		self.fields['helptag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}))
+		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}))
+		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}))
 		
 	first_name = forms.CharField(max_length=30)
 	last_name = forms.CharField(max_length=30)
@@ -80,8 +80,8 @@ class EditFilterForm(forms.Form):
 		helpFilters, wantFilters = self.genUserFilters()
 		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
 		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
-		self.fields['wanttag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}), required=False) #mark_safe and .replace method needed to override html formatting
-		self.fields['helptag'] = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}), required=False)
+		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}), required=False) #mark_safe and .replace method needed to override html formatting
+		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}), required=False)
 
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())
@@ -135,6 +135,12 @@ class MissiveForm(forms.Form):
 		self.fields['bulletin'] = forms.ChoiceField(choices=(bulletins))
 
 class MultiProfileDisplay(forms.Form):
+
+	users = [str(user) for user in UserData.objects.all()]
+	print users
+	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Search by username...', 'data-source': mark_safe(users).replace("'", '"')}))
+
+	'''
 	filters = Filter.objects.all()
 	filters = set((filterName.name, filterName.name) for filterName in filters)
 	filters = list(filters)
@@ -145,6 +151,7 @@ class MultiProfileDisplay(forms.Form):
 				(False, "Do you want?"),
 				(True, "Can you help?"),
 				))
+	'''
 
 class selectBulletinForm(forms.Form):
 	def __init__(self, *args, **kwargs):
