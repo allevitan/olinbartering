@@ -43,7 +43,7 @@
 	  <hr>
 	  <div style="text-align:left;">
 		<h4>Dorm: {{ user.userdata.dorm }}</h4>
-		<h4>Score: {{ user.userdata.score }}</h4>
+		<h4>Resolved: {{ user.userdata.score }} {% if user.userdata.score > 1 %} problems {% else %} problem {% endif %}</h4>
 		<h4>Help Filters: 
 		{% for filter in helpfilters %}
 		{% if filter != helpfilters|last %}
@@ -74,6 +74,9 @@
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
 	  <div class="scrollbox-inner" id="bigbox" style="padding-top:15px;padding-bottom:15px;">
+		<div style="text-align:left;">
+			<h4>Recently posted by Madison
+
 	  </div>
 	</div>
       </div>
