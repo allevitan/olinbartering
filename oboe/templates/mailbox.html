@@ -31,7 +31,7 @@ $('#replycredit').live("click", function(){
 $.post("/resolve/", { 'thread': $('#replycredit').attr("thread"),
                       'csrfmiddlewaretoken': '{{ csrf_token }}' },
    function(data){
-      $('#replycredit').text(data);
+      $('#replycredit').hide();
     });
 });
 

@@ -25,6 +25,15 @@ $(document).ready(function(){
 
 {% include "djangojs/fill.js" with ident="#replybox" %}
 
+$("#resolvebutton").click(function(){
+   form = $($(this).attr('form'));
+   $.post("/resolve/", form.serialize(), function(){
+      form.hide();
+   });
+});
+
+
+
 </script>
 {% endblock %}
 
@@ -41,19 +50,39 @@ $(document).ready(function(){
     max-width:500px;
 }
 
+#resolvebutton, #id_username {
+   border-radius:0px;
+}
+
+.sharp{
+   margin-right:-2px;
+   margin-bottom:7px;
+   border-radius:0px;
+}
+
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid" id="contentbox">
-  <h2 style="margin-left:25px;">{{ bulletin.subject|title }}</h2>
+  <h3 style="margin-left:25px;">{{ bulletin.subject|title }}</h3>
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="bulletinbox">
       <div class="scrollbox-inner">
-	<h4 style="color:#404040;"><span class="faded">by</span> {% if bulletin.creator = user.userdata %}You{% else %}{{ bulletin.creator|title }}{% endif %} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
+	{% if bulletin.helpbulletin and not bulletin.resolved %}
+	<form action="" id="resolveform" class="input-append pull-right">
+	  {% csrf_token %}
+	  {{ resolveform.username }}
+	  <input type="hidden" name="bulletin" value="{{ bulletin.id }}">
+	  <button type="button" class="btn" id="resolvebutton" form="#resolveform">Resolve</button>
+	</form>
+	{% elif bulletin.helpbulletin and bulletin.resolver %}
+	<h4 class="pull-right" style="color:#909090;">resolved by {{ bulletin.resolver }}</h4>
+	{% endif %}
+	<h4 style="color:#404040; margin-top:5px; margin-bottom:25px;"><span class="faded">by</span> {% if bulletin.creator = user.userdata %}You{% else %}{{ bulletin.creator|title }}{% endif %} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
 
 	{% if bulletin.creator = user.userdata %}
 	<form action="/update/{{ bulletin.id }}/" method="POST">
-	  <input type="submit" value="Update" id="id_submit" >
+	  <input type="submit" class="btn sharp" value="Update" id="id_submit" >
 	  {% csrf_token %}
 	  {% if not bulletin.helpbulletin and not bulletin.free %}
 	  <div id="id_free"><input type="checkbox" name="free" value="true" style="margin-top:-3px;">Make Free</div>
