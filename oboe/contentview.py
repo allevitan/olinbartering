@@ -7,7 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
 from forms import BulletinForm, MissiveForm, MultiProfileDisplay
-from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm
+from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm, FilterSuggestionForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
@@ -39,26 +39,6 @@ def people(request):
 		form = MultiProfileDisplay()
 		filterText = "None"
 	return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText})
-
-def contact(request):
-	if request.method == 'POST':
-		form = ContactForm(request.POST)
-		if form.is_valid():
-			cleaned_data = form.clean()
-			subject = cleaned_data['subject']
-			message = cleaned_data['message']
-			toAddress = cleaned_data['emailAddress']
-			send_mail(subject, message, 'allevitan@gmail.com',
-    ['allevitan@gmail.com'], fail_silently=False)
-			return HttpResponseRedirect('/')
-	else:
-		if request.user.is_active and request.user.is_authenticated():
-			data = {'emailAddress':request.user.email}
-			form = ContactForm(initial=data)
-		else:
-			form = ContactForm()
-	
-	return render(request, 'contact.html', {'form':form})
 
 def getFilter(name, helpfilter):
 	try:
@@ -261,3 +241,42 @@ def updateBulletin(request, pk):
 		else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
 	else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
 	return HttpResponseRedirect('/home/');
+
+def filterSuggestions(request):
+	if request.method == "POST": 
+		form = FilterSuggestionForm(request.POST)
+		if form.is_valid:
+			filterName = request.POST.get('filterName', '')
+			print filterName
+			subject = "New Filter: "+filterName+"?"
+			message = subject
+			send_mail(subject, message, 'allevitan@gmail.com',
+			['allevitan@gmail.com'], fail_silently=False)
+			return HttpResponseRedirect('/editProfile/')
+	else:
+		if request.user.is_authenticated():
+			form = FilterSuggestionForm()
+			return render(request, 'filterSuggestions.html', {'form': form})
+		else: HttpResponseRedirect('/login/')
+		
+
+def contact(request):
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		if form.is_valid():
+			cleaned_data = form.clean()
+			subject = cleaned_data['subject']
+			message = cleaned_data['message']
+			toAddress = cleaned_data['emailAddress']
+			send_mail(subject, message, 'allevitan@gmail.com',
+    ['allevitan@gmail.com'], fail_silently=False)
+			return HttpResponseRedirect('/')
+	else:
+		if request.user.is_active and request.user.is_authenticated():
+			data = {'emailAddress':request.user.email}
+			form = ContactForm(initial=data)
+		else:
+			form = ContactForm()
+	
+	return render(request, 'contact.html', {'form':form})
+	

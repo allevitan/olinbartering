@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block css %}
+
+.extra_space {
+	padding:50px;
+}
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="/static/js/jquery.js"></script>
+
+<script>
+{% include "djangojs/center.js" with ident=".well-large" %}
+</script>
+
+<!--<script>
+{% include "djangojs/show.js" with identity=".inner_form" %}
+</script>-->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="well well-large extra_space">
+<h2><b>Suggest a new filter:</b></h2>
+
+<form action="" method="post">
+{% csrf_token %}
+
+
+{% if form.filterName.errors %}
+<div class="error">
+{% else %}
+<div class="control-group">
+{% endif %}
+	<div class="controls">
+		{{ form.filterName }}
+	</div>
+</div>
+
+<div>
+	<input type="Submit" value="Submit" class="btn btn-success span2"/>
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}

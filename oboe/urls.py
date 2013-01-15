@@ -40,6 +40,7 @@ urlpatterns = patterns('',
 	url(r'^elements/edit_filters/help/$', userview.editHelpFilters),
 	url(r'^elements/edit_filters/del/$', userview.delFilters),
 	url(r'^profile/(?P<username>.*)/$', userview.profilepage),
+	url(r'^filterSuggestions/', contentview.filterSuggestions),
 )
 
 urlpatterns += staticfiles_urlpatterns()

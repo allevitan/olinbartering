@@ -175,3 +175,6 @@ class CreateBulletinForm(forms.Form):
 class ResolverCreditForm(forms.Form):
 	users = [str(user) for user in UserData.objects.all()]
 	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Thank someone...', 'data-source': mark_safe(users).replace("'", '"')}))
+
+class FilterSuggestionForm(forms.Form):
+	filterName = forms.CharField()
