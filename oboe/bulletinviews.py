@@ -74,21 +74,16 @@ def resolve(request):
         else:
             pk = int(request.POST['bulletin'])
             bulletin = Bulletin.objects.get(pk=pk)
-            resolver = request.POST['username']
-            resolver = '.'.join(resolver.lower().split())
             fromthread = False
         if bulletin.helpbulletin:
             if bulletin.resolved:
-                bulletin.resolved = False
-                if bulletin.resolver:
-                    bulletin.resolver.score = bulletin.resolver.score - 1
-                    bulletin.resolver.save()
-                bulletin.save()
-                return HttpResponse('Resolve + Credit')
+                return HttpResponse('Nothing Happened')
             else:
                 if fromthread:
                     resolver = thread.users.exclude(user=request.user).get()
                 else:
+                    resolver = request.POST['username']
+                    resolver = '.'.join(resolver.lower().split())
                     resolver = User.objects.get(username=resolver).userdata
                 bulletin.resolved = True
                 bulletin.resolver = resolver
@@ -98,12 +93,10 @@ def resolve(request):
                 return HttpResponse('Unresolve')
         else:
            if bulletin.resolved:
-                bulletin.resolved = False
-                bulletin.save()
-                return HttpResponse('Resolve')
+                return HttpResponse('Nothing Happened')
            else:
                 bulletin.resolved = True
                 bulletin.save()
-                return HttpResponse('Unresolve')
+                return HttpResponse('Resolved')
     else:
         return HttpResponseRedirect('/')
