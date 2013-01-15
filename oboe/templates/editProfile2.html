@@ -45,6 +45,7 @@ $(document).ready(function(){
 
 {% block css %}
 
+{% include "djangocss/scroll.css" %}
 {% include "djangocss/bootstrap-fileupload.css" %}
 {% include "djangocss/bootstrap-fileupload.min.css" %}
 .custom_margin { margin-bottom:20px; }
@@ -55,10 +56,10 @@ $(document).ready(function(){
 .filter_padding { padding-top:8px;padding-bottom:15px; }
 .relative { position:relative; }
 .tight_hr { margin-top:10px;margin-bottom:10px; }
-.helpTitle { margin-top:0px;margin-bottom:0px;margin-left:61px; }
-.wantTitle { margin-top:0px;margin-bottom:0px;margin-left:88px; } 
-#left { float:left }
-#right { float:right }
+.helpTitle { margin-top:0px;margin-bottom:0px;margin-left:70px; }
+.wantTitle { margin-top:0px;margin-bottom:0px;margin-left:85px; } 
+#left { float:left;margin-left:-20px; }
+#right { float:right;margin-right:-20px; }
 -webkit-text-fill-color:#880000;
 
 {% endblock %}
