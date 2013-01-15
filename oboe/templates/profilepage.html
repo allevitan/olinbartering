@@ -20,6 +20,15 @@
 
 {% block css %}
 
+
+.faded{
+    color:#909090;
+}
+
+#contentbox{
+    max-width:500px;
+}
+
 {% include "djangocss/scroll.css" %}
 
 {% endblock %}
@@ -74,8 +83,15 @@
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
 	  <div class="scrollbox-inner" id="bigbox" style="padding-top:15px;padding-bottom:15px;">
-		<div style="text-align:left;">
-			<h4>Recently posted by Madison
+		<div class="row-fluid">
+			<h3 style="float:left;">Recently posted by {{ user.first_name }}:</h3>
+			<h1 style="float:right;"><small>{{ bulletins|length }} bulletins</small></h1>
+		</div>
+		<hr style="margin-top:0px;">
+
+		{% for bulletin in bulletins %} 
+			{% include "elements/profilebulletin.html" %}
+		{% endfor %}
 
 	  </div>
 	</div>
