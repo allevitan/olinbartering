@@ -224,7 +224,7 @@ def passwordReset(request):
 	return render(request, 'passwordReset.html')
 
 def profilepage(request, username):
-	try: user = User.objects.get(username=username)
+	try: user = User.objects.get(username=username.lower())
 	except: return HttpResponseRedirect('/people/')
 	filters = user.userdata.filters.all()
 	helpfilters = [filterName.name for filterName in filters.all() if filterName.helpfilter]
