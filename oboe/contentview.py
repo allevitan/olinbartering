@@ -7,7 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
 from forms import BulletinForm, MissiveForm, MultiProfileDisplay
-from forms import ReplyForm, UpdateBulletinForm
+from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
@@ -237,11 +237,12 @@ def viewBulletin(request, pk):
 			reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
 			reply.save()
 	
-	form = ReplyForm()	
+	form = ReplyForm()
+	resolveform = ResolverCreditForm()
 	if request.user.userdata == bulletin.creator:
 		bulletinform = UpdateBulletinForm()
 	else: bulletinform = {}
-	return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform})
+	return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform, 'resolveform':resolveform})
 
 def updateBulletin(request, pk):
 	if pk > 0 and request.user.is_authenticated() and request.method == 'POST':

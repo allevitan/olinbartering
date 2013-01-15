@@ -136,7 +136,6 @@ class MissiveForm(forms.Form):
 class MultiProfileDisplay(forms.Form):
 
 	users = [str(user) for user in UserData.objects.all()]
-	print users
 	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Search by username...', 'data-source': mark_safe(users).replace("'", '"')}))
 
 	'''
@@ -172,3 +171,7 @@ class CreateBulletinForm(forms.Form):
 	hiddenloc = forms.CharField(widget=forms.HiddenInput(attrs={'value':'NA'}))
         hiddenrel = forms.IntegerField(min_value=2, max_value=96, widget=forms.HiddenInput(attrs={'value':24}))
 	hiddenprice = forms.CharField(max_length=5, widget=forms.HiddenInput(attrs={'value':'Free'}))
+
+class ResolverCreditForm(forms.Form):
+	users = [str(user) for user in UserData.objects.all()]
+	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Thank someone...', 'data-source': mark_safe(users).replace("'", '"')}))

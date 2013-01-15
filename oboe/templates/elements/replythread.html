@@ -1,6 +1,6 @@
 {% if thread %}
-{% if user.userdata == thread.bulletin.creator %}
-<button class="btn sharp pull-right" id="replycredit" type="button" thread="{{ thread.id }}" style="margin-top:5px;">{% if thread.bulletin.resolved %}Unresolve{% elif thread.bulletin.helpbulletin %}Resolve + Credit{% else %}Resolve{% endif %}</button>
+{% if user.userdata == thread.bulletin.creator and not thread.bulletin.resolved %}
+<button class="btn sharp pull-right" id="replycredit" type="button" thread="{{ thread.id }}" style="margin-top:5px;">{% if thread.bulletin.helpbulletin %}Resolve + Credit{% else %}Resolve{% endif %}</button>
 {% endif %}
 <a href="/bulletin/{{ thread.bulletin.id }}"><h3 style="margin-top:0px;">{{ thread.bulletin.subject }}</h3></a>
 <h4 style="color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h4>

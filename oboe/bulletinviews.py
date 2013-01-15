@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
-from models import Bulletin, Missive, Filter, Reply_Thread
+from models import Bulletin, Missive, Filter, Reply_Thread, UserData
 from forms import CreateBulletinForm
 import datetime
 
@@ -66,19 +66,25 @@ def create(request):
 
 def resolve(request):
     if request.user.is_authenticated and request.method == 'POST':
-        pk = int(request.POST.get('thread',''))
-        thread = Reply_Thread.objects.get(pk=pk)
-        bulletin = thread.bulletin
+        if request.POST.get('thread',''):
+            pk = int(request.POST['thread'])
+            thread = Reply_Thread.objects.get(pk=pk)
+            bulletin = thread.bulletin
+            fromthread = True
+        else:
+            pk = int(request.POST['bulletin'])
+            bulletin = Bulletin.objects.get(pk=pk)
+            fromthread = False
         if bulletin.helpbulletin:
             if bulletin.resolved:
-                bulletin.resolved = False
-                if bulletin.resolver:
-                    bulletin.resolver.score = bulletin.resolver.score - 1
-                    bulletin.resolver.save()
-                bulletin.save()
-                return HttpResponse('Resolve + Credit')
+                return HttpResponse('Nothing Happened')
             else:
-                resolver = thread.users.exclude(user=request.user).get()
+                if fromthread:
+                    resolver = thread.users.exclude(user=request.user).get()
+                else:
+                    resolver = request.POST['username']
+                    resolver = '.'.join(resolver.lower().split())
+                    resolver = User.objects.get(username=resolver).userdata
                 bulletin.resolved = True
                 bulletin.resolver = resolver
                 bulletin.save()
@@ -87,12 +93,10 @@ def resolve(request):
                 return HttpResponse('Unresolve')
         else:
            if bulletin.resolved:
-                bulletin.resolved = False
-                bulletin.save()
-                return HttpResponse('Resolve')
+                return HttpResponse('Nothing Happened')
            else:
                 bulletin.resolved = True
                 bulletin.save()
-                return HttpResponse('Unresolve')
+                return HttpResponse('Resolved')
     else:
         return HttpResponseRedirect('/')
