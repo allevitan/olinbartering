@@ -22,6 +22,9 @@ def people(request):
 		form = MultiProfileDisplay(request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
+			user_name = cleaned_data['username']
+			username = '.'.join(user_name.lower().split())
+			'''
 			filterText = cleaned_data['filters']
 			filterType = cleaned_data['filterType']
 			if filterText == "None":
@@ -29,7 +32,8 @@ def people(request):
 			else:
 				chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
 				users = UserData.objects.filter(filters__id=chosenFilter)
-			form = MultiProfileDisplay()
+			'''
+			return HttpResponseRedirect('/profile/'+username)
 	else:
 		users = UserData.objects.all().order_by("user")
 		form = MultiProfileDisplay()

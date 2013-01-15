@@ -223,9 +223,10 @@ def resetPassword(request):
 def passwordReset(request):
 	return render(request, 'passwordReset.html')
 
-def profilepage(request):
-	filters = request.user.userdata.filters
-	print filters.all()
+def profilepage(request, username):
+	try: user = User.objects.get(username=username)
+	except: return HttpResponseRedirect('/people/')
+	filters = user.userdata.filters.all()
 	helpfilters = [filterName.name for filterName in filters.all() if filterName.helpfilter]
 	wantfilters = [filterName.name for filterName in filters.all() if not filterName.helpfilter]
-	return render(request, 'profilepage.html', {'name':request.user, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+	return render(request, 'profilepage.html', {'user':user, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
