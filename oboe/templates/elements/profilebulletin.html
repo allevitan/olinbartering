@@ -1,0 +1,10 @@
+		<div class="container-fluid" id="contentbox">
+		  <a href="/bulletin/{{ bulletin.id }}"><h4 style="color:#0088cc;">{{ bulletin.subject|title }}</h4></a>
+			  <div class="scrollbox-inner" style="padding:0px;margin:0px">
+			<h5 style="color:#404040;padding:0px;margin:0px;font-size:16px;"><span class="faded">about</span> 
+			{{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> 
+			{{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span>
+			{{ bulletin.get_free_display }}{% endif %}</h5>
+		  </div>
+		</div>
+		<hr style="margin:10px;">
