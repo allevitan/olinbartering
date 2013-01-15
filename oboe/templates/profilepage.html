@@ -49,30 +49,37 @@
 			<img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:10px;border-radius:10px;">
 		{% endthumbnail %}
 	  </div>
+	  <div style="text-align:center;">
+	  	{% if user == request.user %}
+		<form action="/editProfile/"  method="get">
+    		<input type="submit" class="btn" value="Edit Profile and Manage Filters" id="frm1_submit" />
+		</form>
+		{% endif %}
+	  </div>
 	  <hr>
 	  <div style="text-align:left;">
 		<h4>Dorm: {{ user.userdata.dorm }}</h4>
 		<h4>Resolved: {{ user.userdata.score }} {% if user.userdata.score > 1 %} problems {% else %} problem {% endif %}</h4>
 		<h4>Help Filters: 
 		{% for filter in helpfilters %}
-		{% if filter != helpfilters|last %}
-		{{ filter }},
-		{% else %}
-		{{ filter }}
-		{% endif %}
-		{% empty %}
-		None
+			{% if filter != helpfilters|last %}
+				{{ filter }},
+			{% else %}
+				{{ filter }}
+			{% endif %}
+			{% empty %}
+			None
 		{% endfor %}
 		</h4>
 		<h4>Want Filters: 
 		{% for filter in wantfilters %}
-		{% if filter != wantfilters|last %}
-		{{ filter }},
-		{% else %}
-		{{ filter }}
-		{% endif %}
-		{% empty %}
-		None
+			{% if filter != wantfilters|last %}
+				{{ filter }},
+			{% else %}
+				{{ filter }}
+			{% endif %}
+				{% empty %}
+				None
 		{% endfor %}
 		</h4>
 	  </div>

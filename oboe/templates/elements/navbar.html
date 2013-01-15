@@ -6,7 +6,7 @@
         <ul class="nav pull-right">
 	  {% if user.username %}
 	  <li>
-	    <a href="/editProfile/" class="navbar-link">
+	    <a href="/profile/{{ user }}/" class="navbar-link">
 	       Hi, 
 	      {% if user.first_name %}
 	        {{ user.first_name|capfirst }}

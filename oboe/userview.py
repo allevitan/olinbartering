@@ -96,7 +96,7 @@ def editProfile(request):
 		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 		form = EditProfileForm(initial = data, user = user)
 
-	return render(request, 'editProfile2.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 @csrf_exempt
 def editUserProfile(request):	
@@ -230,4 +230,4 @@ def profilepage(request, username):
 	bulletins = Bulletin.objects.filter(creator=user.userdata)
 	helpfilters = [filterName.name for filterName in filters.all() if filterName.helpfilter]
 	wantfilters = [filterName.name for filterName in filters.all() if not filterName.helpfilter]
-	return render(request, 'profilepage.html', {'user':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+	return render(request, 'profilepage.html', {'request': request, 'user':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
