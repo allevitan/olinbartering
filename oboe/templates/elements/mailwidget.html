@@ -1,4 +1,5 @@
 {% for thread in mail %}
+{% if thread.users.all|length >= 2 %}
 {% with thread.reply_set.all|dictsort:"timestamp"|last as latestreply %}
 <div class="mcon">
   <div style="float:right; margin-left:5px;">{% if latestreply.sender == user.userdata %}<span id="tofrom{{ thread.id }}">to</span> 
@@ -9,5 +10,6 @@
 {% endwith %}
 {% if not forloop.last %}
 <hr>
+{% endif %}
 {% endif %}
 {% endfor %}

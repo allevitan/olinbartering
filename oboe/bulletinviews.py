@@ -81,12 +81,16 @@ def resolve(request):
             else:
                 if fromthread:
                     resolver = thread.users.exclude(user=request.user).get()
+                    bulletin.resolver = resolver                
                 else:
                     resolver = request.POST['username']
-                    resolver = '.'.join(resolver.lower().split())
-                    resolver = User.objects.get(username=resolver).userdata
+                    if resolver:
+                        resolver = '.'.join(resolver.lower().split())
+                        resolver = User.objects.get(username=resolver).userdata
+                        if resolver == request.user.userdata:
+                            return HttpResponse('Not yourself...')
+                        bulletin.resolver = resolver
                 bulletin.resolved = True
-                bulletin.resolver = resolver
                 bulletin.save()
                 resolver.score = resolver.score + 1
                 resolver.save()
