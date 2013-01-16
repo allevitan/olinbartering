@@ -1,7 +1,7 @@
 <form action="" method="post" class="eff"> <!--eff = editFilterForm -->
 	{% csrf_token %}
 
-<div class="row-fluid">
+<div class="row-fluid" style="min-width:1125px;">
     <div class="span6">
       <div class="btn-toolbar relative" style="position:relative;">
 	<h3 style="text-align:center;">Browse and Add</h3>
@@ -92,9 +92,9 @@
 	  </div>
 	</div>
       </div>
-	<div style="text-align:center;position:relative;bottom:0px">
-	<a href="/filterSuggestions/" style="font-size:20px;">Suggest a new filter!</a>
-	</div>
     </div>
+</div>
+<div class="well" style="text-align:center;position:relative;bottom:25px;padding:5px;">
+	<a href="/filterSuggestions/" style="font-size:20px;">Suggest a new filter!</a>
 </div>
 
