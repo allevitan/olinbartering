@@ -7,13 +7,12 @@ from oboe import pathfinders, models
 from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, Select
 from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
-from django.utils.safestring import mark_safe
-
-
+from django.utils.safestring import mark_safe 
 
 class LoginForm(forms.Form):
 	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'first.last'}))
 	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
+
 
 class RegistrationForm(forms.Form):
 	first_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Franklin'}))
@@ -22,66 +21,58 @@ class RegistrationForm(forms.Form):
 	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
 	confirmPassword = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
 	dorm = forms.CharField(max_length=5, widget=forms.TextInput(attrs={'placeholder': 'WH101'}))
-	pic = forms.ImageField(required=False)
+	pic = forms.ImageField(required=False) #pic is the only form field not required
 
-class EditProfileForm(forms.Form):
-	
-	def genUserFilters(self):
-		userFilters = self._user.userdata.filters.all()
-		userHelpFilters = set([(userHelpFilter.name, userHelpFilter.name) for userHelpFilter in userFilters if userHelpFilter.helpfilter])
-		userWantFilters = set([(userWantFilter.name, userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
-		filters = Filter.objects.all()
-		helpFilters = set([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
-		helpFilters = helpFilters - userHelpFilters
-		wantFilters = set([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
-		wantFilters = wantFilters - userWantFilters
-		return helpFilters, wantFilters
-		
-	def __init__(self, user=None, *args, **kwargs):
-		super(EditProfileForm, self).__init__(*args, **kwargs)
-		self._user = user
-		helpFilters, wantFilters = self.genUserFilters()
-		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
-		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
-		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}))
-		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}))
-		
-	first_name = forms.CharField(max_length=30)
-	last_name = forms.CharField(max_length=30)
-	emailAddress = forms.EmailField()
-	dorm = forms.CharField(max_length=5)
-	pic = forms.ImageField(required=False)
 
 class UserProfileForm(forms.Form):
-		
 	first_name = forms.CharField(max_length=30)
 	last_name = forms.CharField(max_length=30)
 	emailAddress = forms.EmailField()
 	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
+
 
 class EditFilterForm(forms.Form):
 
-	def genUserFilters(self):
-		userFilters = self._user.userdata.filters.all()
-		userHelpFilters = set([(userHelpFilter.name, userHelpFilter.name) for userHelpFilter in userFilters if userHelpFilter.helpfilter])
-		userWantFilters = set([(userWantFilter.name, userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
+	def genFilters(self):
+		'''genFilters returns a formatted list of filters that the user does not have enabled'''
+
+		#basic database query for user's enable filters
+		userFilters = self._user.userdata.filters.all()  
+
+		#divide the filters into categories (help & want) and access name attribute -- then convert to string
+		userHelpFilters = set([str(userHelpFilter.name) for userHelpFilter in userFilters if userHelpFilter.helpfilter])
+		userWantFilters = set([str(userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
+		
+		#get list of all existing filters
 		filters = Filter.objects.all()
-		helpFilters = set([(filterName.name, filterName.name) for filterName in filters if filterName.helpfilter])
-		helpFilters = helpFilters-userHelpFilters
-		wantFilters = set([(filterName.name, filterName.name) for filterName in filters if not filterName.helpfilter])
+
+		#divide all existing filters into categories (help & want) and access name attribute -- then convert to string
+		helpFilters = set([str(filterName.name) for filterName in filters if filterName.helpfilter])
+		wantFilters = set([str(filterName.name)  for filterName in filters if not filterName.helpfilter])
+
+		#perform set subtraction to generate the desired list of unenabled filters
+		helpFilters = helpFilters - userHelpFilters
 		wantFilters = wantFilters - userWantFilters
-		return helpFilters, wantFilters
+	
+		#convert to list and sort elements
+		return sorted(list(helpFilters)), sorted(list(wantFilters))
 		
 	def __init__(self, user, *args, **kwargs):
+		#__init__ method override needed to pass data from view to form (in this case, the variable user)
 		super(EditFilterForm, self).__init__(*args, **kwargs)
 		self._user = user
-		helpFilters, wantFilters = self.genUserFilters()
-		strWantFilters = [str(wantFilter[0]) for wantFilter in wantFilters]
-		strHelpFilters = [str(helpFilter[0]) for helpFilter in helpFilters]
-		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strWantFilters).replace("'", '"')}), required=False) #mark_safe and .replace method needed to override html formatting
-		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Tag...', 'data-source': mark_safe(strHelpFilters).replace("'", '"')}), required=False)
+		helpFilters, wantFilters = self.genFilters()
+		
+		#mark_safe and .replace method needed to override html formatting
+		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off',\
+								'placeholder':'Tag...', 'data-source': mark_safe(wantFilters).replace("'", '"')}), required=False) 
+		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off',\
+								'placeholder':'Tag...', 'data-source': mark_safe(helpFilters).replace("'", '"')}), required=False)
 
+class EditProfileForm(UserProfileForm, EditFilterForm):
+	pass
+	
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())
 	newPassword = forms.CharField(widget=forms.PasswordInput())
@@ -94,44 +85,6 @@ class ContactForm(forms.Form):
 
 class PasswordResetForm(forms.Form):
 	emailAddress = forms.EmailField()
-
-class BulletinForm(forms.Form):
-	filters = Filter.objects.all()
-	filters = set((filterName.name, filterName.name) for filterName in filters)
-	bulletinType = forms.ChoiceField(choices=(
-			('Help?', 'Can you help?'),
-			('Want?', 'Do you want?'),
-			))
-	price = forms.ChoiceField(choices=(
-			('Free', 'Free'),
-			('Cheap', 'Cheap'),
-			))
-	subject = forms.CharField(max_length=50)
-	message = forms.CharField(widget=forms.Textarea(attrs={'class': "span3", 'rows': 5}))
-	week = datetime.now() + timedelta(7)
-	relevance = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'placeholder':'01/01/01 12:00'}), initial = week.strftime('%m/%d/%Y'))
-	location = forms.ChoiceField(choices=(
-			('NA','Not Applicable'),
-            ('AC','Academic Center'),
-            ('CC','Campus Center'),
-            ('EH','East Hall'),
-            ('LP','Large Project Building'),
-            ('MH','Milas Hall'),
-            ('WH','West Hall')
-            ))
-	filters = forms.ChoiceField(choices=(filters))
-
-class MissiveForm(forms.Form):
-	price = forms.ChoiceField(choices=(
-			('Free', 'Free'),
-			('Cheap', 'Cheap'),
-			))
-	message = forms.CharField(widget=forms.Textarea(attrs={'class': "span3", 'rows': 10}))
-
-	def __init__(self, *args, **kwargs):
-		bulletins = kwargs.pop('bulletins')
-		super(MissiveForm, self).__init__(*args, **kwargs)
-		self.fields['bulletin'] = forms.ChoiceField(choices=(bulletins))
 
 class MultiProfileDisplay(forms.Form):
 

@@ -59,7 +59,7 @@
 	  <hr>
 	  <div style="text-align:left;">
 		<h4>Dorm: {{ user.userdata.dorm }}</h4>
-		<h4>Resolved: {{ user.userdata.score }} {% if user.userdata.score > 1 %} problems {% else %} problem {% endif %}</h4>
+		<h4>Resolved: {{ user.userdata.score }} {% if user.userdata.score > 1 %} problems {% elif user.userdata.score == 0 %} problems {% else %} problem {% endif %}</h4>
 		<h4>Help Filters: 
 		{% for filter in helpfilters %}
 			{% if filter != helpfilters|last %}

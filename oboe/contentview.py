@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
-from forms import BulletinForm, MissiveForm, MultiProfileDisplay
+from forms import MultiProfileDisplay
 from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm, FilterSuggestionForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail
@@ -53,45 +53,6 @@ def getFilter(name, helpfilter):
 			bulletinFilter = Filter.objects.create(name = name, helpfilter=False)	
 		bulletinFilter.save()
 	return bulletinFilter
-
-def addBulletin(request):	
-	if request.method == 'POST':
-		form = BulletinForm(request.POST, request.FILES)
-		if form.is_valid() and request.user.is_authenticated():
-			cleaned_data = form.clean()
-			user = User.objects.get(username = request.user)
-			userdata = user.userdata
-			email = user.email
-			subject = cleaned_data['subject']
-			message = cleaned_data['message']
-			location = cleaned_data['location']
-			relevance = cleaned_data['relevance']
-			filters = cleaned_data['filters']
-			bulletinType = cleaned_data['bulletinType']
-			if bulletinType == "Want?":
-				price = cleaned_data['price']
-				bulletinFilter = getFilter(filters, helpfilter=False)
-				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance, resolved=False, reply_count = 0,
-                	free=price, tag=bulletinFilter, helpbulletin=False)
-			elif bulletinType == "Help?":
-				bulletinFilter = getFilter(filters, helpfilter=True)
-				bulletin = Bulletin.objects.create(creator = userdata, subject = subject,
-					location = location, relevance = relevance, helpbulletin=True,
-					resolved=False, reply_count = 0, tag=bulletinFilter)
-			else:
-				raise ValidationError
-			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), 
-				message = message)
-			bulletin.save()
-			missive.save()
-			return HttpResponseRedirect('/')
-	else:
-		if request.user.is_authenticated():
-			form = BulletinForm()
-		else:
-			return HttpResponseRedirect('/login')
-	return render(request, 'addBulletin.html', {'form':form})
 
 def editBulletin(request):	
 	if request.method == 'POST':
@@ -164,31 +125,6 @@ def selectBulletin(request):
 		else:
 			return HttpResponseRedirect('/login')
 	return render(request, 'selectBulletin.html', {'form':form})
-
-
-def newMissive(request):	
-	if request.method == 'POST':
-		bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
-		form = MissiveForm(request.POST or None, request.FILES, bulletins=bulletins)
-		if form.is_valid():
-			cleaned_data = form.clean()
-			user = User.objects.get(username = request.user)
-			userdata = user.userdata
-			message = cleaned_data['message']
-			subject = request.POST.get('bulletin', '')
-			bulletin = Bulletin.objects.get(subject=subject)
-			bulletin.update = datetime.now()
-			bulletin.save()
-			missive = Missive.objects.create(bulletin = bulletin, timestamp = datetime.now(), message = message)
-			missive.save()
-			return HttpResponseRedirect('/')
-	else:
-		if request.user.is_authenticated():
-			bulletins = set((bulletin.subject, bulletin.subject) for bulletin in Bulletin.objects.filter(creator=request.user.userdata))
-			form = MissiveForm(request.POST or None, bulletins=bulletins)
-		else:
-			return HttpResponseRedirect('/login')
-	return render(request, 'newMissive.html', {'form':form})
 
 def viewBulletin(request, pk):
 	if pk > 0:
