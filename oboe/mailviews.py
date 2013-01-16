@@ -41,7 +41,9 @@ def thread(request, pk):
     if (request.user.is_authenticated() 
         and request.user.userdata in thread.users.all()):
         info.update({'thread':thread})
+        new=[]
         for reply in thread.reply_set.exclude(sender=request.user.userdata).filter(read=False):
+            new.append(reply.id)
             reply.read=True
             reply.save()
         #Handle request to add replies to the thread
@@ -59,16 +61,18 @@ def thread(request, pk):
                 reply.save()
     #Filling out the necessary context
     form = ReplyForm()	
-    info.update({'form':form});
+    info.update({'form':form, 'new':new});
     return render(request, 'elements/replythread.html', info)
 
 
-def newcount(request):
+def newmail(request):
     replies = Reply.objects.filter(read=False).filter(thread__users=request.user.userdata).exclude(sender=request.user.userdata)
     length = len(replies)
     if length >= 1:
-        new = " (%d)" % len(replies)
+        new = "(%d)" % len(replies)
     else: new = ""
+    for reply in replies:
+        new = "%s %d" %(new, reply.thread.pk)
     return HttpResponse(new)
 
 
@@ -78,5 +82,5 @@ urls = patterns('',
                 url(r'^$', base),
                 url(r'^box/$', mailbox),
                 url(r'^thread/(?P<pk>\d+)/$', thread),
-                url(r'^newcount/$', newcount),
+                url(r'^newmail/$', newmail),
 )

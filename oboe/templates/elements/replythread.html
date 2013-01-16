@@ -28,11 +28,11 @@
 {% with replies=thread.reply_set.all|dictsortreversed:"timestamp" %}
 {% for reply in replies %}
 <div style="float:right;">{{ reply.timestamp }}</div>
-<h5>{% if reply.public %}<span style="color:#606060;">Public: </span>{% endif %}{{ reply.sender }}:</h5>
+<h5>{% if reply.public %}<span style="color:#606060;">Public: </span>{% endif %}{{ reply.sender }}: {% if reply.id in new %}<span class="faded">(new)</span>{% endif %}</h5>
 <div class="reply">
   {{ reply.message }}
 </div>
-{% if not forloop.last %}<hr>{% endif %}
+{% if not forloop.last %}<hr style="margin-top:10px; margin-bottom:-2px;">{% endif %}
 {% endfor %}
 {% endwith %}
 {% else %}

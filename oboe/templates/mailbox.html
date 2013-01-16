@@ -10,13 +10,21 @@
 
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
 
+function updateSidebar(pk){
+  $('span[newtag="' + pk + '"]').css('display','none');
+  $("div.mcon").css('margin-left', '0px');
+  $("div.mcon#" + pk).css('margin-left', '10px');
+}
+
 function loadthread(pk){
   var URI = "/mail/thread/" + pk + "/";
+  checkForMail(function(){updateSidebar(pk)});
   $("#bigbox").load(URI);
 }
 
 $(document).ready(function(){
   loadthread({{ mail.0.id }});
+  setInterval(checkForMail(),30000);
 });
 
 $("#replyform").live("submit", function(){
