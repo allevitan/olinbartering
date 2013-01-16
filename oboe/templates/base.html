@@ -43,7 +43,11 @@
 
     {% block scripts %}
     {% endblock %}
-
+    
+    <script>
+    {% include "djangojs/pushNotifications.js" with mailbox="#mailcount" %}
+    </script>
+    
     <script type="text/javascript">  
       $(document).ready(function(){
           var keys = [];

@@ -102,6 +102,7 @@ class Reply(models.Model):
     public = models.BooleanField(default=False)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    read = models.BooleanField(default=False)
     
     def __unicode__(self):
         return "%s" % self.message
