@@ -51,7 +51,7 @@
           $(document).keydown(function(e) {
               keys.push(e.keyCode);
               if (keys.toString().indexOf( konami ) >= 0) {
-                  $('body').append('<iframe id="konami" width="960" height="720" style="position:absolute; top:50%; left:50%; margin:-340px 0 0 -480px;" src="http://www.youtube.com/embed/wrW4AtONSnw?rel=0&amp;autoplay=1" frameborder="0" allowfullscreen></iframe>')
+                  $('body').append('<iframe id="konami" width="960" height="700" style="position:absolute; top:50%; left:50%; margin:-330px 0 0 -480px;" src="http://www.youtube.com/embed/wrW4AtONSnw?rel=0&autoplay=1&loop=1&controls=0&showinfo=0" frameborder="0" allowfullscreen></iframe>')
                   keys = [];
                   
               }

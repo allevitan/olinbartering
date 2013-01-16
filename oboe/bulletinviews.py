@@ -3,9 +3,9 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
-from models import Bulletin, Missive, Filter, Reply_Thread, UserData
-from forms import CreateBulletinForm
-import datetime
+from models import Bulletin, Missive, Filter, Reply_Thread, Reply, UserData
+from forms import CreateBulletinForm, UpdateBulletinForm, ReplyForm, ResolverCreditForm
+import datetime                
 
 def create(request):
     if not request.user.is_authenticated():
@@ -64,6 +64,52 @@ def create(request):
     return render(request, 'create.html', {'form':form, 'helptags':helptags, 'wanttags':wanttags, 'errors':errors})
 
 
+def view(request, pk):
+    
+    if pk > 0:
+        
+        #database queries for bulletin info 
+        bulletin = Bulletin.objects.get(pk=pk)
+        allreplies = Reply.objects.filter(thread__bulletin=bulletin)
+        replies= allreplies.filter(public=True).order_by("-timestamp")
+        privatecount = allreplies.filter(public=False).exclude(sender=bulletin.creator).count()
+    else: return render(request, '404.html', {})        
+    
+    if request.method == 'POST':
+        form = ReplyForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.clean()
+            if request.POST['visibility'] == 'Public':
+                public = True
+            else: public = False
+            user = request.user.userdata
+            if user != bulletin.creator or public:
+                
+                #send public message
+                message = cleaned_data['message']
+                
+                #generate new thread if needed
+                if allreplies.filter(sender=user).exists():
+                    thread = (allreplies.filter(sender=user)[0]).thread
+                else:
+                    thread = Reply_Thread.objects.create(bulletin=bulletin)
+                    thread.users.add(user)
+                    thread.users.add(bulletin.creator)
+                    
+                #save info
+                thread.save()
+                reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
+                reply.save()
+
+    #update page
+    form = ReplyForm()
+    resolveform = ResolverCreditForm()
+    if request.user.userdata == bulletin.creator:
+        bulletinform = UpdateBulletinForm()
+    else: bulletinform = {}
+    return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform, 'resolveform':resolveform})
+
+
 def resolve(request):
     if request.user.is_authenticated and request.method == 'POST':
         if request.POST.get('thread',''):
@@ -104,3 +150,49 @@ def resolve(request):
                 return HttpResponse('Resolved')
     else:
         return HttpResponseRedirect('/')
+
+
+def update(request, pk):
+    
+    #basic validation
+    if pk > 0 and request.user.is_authenticated() and request.method == 'POST':
+        bulletin = Bulletin.objects.get(pk=pk)
+    else: return HttpResponseRedirect('/home/')
+    
+    #check identity of user against identity of bulletin creator to 
+    #determine which page should be redered. 
+    if request.user.userdata == bulletin.creator:
+        form = UpdateBulletinForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.clean()
+            message = cleaned_data['missive']
+            
+            #send out a new missive if the bulletin is not yet resolvd
+            if not bulletin.resolved:
+                missive = Missive.objects.create(message=message,bulletin=bulletin)
+                if request.POST.get('free',''):
+                    bulletin.free = True
+                    bulletin.save()
+                    missive.save()
+
+            #add words of wisdom from the bulletin creator
+            elif bulletin.helpbulletin and len(message) <= 200:
+                bulletin.advice = message
+                bulletin.save()
+		
+        #direct users who input bad info to the bulletin page
+        else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
+
+    #direct users who don't have permission to update to the bulletin page
+    else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
+    
+    #direct successful requests to the home page, where they see the update
+    return HttpResponseRedirect('/home/');
+
+
+from django.conf.urls import patterns, url
+urls = patterns('',
+                url(r'^(?P<pk>\d+)/$', view),
+                url(r'^resolve/$', resolve),
+                url(r'^(?P<pk>\d+)/update/$', update),
+)
