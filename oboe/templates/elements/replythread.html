@@ -1,9 +1,15 @@
 {% if thread %}
 {% if user.userdata == thread.bulletin.creator and not thread.bulletin.resolved %}
 <button class="btn sharp pull-right" id="replycredit" type="button" thread="{{ thread.id }}" style="margin-top:5px;">{% if thread.bulletin.helpbulletin %}Resolve + Credit{% else %}Resolve{% endif %}</button>
+{% elif not thread.bulletin.resolved %}
+<h4 class="faded pull-right">unresolved</h4>
+{% elif thread.bulletin.helpbulletin and thread.bulletin.resolved %}
+<h4 class="faded pull-right">resolved by {{ thread.bulletin.resolver }}</h4>
+{% else %}
+<h4 class="faded pull-right">resolved</h4>
 {% endif %}
-<a href="/bulletin/{{ thread.bulletin.id }}"><h3 style="margin-top:0px;">{{ thread.bulletin.subject }}</h3></a>
-<h4 style="color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}</h4>
+<h3 style="margin-top:0px;"><span class="faded">{% if thread.bulletin.helpbulletin %}Help!{% else %}Want?{% endif %}</span> <a href="/bulletin/{{ thread.bulletin.id }}">{{ thread.bulletin.subject }}</a></h3>
+<h4 style="color:#505050;">with {% for member in thread.users.all %}{% if member != user.userdata %}<a href="/profile/{{ member.user }}/">{{ member }}</a>{% endif %}{% endfor %}</h4>
 <hr>
 <form id="replyform" action="{{ thread.id }}" method="POST">
   <input type="submit" value="Reply" id="id_submit" >

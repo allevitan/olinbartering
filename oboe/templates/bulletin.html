@@ -46,9 +46,6 @@ $("#resolvebutton").click(function(){
 {% include "djangocss/replyform.css" %}
 {% include "djangocss/bulletinform.css" %}
 
-.faded{
-    color:#909090;
-}
 
 #contentbox{
     max-width:500px;
@@ -68,7 +65,7 @@ $("#resolvebutton").click(function(){
 
 {% block content %}
 <div class="container-fluid" id="contentbox">
-  <h3 style="margin-left:25px;">{{ bulletin.subject|title }}</h3>
+  <h3 style="margin-left:25px;"><span class="faded">{% if bulletin.helpbulletin %}Help!{% else %}Want?{% endif %}</span> {{ bulletin.subject|title }}</h3>
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="bulletinbox">
       <div class="scrollbox-inner">
@@ -79,7 +76,7 @@ $("#resolvebutton").click(function(){
 	  <input type="hidden" name="bulletin" value="{{ bulletin.id }}">
 	  <button type="button" class="btn" id="resolvebutton" form="#resolveform">Resolve</button>
 	</form>
-	{% elif bulletin.creator = user.userdata and not bulletin.resolved %}
+	{% elif bulletin.creator == user.userdata and not bulletin.resolved %}
 	<form action="" id="resolveform" class="pull-right">
 	  {% csrf_token %}
 	  <input type="hidden" name="bulletin" value="{{ bulletin.id }}">
@@ -87,16 +84,16 @@ $("#resolvebutton").click(function(){
 	</form>
 	{% elif bulletin.helpbulletin and bulletin.resolver %}
 	<h4 class="pull-right" style="color:#909090;">resolved by {{ bulletin.resolver }}</h4>
-	{% elif bulletin.resolver %}
+	{% elif bulletin.resolved %}
 	<h4 class="pull-right" style="color:#909090;">resolved</h4>
 	{% else %}
 	<h4 class="pull-right" style="color:#909090;">unresolved</h4>
 	{% endif %}
-	<h4 style="color:#404040; margin-top:5px; margin-bottom:25px;"><span class="faded">by</span> {% if bulletin.creator = user.userdata %}You{% else %}{{ bulletin.creator|title }}{% endif %} <span class="faded">about</span> {{bulletin.tag|title }} {% if bulletin.location != "NA" %}<span class="faded">in the</span> {{ bulletin.get_location_display }}{% endif %} {% if not bulletin.helpbulletin %}<span class="faded">for</span> {{ bulletin.get_free_display }}{% endif %}</h4>
+	<h4 style="color:#404040; margin-top:5px; margin-bottom:25px;">{% include "elements/infostring.html" %}</h4>
 
-	{% if bulletin.creator = user.userdata %}
+	{% if bulletin.creator = user.userdata and not bulletin.resolved or bulletin.helpbulletin and not bulletin.advice %}
 	<form action="/update/{{ bulletin.id }}/" method="POST">
-	  <input type="submit" class="btn sharp" value="Update" id="id_submit" >
+	  <input type="submit" class="btn sharp" value="{{ bulletin.resolved|yesno:"Add Wisdom,Update" }}" id="id_submit" >
 	  {% csrf_token %}
 	  {% if not bulletin.helpbulletin and not bulletin.free %}
 	  <div id="id_free"><input type="checkbox" name="free" value="true" style="margin-top:-3px;">Make Free</div>
@@ -106,6 +103,11 @@ $("#resolvebutton").click(function(){
 	</form>	
 	{% endif %}
 
+	{% if bulletin.advice %}
+	<hr>
+	<h4>Wisdom for the ages:</h4>
+	{{ bulletin.advice }}
+	{% endif %}
 	<hr>
 	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
 	<h5>

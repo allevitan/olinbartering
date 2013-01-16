@@ -169,11 +169,15 @@ def updateBulletin(request, pk):
 		if form.is_valid():
 			cleaned_data = form.clean()
 			message = cleaned_data['missive']
-			missive = Missive.objects.create(message=message,bulletin=bulletin)
-			if request.POST.get('free',''):
-				bulletin.free = "true"
-			bulletin.save()
-			missive.save()
+			if not bulletin.resolved:
+				missive = Missive.objects.create(message=message,bulletin=bulletin)
+				if request.POST.get('free',''):
+					bulletin.free = True
+				bulletin.save()
+				missive.save()
+			elif bulletin.helpbulletin and len(message) <= 200:
+				bulletin.advice = message
+				bulletin.save()
 		else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
 	else: return HttpResponseRedirect('/bulletin/%d/' % bulletin.id)
 	return HttpResponseRedirect('/home/');
