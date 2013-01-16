@@ -27,7 +27,7 @@ $(document).ready(function(){
 
 $("#resolvebutton").click(function(){
    form = $($(this).attr('form'));
-   $.post("/resolve/", form.serialize(), function(data){
+   $.post("/bulletin/resolve/", form.serialize(), function(data){
       if (data == 'Not yourself...'){
          $("#id_username").attr('placeholder',data).val('');
       } else {
@@ -99,7 +99,7 @@ $("#id_free").click(function(){
 
 	{% if bulletin.creator = user.userdata %}
 	{% if not bulletin.resolved or bulletin.helpbulletin and not bulletin.advice %}
-	<form action="/update/{{ bulletin.id }}/" method="POST">
+	<form action="/bulletin/{{ bulletin.id }}/update/" method="POST">
 	  <input type="submit" class="btn sharp pull-right" value="{{ bulletin.resolved|yesno:"Add Wisdom,Update" }}" id="id_submit" style="margin-top:2px;" >
 	  {% csrf_token %}
 	  {% if not bulletin.helpbulletin and not bulletin.free %}
