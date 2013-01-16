@@ -42,7 +42,20 @@ $.post("/resolve/", { 'thread': $('#replycredit').attr("thread"),
 {% block css %}
 
 {% include "djangocss/scroll.css" %}
-{% include "djangocss/replyform.css" %}
+
+#id_visibility, #id_submit{
+  margin-bottom:7px;
+  margin-top:4px;
+  margin-left:5px;
+}
+
+#id_message{
+  width:100%;
+  height:60px;
+  border-radius:0px;
+  resize:none;
+  padding:0px;
+}
 
 .sharp {
   padding:4px;

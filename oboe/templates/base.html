@@ -44,4 +44,20 @@
     {% block scripts %}
     {% endblock %}
 
+    <script type="text/javascript">  
+      $(document).ready(function(){
+          var keys = [];
+          var konami = '38,38,40,40,37,39,37,39,66,65';
+          $(document).keydown(function(e) {
+              keys.push(e.keyCode);
+              if (keys.toString().indexOf( konami ) >= 0) {
+                  $('body').append('<iframe id="konami" width="960" height="720" style="position:absolute; top:50%; left:50%; margin:-340px 0 0 -480px;" src="http://www.youtube.com/embed/wrW4AtONSnw?rel=0&amp;autoplay=1" frameborder="0" allowfullscreen></iframe>')
+                  keys = [];
+                  
+              }
+          });
+          $('body').live('click', function(){$('#konami').remove()});
+      });
+    </script>  
+    
 </html>

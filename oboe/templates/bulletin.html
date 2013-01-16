@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block scripts %}
-<script src="/static/js/jquery.js"></script>
-<script src="/static/js/bootstrap.js"></script>
 <script>
 {% if not webkit %}
 {% include "djangojs/scroll.js" with ident=".scrollbox" %}
@@ -25,6 +23,8 @@ $(document).ready(function(){
 
 {% include "djangojs/fill.js" with ident="#replybox" %}
 
+{% include "djangojs/radioButtons.js" %}
+
 $("#resolvebutton").click(function(){
    form = $($(this).attr('form'));
    $.post("/resolve/", form.serialize(), function(data){
@@ -36,7 +36,13 @@ $("#resolvebutton").click(function(){
    });
 });
 
-
+$("#id_free").click(function(){
+  if ( $(this).hasClass('active') ){
+     $('input[name="free"]').val('false');
+  } else {
+     $('input[name="free"]').val('true');
+  }
+});
 
 </script>
 {% endblock %}
@@ -94,10 +100,11 @@ $("#resolvebutton").click(function(){
 	{% if bulletin.creator = user.userdata %}
 	{% if not bulletin.resolved or bulletin.helpbulletin and not bulletin.advice %}
 	<form action="/update/{{ bulletin.id }}/" method="POST">
-	  <input type="submit" class="btn sharp" value="{{ bulletin.resolved|yesno:"Add Wisdom,Update" }}" id="id_submit" >
+	  <input type="submit" class="btn sharp pull-right" value="{{ bulletin.resolved|yesno:"Add Wisdom,Update" }}" id="id_submit" style="margin-top:2px;" >
 	  {% csrf_token %}
 	  {% if not bulletin.helpbulletin and not bulletin.free %}
-	  <div id="id_free"><input type="checkbox" name="free" value="true" style="margin-top:-3px;">Make Free</div>
+	  <input type="hidden" name="free" value="false">
+	  <input type="button" class="btn sharp pull-right" value="Make Free" id="id_free" data-toggle="button">
 	  {% endif %}
 	  <h4>{% if bulletin.missive_set.all|length > 1 %}Update {{ bulletin.missive_set.all|length }}:{% else %}Update:{% endif %}</h4>
 	  {{ bulletinform.missive }}
@@ -139,11 +146,14 @@ $("#resolvebutton").click(function(){
     <div class="scrollbox" id="replybox">
       <div class="scrollbox-inner">
 	<form action="" method="POST">
-	  <input type="submit" value="Reply" id="id_submit" >
+	  <input type="submit" class="btn sharp" value="Reply" id="id_submit" style="margin-top:2px;">
 	  {% csrf_token %}
-	  <div id="id_visibility">
-	    <input type="radio" name="visibility" value="Public" style="margin-top:-3px;">Public
-	    <input type="radio" name="visibility" value="Private" style="margin-top:-3px; margin-left:10px;" checked>Private
+	  <input type="hidden" name="visibility" value="Private" >	  
+	  <div class="btn-group pull-right" data-toggle-name="visibility" data-toggle="buttons-radio" id="id_visibility" >
+	    <div></div>
+	    <input type="button" class="btn sharp" value="Public" >
+	    <input type="button" class="btn sharp" value="Private" >
+	    <div></div>
 	  </div>
 	  <h4>{{ user.get_full_name }}:</h4>
 	  {{ form.message }}
