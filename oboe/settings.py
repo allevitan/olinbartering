@@ -23,12 +23,6 @@ AWS_SECRET_ACCESS_KEY = 'abw8atzOBZ9oP8ZXwPiI+xtpWjmIBBFJX62Y3bhe'
 
 AWS_STORAGE_BUCKET_NAME = 'oboe'
 
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_HOST_USER = 'worldpeaceagentforchange@gmail.com'
-#EMAIL_HOST_PASSWORD = 'Aquilla77~'
-#EMAIL_PORT = 587
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
