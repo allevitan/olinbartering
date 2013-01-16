@@ -31,7 +31,6 @@ class UserProfileForm(forms.Form):
 	dorm = forms.CharField(max_length=5)
 	pic = forms.ImageField(required=False)
 
-
 class EditFilterForm(forms.Form):
 
 	def genFilters(self):
@@ -55,8 +54,8 @@ class EditFilterForm(forms.Form):
 		helpFilters = helpFilters - userHelpFilters
 		wantFilters = wantFilters - userWantFilters
 	
-		#convert to list and sort elements
-		return sorted(list(helpFilters)), sorted(list(wantFilters))
+		#convert to list and return result
+		return list(helpFilters), list(wantFilters)
 		
 	def __init__(self, user, *args, **kwargs):
 		#__init__ method override needed to pass data from view to form (in this case, the variable user)
@@ -70,7 +69,7 @@ class EditFilterForm(forms.Form):
 		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off',\
 								'placeholder':'Tag...', 'data-source': mark_safe(helpFilters).replace("'", '"')}), required=False)
 
-class EditProfileForm(UserProfileForm, EditFilterForm):
+class ManageFiltersForm(EditFilterForm):
 	pass
 	
 class ChangePasswordForm(forms.Form):
