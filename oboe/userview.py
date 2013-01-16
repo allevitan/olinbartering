@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.models import User
-from forms import LoginForm, RegistrationForm, EditProfileForm, ChangePasswordForm
-from forms import UserProfileForm, EditFilterForm
+from forms import LoginForm, RegistrationForm, ChangePasswordForm
+from forms import UserProfileForm, EditFilterForm, ManageFiltersForm
 from forms import PasswordResetForm
 from models import UserData, Missive, Filter, Bulletin
 from django.core.mail import send_mail
@@ -89,24 +89,6 @@ def register(request):
 	return render(request, 'registration.html', {'form':form})
 
 def editProfile(request):	
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/login')
-	else:
-		user = request.user
-		userdata = user.userdata
-
-		#seperate filters and sort by name
-		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
-		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
-
-		#get user data to pre-fill form with
-		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-		form = EditProfileForm(initial = data, user = user)
-
-	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
-
-@csrf_exempt
-def editUserProfile(request):	
 	if request.user.is_authenticated():
 		form = UserProfileForm(request.POST, request.FILES)
 		if form.is_valid():
@@ -136,7 +118,7 @@ def editUserProfile(request):
 			#resubmit user data to pre-fill form
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = UserProfileForm(initial=data)
-			return render(request, 'elements/editProfileForm.html', {'form':form})
+			return render(request, 'editProfile.html', {'form':form})
 		else: 
 
 			#if a form error occurs
@@ -145,10 +127,38 @@ def editUserProfile(request):
 			
 			#re-render the form - the html page will handle the error display
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = EditProfileForm(initial = data, user=user)
-			return render(request, 'elements/editProfileForm.html', {'form':form})
+			form = UserProfileForm(initial = data)
+			return render(request, 'editProfile.html', {'form':form})
 	else:
 		return HttpResponseRedirect('/login')
+
+def filterList(request):
+	pass
+
+def manageFilters(request):	
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/login')
+	else:
+		user = request.user
+		userdata = user.userdata
+
+		#seperate filters and sort by name
+		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+
+		#generate list of all helpfilters
+		globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
+		globalwantfilters = set(Filter.objects.filter(helpfilter=False))
+
+		#compute difference (filters user does not have enabled)
+		unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
+		unusedWantFilters = set(globalwantfilters - set(wantfilters))
+
+		#get user data to pre-fill form with
+		form = ManageFiltersForm(user = user)
+
+	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
+												 'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 
 @csrf_exempt
 def editFilters(request, help=False, delete=False):	
@@ -175,12 +185,21 @@ def editFilters(request, help=False, delete=False):
 			#sort the new data
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+
+			#generate list of all helpfilters
+			globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
+			globalwantfilters = set(Filter.objects.filter(helpfilter=False))
+
+			#compute difference (filters user does not have enabled)
+			unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
+			unusedWantFilters = set(globalwantfilters - set(wantfilters))
 	
 			#save changes and render the page again via AJAX call
 			user.save()
 			userdata.save()
 			form = EditFilterForm(user = user)
-			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
+															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 		else:
 			
 			#in the event of form errors
@@ -190,9 +209,18 @@ def editFilters(request, help=False, delete=False):
 			#resort filters and render page again with error display
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
-			form = EditFilterForm(user = user)
-			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
+			#generate list of all helpfilters
+			globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
+			globalwantfilters = set(Filter.objects.filter(helpfilter=False))
+
+			#compute difference (filters user does not have enabled)
+			unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
+			unusedWantFilters = set(globalwantfilters - set(wantfilters))
+
+			form = EditFilterForm(user = user)
+			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
+															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 	else:
 			return HttpResponseRedirect('/login')
 

@@ -1,0 +1,32 @@
+<form action="" method="post" class="filterlist"> <!--eff = editFilterForm -->
+	{% csrf_token %}
+	<div style="padding:0px">
+
+		<div id="left">
+			<h4 class="wantTitle"><strong>Want filters</strong></h4>
+			<hr class="tight_hr">
+		<div class="wantfilters">
+		{% for filter in unusedWantFilters %}
+			<div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
+				<button class="btn btn-success addWantFilter" type="button">+</button>
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+
+		<div id="right">
+			<h4 class="helpTitle"><strong>Help filters</strong></h4>
+			<hr class="tight_hr">
+		<div class="helpfilters">
+		{% for filter in unusedHelpFilters %}
+			<div class="input-append" id="{{ filter.name }}" helpfilter="True">
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+				<button class="btn btn-success addHelpFilter" id="button_{{filter.name}}" type="button">+</button>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+	</div>
+	
+</form>
