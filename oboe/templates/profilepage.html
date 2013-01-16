@@ -51,9 +51,7 @@
 	  </div>
 	  <div style="text-align:center;">
 	  	{% if user == request.user %}
-		<form action="/editProfile/"  method="get">
-    		<input type="submit" class="btn" value="Edit Profile and Manage Filters" id="frm1_submit" />
-		</form>
+    		<a href="/editProfile/" class="btn">Edit Profile</a><a href="/manageFilters/" class="btn">Edit Filters</a>
 		{% endif %}
 	  </div>
 	  <hr>

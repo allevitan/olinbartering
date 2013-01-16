@@ -171,16 +171,22 @@ def editFilters(request, help=False, delete=False):
 			cleaned_data = form.clean()
 			user = request.user
 			userdata = user.userdata
-			if help: #add a help filter to users ManyToMany field
-				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
-			elif not delete: #add a want filter
-				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
-			else: #delete a filter
-				if request.POST.get('helpfilter', '') == "True":
-					helpfilter = True
+			try: 
+				if help:
+					userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=True))
 				else:
-					helpfilter = False
-				userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
+					userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=False))	
+			except:
+				if help: #add a help filter to users ManyToMany field
+					userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
+				elif not delete: #add a want filter
+					userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
+				else: #delete a filter
+					if request.POST.get('helpfilter', '') == "True":
+						helpfilter = True
+					else:
+						helpfilter = False
+					userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
 
 			#sort the new data
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
@@ -198,7 +204,7 @@ def editFilters(request, help=False, delete=False):
 			user.save()
 			userdata.save()
 			form = EditFilterForm(user = user)
-			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
+			return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
 															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 		else:
 			
@@ -219,7 +225,7 @@ def editFilters(request, help=False, delete=False):
 			unusedWantFilters = set(globalwantfilters - set(wantfilters))
 
 			form = EditFilterForm(user = user)
-			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
+			return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
 															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 	else:
 			return HttpResponseRedirect('/login')
@@ -297,3 +303,5 @@ def profilepage(request, username):
 	helpfilters = sorted([filterName.name for filterName in filters.all() if filterName.helpfilter])
 	wantfilters = sorted([filterName.name for filterName in filters.all() if not filterName.helpfilter])
 	return render(request, 'profilepage.html', {'request': request, 'user':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
+
+
