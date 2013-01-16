@@ -1,0 +1,100 @@
+<form action="" method="post" class="eff"> <!--eff = editFilterForm -->
+	{% csrf_token %}
+
+<div class="row-fluid">
+    <div class="span6">
+      <div class="btn-toolbar relative" style="position:relative;">
+	<h3 style="text-align:center;">Browse and Add</h3>
+      </div>
+      <div class="well well-large well-scroll custom_height custom_padding_filters">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner filter_padding filterbox">
+		<div style="padding:0px">
+
+		<div id="left">
+			<h4 class="wantTitle"><strong>Want filters</strong></h4>
+			<hr class="tight_hr">
+		<div class="wantfilters">
+		{% for filter in unusedWantFilters %}
+			<div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
+				<button class="btn btn-success addWantFilterList" type="button">+</button>
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+
+		<div id="right">
+			<h4 class="helpTitle"><strong>Help filters</strong></h4>
+			<hr class="tight_hr">
+		<div class="helpfilters">
+		{% for filter in unusedHelpFilters %}
+			<div class="input-append" id="{{ filter.name }}" helpfilter="True">
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+				<button class="btn btn-success addHelpFilterList" id="button_{{filter.name}}" type="button">+</button>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+	</div>
+	
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <div class="span6">
+      <div class="btn-toolbar relative" style="position:relative;">
+	<h3 style="text-align:center;">Add by Search</h3>
+      </div>
+      <div class="well well-large well-scroll custom_height custom_padding_filters">
+	<div class="scrollbox">
+	  <div class="scrollbox-inner filter_padding filterbox">
+			<div style="padding:0px">
+		<div id="left">
+			<h4 class="wantTitle"><strong>Want filters</strong></h4>
+			<hr class="tight_hr">
+			<div class="input-prepend custom_margin">
+				<button class="btn btn-success addWantFilter" type="button">+</button>
+				{{ form.wanttag }} 
+			</div>
+
+		<div class="wantfilters">
+		{% for filter in wantfilters %}
+			<div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
+				<button class="btn btn-danger delFilter" type="button">-</button>
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+
+		<div id="right">
+			<h4 class="helpTitle"><strong>Help filters</strong></h4>
+			<hr class="tight_hr">
+			<div class="input-append custom_margin">
+				{{ form.helptag }}
+				<button class="btn btn-success addHelpFilter" type="button">+</button>
+			</div>
+
+		<div class="helpfilters">
+		{% for filter in helpfilters %}
+			<div class="input-append" id="{{ filter.name }}" helpfilter="True">
+				<input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+				<button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+	</div>
+	
+</form>
+	  </div>
+	</div>
+      </div>
+	<div style="text-align:center;position:relative;bottom:0px">
+	<a href="/filterSuggestions/" style="font-size:20px;">Suggest a new filter!</a>
+	</div>
+    </div>
+</div>
+
