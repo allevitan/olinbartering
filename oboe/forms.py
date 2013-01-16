@@ -91,6 +91,7 @@ class MultiProfileDisplay(forms.Form):
 	users = [str(user) for user in UserData.objects.all()]
 	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Search by username...', 'data-source': mark_safe(users).replace("'", '"')}))
 
+	#Has potential for future use in a FilterDisplay class
 	'''
 	filters = Filter.objects.all()
 	filters = set((filterName.name, filterName.name) for filterName in filters)
@@ -105,6 +106,8 @@ class MultiProfileDisplay(forms.Form):
 	'''
 
 class selectBulletinForm(forms.Form):
+	
+	#__init__ overriding is again used to allow the use of request data
 	def __init__(self, *args, **kwargs):
 		bulletins = kwargs.pop('bulletins')
 		super(selectBulletinForm, self).__init__(*args, **kwargs)
@@ -120,9 +123,9 @@ class CreateBulletinForm(forms.Form):
 	subject = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'Subject...','class':'textsharp'}))
 	tag = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'autocomplete':'off','placeholder':'Tag...','class':'textsharp'}))
 	missive = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Message...','class':'textsharp'}))
-        hiddentype = forms.CharField(widget=forms.HiddenInput(attrs={'value':'Help'}))
+	hiddentype = forms.CharField(widget=forms.HiddenInput(attrs={'value':'Help'}))
 	hiddenloc = forms.CharField(widget=forms.HiddenInput(attrs={'value':'NA'}))
-        hiddenrel = forms.IntegerField(min_value=2, max_value=96, widget=forms.HiddenInput(attrs={'value':24}))
+	hiddenrel = forms.IntegerField(min_value=2, max_value=96, widget=forms.HiddenInput(attrs={'value':24}))
 	hiddenprice = forms.CharField(max_length=5, widget=forms.HiddenInput(attrs={'value':'Free'}))
 
 class ResolverCreditForm(forms.Form):
