@@ -1,15 +1,13 @@
 {% for thread in mail %}
-{% if thread.users.all|length >= 2 %}
 {% with thread.reply_set.all|dictsort:"timestamp"|last as latestreply %}
 <div class="mcon">
-  <div style="float:right; margin-left:5px;">{% if latestreply.sender == user.userdata %}<span id="tofrom{{ thread.id }}">to</span> 
-    {% for member in thread.users.all %}{% if member != user.userdata %}{{ member }}{% endif %}{% endfor %}{% else %}<span id="tofrom{{ thread.id }}">from</span> {{ latestreply.sender }}{% endif %}</div>
-  <a onclick="loadthread({{ thread.id }});"><h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ thread.bulletin.subject|title }}</h5></a>
-  <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"> {{ latestreply.message }} </div>
+  <h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:5px;"><span class="faded">{% if thread.bulletin.creator == user.userdata %}you:{% else %}them:{% endif %}</span> <a onclick="loadthread({{ thread.id }});">{{ thread.bulletin.subject|title }}</a></h5>
+  <div class="faded pull-right" style="margin-left:5px;">{% if latestreply.sender == user.userdata %}<span id="tofrom{{ thread.id }}">to</span> 
+    {% for member in thread.users.all %}{% if member != user.userdata %}{{ member.user.first_name }}{% endif %}{% endfor %}{% else %}<span id="tofrom{{ thread.id }}">from</span> {{ latestreply.sender.user.first_name }}{% endif %}</div>
+  <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#202020"> {{ latestreply.message|truncatechars:50 }} </div>
 </div>
 {% endwith %}
 {% if not forloop.last %}
-<hr>
-{% endif %}
+<hr style="margin-top:10px; margin-bottom:-0px;">
 {% endif %}
 {% endfor %}

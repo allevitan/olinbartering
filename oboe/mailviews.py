@@ -12,6 +12,13 @@ def base(request):
 
 def mailbox(request):
     mail = Reply_Thread.objects.filter(users=request.user.userdata).order_by("-update")
+    pks = []
+    user = request.user
+    for thread in mail:
+        if len(thread.users.all()) == 1:
+            pks.append(thread.id)
+    print pks
+    mail = mail.exclude(id__in=pks)
     return render(request, 'mailbox.html', {'mail':mail})
 
 def thread(request, pk):

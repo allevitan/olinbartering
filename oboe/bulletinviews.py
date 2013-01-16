@@ -90,10 +90,10 @@ def resolve(request):
                         if resolver == request.user.userdata:
                             return HttpResponse('Not yourself...')
                         bulletin.resolver = resolver
+                        resolver.score = resolver.score + 1
+                        resolver.save()
                 bulletin.resolved = True
                 bulletin.save()
-                resolver.score = resolver.score + 1
-                resolver.save()
                 return HttpResponse('Unresolve')
         else:
            if bulletin.resolved:

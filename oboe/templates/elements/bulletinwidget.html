@@ -11,17 +11,15 @@
   <div class="filter">
     {{ bulletin.tag.name|upper }}
   </div>
-<a href="/bulletin/{{ bulletin.id }}">
   <h5 class="bulltitle">
     {% if bulletin.missive_set.all|length > 1 %}
-    <span class="updateflag">UPDATE
-      {% if bulletin.missive_set.all|length > 2 %} {{ bulletin.missive_set.all|length|add:"-1" }}{% endif %}: 
-    </span>{{ bulletin.subject|title }}
-    {% else %}
-    {{ bulletin.subject|title }}
+    <span class="updateflag">UPDATE{% if bulletin.missive_set.all|length > 2 %} {{ bulletin.missive_set.all|length|add:"-1" }}{% endif %}: 
+    </span>
     {% endif %}
+    <a href="/bulletin/{{ bulletin.id }}">
+      {{ bulletin.subject|title }}
+    </a>
   </h5>
-  </a>
   <div class="location">
     {{ bulletin.location }}
   </div>
@@ -29,7 +27,7 @@
     {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200 }}
   </div>
 </div>
-<h5 class="creatorname">{{ bulletin.creator }}</h5>
+<h5 class="creatorname"><a href="/profile/{{ bulletin.creator.user }}/">{{ bulletin.creator }}</a></h5>
 <span class="timebox">
   <span class="extrainfo">{% block extrainfo %}{% endblock %} - </span>
   <span class="timesince">
