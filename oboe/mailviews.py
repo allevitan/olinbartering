@@ -11,15 +11,18 @@ def base(request):
     return HttpResponseRedirect('/mail/box/')
 
 def mailbox(request):
-    mail = Reply_Thread.objects.filter(users=request.user.userdata).order_by("-update")
-    pks = []
-    user = request.user
-    for thread in mail:
-        if len(thread.users.all()) == 1:
-            pks.append(thread.id)
-    print pks
-    mail = mail.exclude(id__in=pks)
-    return render(request, 'mailbox.html', {'mail':mail})
+	if request.user.is_authenticated():
+		mail = Reply_Thread.objects.filter(users=request.user.userdata).order_by("-update")
+		pks = []
+		user = request.user
+		for thread in mail:
+		    if len(thread.users.all()) == 1:
+		        pks.append(thread.id)
+		print pks
+		mail = mail.exclude(id__in=pks)
+		return render(request, 'mailbox.html', {'mail':mail})
+	else:
+		return HttpResponseRedirect('/login/')
 
 def thread(request, pk):
     thread = Reply_Thread.objects.get(id=pk);

@@ -170,6 +170,8 @@ def contact(request):
 	if request.method == 'POST':
 		form = ContactForm(request.POST)
 		if form.is_valid():
+
+			#send message using POST data
 			cleaned_data = form.clean()
 			subject = cleaned_data['subject']
 			message = cleaned_data['message']
