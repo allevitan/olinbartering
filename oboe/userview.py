@@ -41,13 +41,16 @@ def login(request):
 	return render(request, 'login.html', {'form': form, 'incorrectPassword': incorrectPassword, 'form_error':False})
 
 def logout(request):
-	auth.logout(request) #log user out, no questions asked.
+	if request.user.is_authenticated():
+		auth.logout(request) #log user out, no questions asked.
 	return HttpResponseRedirect('/')
+	
 
 def passwordsMatch(password, confirmPassword):
 	return password == confirmPassword
 
 def uniquename(username):
+	#queries database to check for existing entries.
 	try: 
 		User.objects.get(username=username)
 		return False
@@ -91,8 +94,12 @@ def editProfile(request):
 	else:
 		user = request.user
 		userdata = user.userdata
+
+		#seperate filters and sort by name
 		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+
+		#get user data to pre-fill form with
 		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 		form = EditProfileForm(initial = data, user = user)
 
@@ -104,11 +111,15 @@ def editUserProfile(request):
 		form = UserProfileForm(request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
+
+			#extract form info (could potentially use .serialize() to remove redundant code)
 			first_name = cleaned_data['first_name'].strip()
 			last_name = cleaned_data['last_name'].strip()
 			email = cleaned_data['emailAddress']
 			dorm = cleaned_data['dorm']
 			pic = request.FILES.get('pic','')
+
+			#update user fields
 			user = User.objects.get(username = request.user)
 			userdata = user.userdata
 			user.first_name = first_name
@@ -116,15 +127,23 @@ def editUserProfile(request):
 			user.email = email
 			userdata.dorm = dorm
 			if pic:
-				userdata.pic = pic
+				userdata.pic = pic #currently not functioning properly
+
+			#save results
 			user.save()
 			userdata.save()
+
+			#resubmit user data to pre-fill form
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = UserProfileForm(initial=data)
 			return render(request, 'elements/editProfileForm.html', {'form':form})
 		else: 
+
+			#if a form error occurs
 			user = request.user
 			userdata = user.userdata
+			
+			#re-render the form - the html page will handle the error display
 			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
 			form = EditProfileForm(initial = data, user=user)
 			return render(request, 'elements/editProfileForm.html', {'form':form})
@@ -134,32 +153,41 @@ def editUserProfile(request):
 @csrf_exempt
 def editFilters(request, help=False, delete=False):	
 	if request.user.is_authenticated():
+
+		#user data is passed to form for processing - potential violation of MVC philosophy 
 		user = request.user
 		form = EditFilterForm(user, request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
 			user = request.user
 			userdata = user.userdata
-			if help:
+			if help: #add a help filter to users ManyToMany field
 				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
-			elif not delete:
+			elif not delete: #add a want filter
 				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
-			else:
+			else: #delete a filter
 				if request.POST.get('helpfilter', '') == "True":
 					helpfilter = True
 				else:
 					helpfilter = False
 				userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
+
+			#sort the new data
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+	
+			#save changes and render the page again via AJAX call
 			user.save()
 			userdata.save()
 			form = EditFilterForm(user = user)
 			return render(request, 'elements/filters.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 		else:
-			raise AssertionError
+			
+			#in the event of form errors
 			user = request.user
 			userdata = user.userdata
+			
+			#resort filters and render page again with error display
 			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 			form = EditFilterForm(user = user)
@@ -185,7 +213,8 @@ def changePassword(request):
 	if request.method == 'POST':
 		form = ChangePasswordForm(request.POST)
 		if form.is_valid():
-			newpassword = request.POST.get('newPassword', '')
+			cleaned_data = form.clean()
+			newpassword = cleaned_data['newPassword']
 			request.user.set_password(newpassword)
 			request.user.save()
 			return HttpResponseRedirect('successful/')
@@ -208,12 +237,17 @@ def resetPassword(request):
 			cleaned_data = form.clean()
 			email = cleaned_data['emailAddress']
 			user = User.objects.get(email = email)
+
+			#generate series of 12 alphanumeric characters to use as temporary password
 			newpassword = generate_password(12)
+
+			#save results and send email to user
 			user.set_password(newpassword)
 			user.save()
 			subject = "Password Reset"
 			message = "New Password: " + newpassword
 			send_mail(subject, message, 'worldpeaceagentforchange@gmail.com', [email], fail_silently=False)
+
 			return HttpResponseRedirect('successful/')
 	else:
 		form = PasswordResetForm()
@@ -224,8 +258,12 @@ def passwordReset(request):
 	return render(request, 'passwordReset.html')
 
 def profilepage(request, username):
+
+	#handle invalid input
 	try: user = User.objects.get(username=username.lower())
 	except: return HttpResponseRedirect('/people/')
+
+	#generate list of user filters to display in profile page
 	filters = user.userdata.filters.all()
 	bulletins = sorted(Bulletin.objects.filter(creator=user.userdata), key = lambda bulletin: bulletin.update, reverse=True)
 	helpfilters = sorted([filterName.name for filterName in filters.all() if filterName.helpfilter])
