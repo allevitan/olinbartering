@@ -11,18 +11,18 @@ def base(request):
     return HttpResponseRedirect('/mail/box/')
 
 def mailbox(request):
-	if request.user.is_authenticated():
-		mail = Reply_Thread.objects.filter(users=request.user.userdata).order_by("-update")
-		pks = []
-		user = request.user
-		for thread in mail:
-		    if len(thread.users.all()) == 1:
-		        pks.append(thread.id)
-		print pks
-		mail = mail.exclude(id__in=pks)
-		return render(request, 'mailbox.html', {'mail':mail})
-	else:
-		return HttpResponseRedirect('/login/')
+    if request.user.is_authenticated():
+        mail = Reply_Thread.objects.filter(users=request.user.userdata).order_by("-update")
+        pks = []
+        user = request.user
+        for thread in mail:
+            if len(thread.users.all()) == 1:
+                pks.append(thread.id)
+        print pks
+        mail = mail.exclude(id__in=pks)
+        return render(request, 'mailbox.html', {'mail':mail})
+    else:
+        return HttpResponseRedirect('/login/')
 
 def thread(request, pk):
     thread = Reply_Thread.objects.get(id=pk);
@@ -45,3 +45,11 @@ def thread(request, pk):
     form = ReplyForm()	
     info.update({'form':form});
     return render(request, 'elements/replythread.html', info)
+
+from django.conf.urls import patterns, url
+
+urls = patterns('',
+                url(r'^$', base),
+                url(r'^box/$', mailbox),
+                url(r'^thread/(?P<pk>\d+)/$', thread),
+)
