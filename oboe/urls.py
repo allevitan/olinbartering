@@ -31,14 +31,15 @@ urlpatterns = patterns('',
     url(r'^elements/want/raw/$', ajaxviews.want_raw),
     url(r'^elements/want/filtered/$', ajaxviews.want_filtered),
     url(r'^people/$', contentview.people),
-    url(r'^elements/general_info/$', userview.editUserProfile),
+    url(r'^elements/general_info/$', userview.editProfile),
 	url(r'^elements/edit_filters/want/$', userview.editWantFilters),
 	url(r'^elements/edit_filters/help/$', userview.editHelpFilters),
 	url(r'^elements/edit_filters/del/$', userview.delFilters),
 	url(r'^profile/(?P<username>.*)/$', userview.profilepage),
 	url(r'^filterSuggestions/$', contentview.filterSuggestions),
 	url(r'^manageFilters/$', userview.manageFilters),
-	url(r'^elements/filterlist/$', userview.filterList),
+	url(r'^elements/filterlist/want/$', userview.editWantFiltersList),
+	url(r'^elements/filterlist/help/$', userview.editHelpFiltersList),
 )
 
 urlpatterns += staticfiles_urlpatterns()

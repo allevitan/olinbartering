@@ -12,12 +12,20 @@ $(document).ready(function(){
 		$.post('/elements/edit_filters/help/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});
+		$.post('/elements/filterlist/help/', $('.eff').serialize(), function(data){
+			$('.filterlist').html(data)
+		});
+
 	});     
          
 	$('.addWantFilter').live('click', function () { 
+		$.post('/elements/filterlist/want/', $('.eff').serialize(), function(data){
+			$('.filterlist').html(data)
+		});
 		$.post('/elements/edit_filters/want/', $('.eff').serialize(), function(data){
 			$('.eff').html(data)
 		});
+
 	});
 
 	$('.delFilter').live('click', function() {
