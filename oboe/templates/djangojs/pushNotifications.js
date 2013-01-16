@@ -7,7 +7,7 @@ function checkForMail(callback){
 	});
     });
     if( arguments.length >= 1){
-	call(callback);
+	callback.call();
     }
 };
 

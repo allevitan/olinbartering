@@ -24,6 +24,7 @@ function loadthread(pk){
 
 $(document).ready(function(){
   loadthread({{ mail.0.id }});
+  setInterval(checkForMail(),30000);
 });
 
 $("#replyform").live("submit", function(){
