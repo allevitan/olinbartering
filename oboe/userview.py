@@ -227,7 +227,7 @@ def profilepage(request, username):
 	try: user = User.objects.get(username=username.lower())
 	except: return HttpResponseRedirect('/people/')
 	filters = user.userdata.filters.all()
-	bulletins = Bulletin.objects.filter(creator=user.userdata)
-	helpfilters = [filterName.name for filterName in filters.all() if filterName.helpfilter]
-	wantfilters = [filterName.name for filterName in filters.all() if not filterName.helpfilter]
+	bulletins = sorted(Bulletin.objects.filter(creator=user.userdata), key = lambda bulletin: bulletin.update, reverse=True)
+	helpfilters = sorted([filterName.name for filterName in filters.all() if filterName.helpfilter])
+	wantfilters = sorted([filterName.name for filterName in filters.all() if not filterName.helpfilter])
 	return render(request, 'profilepage.html', {'request': request, 'user':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
