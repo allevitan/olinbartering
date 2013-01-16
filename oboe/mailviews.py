@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from models import Reply_Thread, Reply
@@ -41,6 +41,9 @@ def thread(request, pk):
     if (request.user.is_authenticated() 
         and request.user.userdata in thread.users.all()):
         info.update({'thread':thread})
+        for reply in thread.reply_set.exclude(sender=request.user.userdata).filter(read=False):
+            reply.read=True
+            reply.save()
         #Handle request to add replies to the thread
         if request.method == 'POST':
             form = ReplyForm(request.POST)
@@ -59,10 +62,21 @@ def thread(request, pk):
     info.update({'form':form});
     return render(request, 'elements/replythread.html', info)
 
+
+def newcount(request):
+    replies = Reply.objects.filter(read=False).filter(thread__users=request.user.userdata).exclude(sender=request.user.userdata)
+    length = len(replies)
+    if length >= 1:
+        new = " (%d)" % len(replies)
+    else: new = ""
+    return HttpResponse(new)
+
+
 from django.conf.urls import patterns, url
 
 urls = patterns('',
                 url(r'^$', base),
                 url(r'^box/$', mailbox),
                 url(r'^thread/(?P<pk>\d+)/$', thread),
+                url(r'^newcount/$', newcount),
 )
