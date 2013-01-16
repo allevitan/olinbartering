@@ -91,9 +91,9 @@ $("#resolvebutton").click(function(){
 	{% endif %}
 	<h4 style="color:#404040; margin-top:5px; margin-bottom:25px;">{% include "elements/infostring.html" %}</h4>
 
-	{% if bulletin.creator = user.userdata %}
+	{% if bulletin.creator = user.userdata and not bulletin.resolved or bulletin.helpbulletin and not bulletin.advice %}
 	<form action="/update/{{ bulletin.id }}/" method="POST">
-	  <input type="submit" class="btn sharp" value="Update" id="id_submit" >
+	  <input type="submit" class="btn sharp" value="{{ bulletin.resolved|yesno:"Add Wisdom,Update" }}" id="id_submit" >
 	  {% csrf_token %}
 	  {% if not bulletin.helpbulletin and not bulletin.free %}
 	  <div id="id_free"><input type="checkbox" name="free" value="true" style="margin-top:-3px;">Make Free</div>
@@ -103,6 +103,11 @@ $("#resolvebutton").click(function(){
 	</form>	
 	{% endif %}
 
+	{% if bulletin.advice %}
+	<hr>
+	<h4>Wisdom for the ages:</h4>
+	{{ bulletin.advice }}
+	{% endif %}
 	<hr>
 	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
 	<h5>
