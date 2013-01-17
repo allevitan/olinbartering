@@ -9,7 +9,7 @@ import datetime
 
 def create(request):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/login/')
     errors = []
     if request.method == 'POST':
         form = CreateBulletinForm(request.POST)

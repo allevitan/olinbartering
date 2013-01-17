@@ -15,36 +15,42 @@ from datetime import datetime
 
 
 def about(request):
-	return render(request, 'about.html')
+	if request.user.is_authenticated():
+		return render(request, 'about.html')
+	else:
+		return HttpResponseRedirect('/login/')
 
 def people(request):
-	if request.method == 'POST':
-		form = MultiProfileDisplay(request.POST, request.FILES)
-		if form.is_valid():
-			cleaned_data = form.clean()
-			user_name = cleaned_data['username']
+	if request.user.is_authenticated():
+		if request.method == 'POST':
+			form = MultiProfileDisplay(request.POST, request.FILES)
+			if form.is_valid():
+				cleaned_data = form.clean()
+				user_name = cleaned_data['username']
 
-			#username follows form "first.last"
-			username = '.'.join(user_name.lower().split())
+				#username follows form "first.last"
+				username = '.'.join(user_name.lower().split())
 
-			#Maybe be useful in the future 
-			'''
-			filterText = cleaned_data['filters']
-			filterType = cleaned_data['filterType']
-			if filterText == "None":
-				users = UserData.objects.all()
-			else:
-				chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
-				users = UserData.objects.filter(filters__id=chosenFilter)
-			'''
-			return HttpResponseRedirect('/profile/'+username+'/')
-	else:
+				#Maybe be useful in the future 
+				'''
+				filterText = cleaned_data['filters']
+				filterType = cleaned_data['filterType']
+				if filterText == "None":
+					users = UserData.objects.all()
+				else:
+					chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
+					users = UserData.objects.filter(filters__id=chosenFilter)
+				'''
+				return HttpResponseRedirect('/profile/'+username+'/')
+		else:
 		
-		#query database for list of all users and redisplay the same page.
-		users = UserData.objects.all().order_by("user")
-		form = MultiProfileDisplay()
-		filterText = "None"
-	return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText})
+			#query database for list of all users and redisplay the same page.
+			users = UserData.objects.all().order_by("user")
+			form = MultiProfileDisplay()
+			filterText = "None"
+		return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText})
+	else:
+		return HttpResponseRedirect('/login/')
 
 def getFilter(name, helpfilter):
 	
