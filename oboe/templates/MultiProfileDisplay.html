@@ -14,10 +14,10 @@
 
 {% block content %}
 
-<form action="" method="post" style="text-align:center;margin-right:50px;margin-left:45px;margin-top:0px;" enctype="multipart/form-data"> 
+<form action="" method="post" style="text-align:center;margin-left:5px;margin-right:5px;margin-top:0px;" enctype="multipart/form-data"> 
 	{% csrf_token %}
 
-	<div class="input-append custom_margin">
+	<div class="input-append">
 		{{ form.username }}
 		<button class="btn btn-success addHelpFilter" type="submit">Go</button>
 	</div>

@@ -1,36 +1,23 @@
 {% extends "base.html" %}
 {% block css %}
-
 .extra_space {
-	padding:50px;
+padding:50px;
 }
-
 {% endblock %}
-
-
-
 {% block scripts %}
 <script src="/static/js/jquery.js"></script>
-
 <script>
-{% include "djangojs/center.js" with ident=".well-large" %}
+  {% include "djangojs/center.js" with ident=".well-large" %}
 </script>
-
 <!--<script>
-{% include "djangojs/show.js" with identity=".inner_form" %}
-</script>-->
-
+  {% include "djangojs/show.js" with identity=".inner_form" %}
+  </script>-->
 {% endblock %}
-
 {% block content %}
-
 <div class="well well-large extra_space">
-<h2>About <b>Filtr</b></h2>
-
-<h1 style="text-align:center;">
-<small>Filtr is a Olin College student project designed and coded over winter break, with the intention of making life a little bit easier.  Filtr sorts through mountains of information and returns only the results relevant to <i>you</i>.  It's a work in progress, so please take a few seconds to leave some feedback at<a href=/contact/> the contact page.</a><small>
-<h1>
-
+  <h2>About <b>Filtr</b></h2>
+  <h1 style="text-align:center;" />
+  <small />Filtr is a Olin College student project designed and coded over winter break, with the intention of making life a little bit easier.  Filtr sorts through mountains of information and returns only the results relevant to <i>you</i>.  It's a work in progress, so please take a few seconds to leave some feedback at<a href="/contact/"> the contact page.</a><small />
+  <h1 />
 </div>
-
 {% endblock %}
