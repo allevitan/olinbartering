@@ -1,5 +1,5 @@
 from inbound import PostmarkInbound
-import simplejson
+import json as simplejson
 from django.http import HttpResponse
 
 
