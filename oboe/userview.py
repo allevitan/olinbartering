@@ -68,6 +68,7 @@ def register(request):
 	if request.method == 'POST':
 		form = RegistrationForm(request.POST, request.FILES)
 		if form.is_valid():
+			print "success"
 			cleaned_data = form.clean()
 			first_name = cleaned_data['first_name'].strip()
 			last_name = cleaned_data['last_name'].strip()
