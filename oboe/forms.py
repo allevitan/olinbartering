@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe 
 
 class LoginForm(forms.Form):
-	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'first.last'}))
-	password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********'}))
+	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Username or email address...'}))
+	password = forms.CharField(widget=forms.PasswordInput(attrs={}))
 
 
 class RegistrationForm(forms.Form):
