@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from models import Bulletin, Missive, Filter, Reply_Thread, Reply, UserData
 from forms import CreateBulletinForm, UpdateBulletinForm, ReplyForm, ResolverCreditForm
 import datetime                
+import outmail
+
 
 def create(request):
     if not request.user.is_authenticated():
@@ -43,10 +45,7 @@ def create(request):
             message = data['missive']
             
             if not errors:
-                bulletin = Bulletin.objects.create(creator=creator, subject=subject, relevance=relevance, location=location, tag=tag, helpbulletin=helpbulletin, free=free)
-                bulletin.save()
-                missive = Missive.objects.create(message=message, bulletin=bulletin)
-                missive.save()
+                outmail.createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free)
                 return HttpResponseRedirect("/home/")
             
         else:
@@ -169,11 +168,10 @@ def update(request, pk):
             
             #send out a new missive if the bulletin is not yet resolvd
             if not bulletin.resolved:
-                missive = Missive.objects.create(message=message,bulletin=bulletin)
+                outmail.updateBulletin(bulletin, message)
                 if request.POST.get('free',''):
                     bulletin.free = True
                     bulletin.save()
-                    missive.save()
 
             #add words of wisdom from the bulletin creator
             elif bulletin.helpbulletin and len(message) <= 200:
