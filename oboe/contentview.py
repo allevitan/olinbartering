@@ -9,7 +9,7 @@ from forms import ContactForm, PasswordResetForm, selectBulletinForm
 from forms import MultiProfileDisplay
 from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm, FilterSuggestionForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from passgen import generate_password
 from datetime import datetime
 
@@ -101,9 +101,10 @@ def contact(request):
 			cleaned_data = form.clean()
 			subject = cleaned_data['subject']
 			message = cleaned_data['message']
-			toAddress = cleaned_data['emailAddress']
-			send_mail(subject, message, 'allevitan@gmail.com',
-    ['allevitan@gmail.com'], fail_silently=False)
+			emailAddress = cleaned_data['emailAddress']
+			message = "Filtr Feedback from %s:\n%s"  %(emailAddress,message)
+			email = EmailMessage(subject, message, 'allevitan@gmail.com', ['abraham.levitan@students.olin.edu', 'madison.may@students.olin.edu'])
+			email.send(fail_silently=False)
 			return HttpResponseRedirect('/')
 
 	#initial page render
