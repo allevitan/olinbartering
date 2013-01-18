@@ -34,13 +34,15 @@ def basic_info(inbound):
 	message = inbound.text_body()
 	return subject, sender, timestamp, message
 
+'''
+Currently not functional
 def basic_info_fwd(inbound):
 	subject = inbound.subject()
 	sender = {'Email': inbound.sender_email(), 'Name': inbound.sender_name()}
 	timestamp = datetime.datetime.now()
 	message = inbound.text_body_fwd()
-	print subject, sender, timestamp, message
 	return subject, sender, timestamp, message
+'''
 
 '''def generate_name_old(sender):
 	email_halves = re.split(r'\@', sender)
