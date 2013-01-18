@@ -83,6 +83,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 	if reply_end != -1:
 		message = message[:reply_end-1]	
 	
+	print bulletin_subject
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 
@@ -234,10 +235,10 @@ def process(inbound):
 	bulletin_subject = re.sub(r'Re\: ', '', subject)	
 
 	#remove everything but latest response
-	reply_end = message.find('From:')
-	message = message[:reply_end]	
+	reply_end = message.find('From:')	
+	if reply_end != -1:
+		message = message[:reply_end+1]	
 
-	print bulletin_subject
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
 	
