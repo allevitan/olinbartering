@@ -29,27 +29,16 @@ def mailinglist_process(inbound):
 
 def basic_info(inbound):
 	subject = inbound.subject()	
-	sender = inbound.sender()#need to convert to userdata instance
+	sender = inbound.sender()
 	timestamp = datetime.datetime.now()
 	message = inbound.text_body()
 	return subject, sender, timestamp, message
 
-'''
-Currently not functional
-def basic_info_fwd(inbound):
-	subject = inbound.subject()
-	sender = {'Email': inbound.sender_email(), 'Name': inbound.sender_name()}
-	timestamp = datetime.datetime.now()
-	message = inbound.text_body_fwd()
-	return subject, sender, timestamp, message
-'''
-
-'''def generate_name_old(sender):
-	email_halves = re.split(r'\@', sender)
-	name = email_halves[0]
-	names = re.split(r'\.', name)
-	name = ' '.join([name.title() for name in names])
-	return name'''
+def latest_response(message):
+	reply_end = message.find('From:')	
+	if reply_end != -1:
+		message = message[:reply_end+1]	
+	return message
 
 def generate_name(sender):
 	name = sender['Name']
@@ -67,6 +56,12 @@ def handle_mailing_list(helpfilter, inbound):
 	else:
 		return send_bulletin(inbound, mailing_list, helpfilter)
 
+def get_user(sender):
+	try:
+		user = User.objects.get(email = sender['Email'])
+	except: 
+		user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
+
 def send_reply(inbound, mailing_list, helpfilter):
 	#send reply
 	subject, sender, timestamp, message = basic_info(inbound)
@@ -79,21 +74,14 @@ def send_reply(inbound, mailing_list, helpfilter):
 	bulletin_subject = re.sub(r'Re\: ', '', subject)	
 
 	#remove everything but latest response
-	reply_end = message.find('From:')
-	if reply_end != -1:
-		message = message[:reply_end-1]	
+	message = latest_response(message)
 	
-	print bulletin_subject
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 
 	try:
 		#does user exist?
-		try:
-			user = User.objects.get(email = sender['Email'])
-
-		except: 
-			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
+		get_user(sender)
 
 		userdata = user.userdata
 
@@ -107,6 +95,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
 									 timestamp = timestamp, message = message)
 		reply.save()
+		reply_thread.save()
 		return HttpResponse('Success!')
 
 	except:
@@ -122,64 +111,54 @@ def send_reply(inbound, mailing_list, helpfilter):
 									 timestamp = timestamp, message = message, anon = True)
 
 		reply.save()
+		reply_thread.save()
 		return HttpResponse('Success!')
 
-def send_bulletin(inbound, mailing_list, helpfilter):
-	subject, sender, timestamp, message = basic_info(inbound)
+def send_help_bulletin(data): #should use **kwargs here
+	subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
+	tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
+	
+	try:
+		#does user exist?
+		user = get_user(sender)
 
-	#remove tag from subject line
-	regex = r'\[' + mailing_list + '\] '
-	subject = re.sub(regex, '', subject)
+		userdata = user.userdata
 
-	#send bulletin
-	tag = match_filter(subject, helpfilter)
-	relevance = datetime.datetime.now() + datetime.timedelta(7)
+		#create bulletin
+		bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
+										   location = 'NA', tag = tag, creator = userdata)
 
-	#generate new bulletin
-	if helpfilter:
-
-		try:
-			#does user exist?
-			try:
-				user = User.objects.get(email = sender['Email'])
-			except: 
-				user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
-			userdata = user.userdata
-
-			#create bulletin
-			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
-											   location = 'NA', tag = tag, creator = userdata)
-
-			#create missive
-			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
-			
-			missive.save()
-			bulletin.save()
-			return HttpResponse('Success!')
+		#create missive
+		missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
 		
-		except:
-			#user does not exist
-			name, email = generate_name(sender)
+		missive.save()
+		bulletin.save()
+		return HttpResponse('Success!')
+	
+	except:
+		#user does not exist
+		name, email = generate_name(sender)
 
-			#create bulletin
-			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
-												location = 'NA', tag = tag, name=name, email=email)
+		#create bulletin
+		bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
+											location = 'NA', tag = tag, name=name, email=email)
 
-			#create missive
-			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
-			
-			missive.save()
-			bulletin.save()
-			return HttpResponse('Success!')
+		#create missive
+		missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+		
+		missive.save()
+		bulletin.save()
+		return HttpResponse('Success!')
 
-	else:
+
+def send_want_bulletin(data): #should use **kwargs here
+		subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
+		tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
 		
 		try:
 			#does user exist?
-			try:
-				user = User.objects.get(email = sender['Email'])
-			except: 
-				user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
+			user = get_user(sender)
+
 			userdata = user.userdata
 
 			#create bulletin
@@ -207,6 +186,29 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 			missive.save()
 			bulletin.save()
 			return HttpResponse('Success!')
+
+
+
+def send_bulletin(inbound, mailing_list, helpfilter):
+	subject, sender, timestamp, message = basic_info(inbound)
+
+	#remove tag from subject line
+	regex = r'\[' + mailing_list + '\] '
+	subject = re.sub(regex, '', subject)
+
+	#send bulletin
+	tag = match_filter(subject, helpfilter)
+	relevance = datetime.datetime.now() + datetime.timedelta(7)
+
+	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
+			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
+	
+	#generate new bulletin
+	if helpfilter:
+		return send_help_bulletin(data)
+	else:
+		return send_want_bulletin(data)
+			
 	
 
 def match_filter(subject, helpfilter):
@@ -227,17 +229,13 @@ def match_filter(subject, helpfilter):
 
 def process(inbound):
 
-	timestamp = datetime.datetime.now()
-	message = inbound.text_body()
-	subject = inbound.subject()
+	subject, sender, timestamp, message = basic_info(inbound)
 
 	#remove "Re:" from subject line
 	bulletin_subject = re.sub(r'Re\: ', '', subject)	
 
 	#remove everything but latest response
-	reply_end = message.find('From:')	
-	if reply_end != -1:
-		message = message[:reply_end+1]	
+	message = latest_response(message)
 
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
@@ -248,10 +246,8 @@ def process(inbound):
 	
 	try:
 		#does user exist?
-		try:
-			user = User.objects.get(email = sender['Email'])
-		except: 
-			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
+		user = get_user(sender)
+
 		userdata = user.userdata
 		
 		try: 
@@ -263,6 +259,7 @@ def process(inbound):
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
 								     timestamp = timestamp, message = message)
 		reply.save()
+		reply_thread.save()
 		return HttpResponse('Success!')
 
 	except:
@@ -278,6 +275,7 @@ def process(inbound):
 								     timestamp = timestamp, message = message)
 
 		reply.save()
+		reply_thread.save()
 		return HttpResponse('Success!')
 
 
