@@ -86,20 +86,21 @@ def send_reply(inbound, mailing_list, helpfilter):
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 
-	#check if reply thread already exists, create one if not
-	try: 
-		reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
-	except: 
-		reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
-
 	try:
 		#does user exist?
 		try:
 			user = User.objects.get(email = sender['Email'])
+
 		except: 
 			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
 
 		userdata = user.userdata
+
+		#check if reply thread already exists, create one if not
+		try: 
+			reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+		except: 
+			reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
 
 		#create new reply object
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
@@ -110,9 +111,14 @@ def send_reply(inbound, mailing_list, helpfilter):
 	except:
 		#user does not exist - generate basic info for reply
 		name, email = generate_name(sender)
-	
+		
+		try: 
+			reply_thread = Reply_Thread.objects.get(bulletin = bulletin, anon_email = email, anon_name = name)
+		except: 
+			reply_thread = Reply_Thread.objects.create(bulletin = bulletin, anon_email = email, anon_name = name)
+
 		reply = Reply.objects.create(thread = reply_thread, name = name, email = email, public = True, 
-									 timestamp = timestamp, message = message)
+									 timestamp = timestamp, message = message, anon = True)
 
 		reply.save()
 		return HttpResponse('Success!')
@@ -236,10 +242,6 @@ def process(inbound):
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
 	
 	#check if reply_thread already exists, create one if not	
-	try: 
-		reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
-	except: 
-		reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
 
 	sender = inbound.sender()#need to convert to userdata instance
 	
@@ -250,7 +252,12 @@ def process(inbound):
 		except: 
 			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
 		userdata = user.userdata
-
+		
+		try: 
+			reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+		except: 
+			reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
+	
 		#create new reply object
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
 								     timestamp = timestamp, message = message)
@@ -261,6 +268,11 @@ def process(inbound):
 		#user does not exist - generate basic info for reply
 		name, email = generate_name(sender)
 		
+		try: 
+			reply_thread = Reply_Thread.objects.get(bulletin = bulletin, anon_email = email, anon_name = name)
+		except: 
+			reply_thread = Reply_Thread.objects.create(bulletin = bulletin, anon_email = email, anon_name = name)
+
 		reply = Reply.objects.create(thread = reply_thread, name = name, email = email, public = True, 
 								     timestamp = timestamp, message = message)
 
