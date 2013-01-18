@@ -52,11 +52,11 @@ def handle_mailing_list(helpfilter, inbound):
 	subject = inbound.subject()
 	
 	if "Re: " in subject:
-		return send_reply(inbound, mailing_list)
+		return send_reply(inbound, mailing_list, helpfilter)
 	else:
 		return send_bulletin(inbound, mailing_list, helpfilter)
 
-def send_reply(inbound, mailing_list):
+def send_reply(inbound, mailing_list, helpfilter):
 	#send reply
 	subject, sender, timestamp, message = basic_info(inbound)
 
@@ -65,15 +65,21 @@ def send_reply(inbound, mailing_list):
 	subject = re.sub(regex, '', subject)
 
 	#remove "Re:" from subject line
-	bulletin_subject = re.sub(r'Re\:', '', subject)	
+	bulletin_subject = re.sub(r'Re\: ', '', subject)	
 
 	#remove everything but latest response
 	reply_end = message.find('From:')
-	message = message[:reply_end-1]	
+	if reply_end != -1:
+		message = message[:reply_end-1]	
 	
 	#find bulletin and reply_thread in database that match email title
-	bulletin = Bulletin.objects.get(subject = bulletin_subject, helpbulletin = helpfilter)
-	reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
+
+	#check if reply thread already exists, create one if not
+	try: 
+		reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+	except: 
+		reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
 
 	try:
 		#does user exist?
@@ -145,13 +151,8 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 		
 		try:
 			#does user exist?
-			print "Start"
-			print sender['Email']
-			#Having trouble querying database
 			user = User.objects.get(email = sender['Email'])
-			print "User database query successful"
 			userdata = user.userdata
-			print "Userdata call complete."
 
 			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
@@ -189,8 +190,12 @@ def match_filter(subject, helpfilter):
 			return tag
 		except:
 			pass
-	#Nothing is found, return None
-	return 'None'
+	#Nothing is found, return mailing_list name as placeholder
+	if helpfilter: mailing_list = "Helpme"
+	else: mailing_list = "Carpe"
+
+	tag = Filter.objects.get(name = mailing_list, helpfilter=helpfilter)
+	return tag
 
 def process(inbound):
 
@@ -199,15 +204,21 @@ def process(inbound):
 	subject = inbound.subject()
 
 	#remove "Re:" from subject line
-	bulletin_subject = re.sub(r'Re\:', '', subject)	
+	bulletin_subject = re.sub(r'Re\: ', '', subject)	
 
 	#remove everything but latest response
 	reply_end = message.find('From:')
-	message = message[:reply_end-1]	
+	message = message[:reply_end]	
 
+	print bulletin_subject
 	#find bulletin and reply_thread in database that match email title
-	bulletin = Bulletin.objects.get(subject = bulletin_subject)
-	reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
+	
+	#check if reply_thread already exists, create one if not	
+	try: 
+		reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
+	except: 
+		reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
 
 	sender = inbound.sender()#need to convert to userdata instance
 	
