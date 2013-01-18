@@ -18,11 +18,11 @@ def standard_reply(request):
 
 def mailinglist(inbound):
 	'''Check to see if email originated in carpe or helpme'''
-	return "[Carpe]" in inbound.subject() or "[Helpme]" in inbound.subject()
+	return "[Carpediem]" in inbound.subject() or "[Helpme]" in inbound.subject()
 
 def mailinglist_process(inbound):
 	'''Process helpme's and carpe's'''
-	if "[Carpe]" in inbound.subject():
+	if "[Carpediem]" in inbound.subject():
 		return handle_mailing_list(False, inbound)					
 	else:
 		return handle_mailing_list(True, inbound)

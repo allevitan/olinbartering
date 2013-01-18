@@ -15,7 +15,6 @@ class PostmarkInbound(object):
 
     def subject(self):
         subject = self.source.get('Subject')
-        subject = re.sub(r'Fwd: ', '', subject)
         return subject
 
     def sender(self):
