@@ -32,8 +32,6 @@ class PostmarkInbound(object):
 		name = name.group(0)
 		return name[6:-2]
 
-	def sender_name(self):
-
     def to(self):
         return self.source.get('ToFull')
 
@@ -57,12 +55,6 @@ class PostmarkInbound(object):
 
     def text_body(self):
         return self.source.get('TextBody')
-
-	def text_body_fwd(self):
-		txtbody = self.source.get('TextBody')
-		body = re.split(r'\<olin\.filtr\@gmail\.com\>', txtbody, 1)
-		txtbody = body[1]
-		return body
 
     def html_body(self):
         return self.source.get('HtmlBody')
