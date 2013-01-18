@@ -10,17 +10,16 @@ def home(request):
 		helps = base.filter(helpbulletin=True)
 		wants = base.filter(helpbulletin=False)
 	
-		if not (request.user.is_authenticated() and request.user.userdata.filterhelp):
-			pass
-		else:
+		if request.user.userdata.filterhelp:
 			helpfilters = request.user.userdata.filters.filter(helpfilter=True)
 			helps = helps.filter(tag__in=helpfilters)
-		if not (request.user.is_authenticated() and request.user.userdata.filterwant):	
-			pass
-		else:
+		if request.user.userdata.filterwant:
 			wantfilters = request.user.userdata.filters.filter(helpfilter=False)
 			wants = wants.filter(tag__in=wantfilters)
-
+		if not request.user.userdata.includehelpme:
+			helps = helps.exclude(anon=True)
+		if not request.user.userdata.includecarpe:
+			wants = wants.exclude(anon=True)
 		return render(request, 'home.html', {'helps':helps, 'wants':wants})
 	else:
 		return HttpResponseRedirect('/login/')

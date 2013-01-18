@@ -25,10 +25,16 @@ $("{{ carpebutton }}").click(function(){
     btn = $(this)
     if(btn.text() == '+Carpe'){
 	btn.button('loading');
-	btn.button('with');
+	$("{{ wantbox }}").load("/elements/want/include/", function(){
+	    $("{{ truncate }}").dotdotdot({watch:true});
+	    btn.button('with');
+	});
     } else {
 	btn.button('loading');
-	btn.button('without');
+	$("{{ wantbox }}").load("/elements/want/exclude/", function(){
+	    $("{{ truncate }}").dotdotdot({watch:true});
+	    btn.button('without');
+	});
     }
 });
 
