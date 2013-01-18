@@ -1,5 +1,5 @@
 from inbound import PostmarkInbound
-import json as simplejson
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from models import Filter, Bulletin, Missive, Reply, Reply_Thread, UserData
