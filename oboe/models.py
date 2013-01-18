@@ -91,6 +91,12 @@ class Reply_Thread(models.Model):
     users = models.ManyToManyField(UserData)
     bulletin = models.ForeignKey(Bulletin)
     update = models.DateTimeField(auto_now=True, auto_now_add=True)
+    #anon_email = models.EmailField(blank=True)
+    #anon_name = models.CharField(max_length=75,blank=True)
+
+    #OR
+
+    #anon_reply = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "%s" % self.bulletin.subject
@@ -103,6 +109,8 @@ class Reply(models.Model):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
     read = models.BooleanField(default=False)
+
+    #anon = models.BooleanField(default=False)
     
     def __unicode__(self):
         return "%s" % self.message
