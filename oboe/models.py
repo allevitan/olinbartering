@@ -73,14 +73,20 @@ class Bulletin(models.Model):
 	    if self.anon_name != "":
 		return self.anon_name
 	    else: return self.anon_email
-	else: return self.creator.__unicode__()
+	else:
+            if self.creator:
+                return self.creator.__unicode__()
+            else: return "Franklin W. Olin's Ghost"
 
     def get_creator_first_name(self):
 	if self.anon:
 	    if self.anon_name != "":
 		return self.anon_name.split(" ")[0]
 	    else: return self.anon_email.split("@")[0]
-	else: return self.creator.__unicode__().split(" ")[0]
+	else: 
+            if self.creator:
+                return self.creator.__unicode__().split(" ")[0]
+            else: return "Franklin W. Olin's Ghost"
 
     def get_absolute_url(self):
 	return "/bulletin/%d/" % self.id
@@ -122,7 +128,9 @@ class Reply_Thread(models.Model):
 		return self.anon_name
 	    else: return self.anon_email
 	else:
-	    return self.replier.__unicode__()
+            if self.replier:
+                return self.replier.__unicode__()
+            else: return "Franklin W. Olin's Ghost"
 
     def get_replier_first_name(self):
 	if self.anon:
@@ -130,7 +138,9 @@ class Reply_Thread(models.Model):
 		return self.anon_name.split(" ")[0]
 	    else: return self.anon_email.split("@")[0]
 	else:
-	    return self.replier.__unicode__().split(" ")[0]
+            if self.replier:
+                return self.replier.__unicode__().split(" ")[0]
+            else: return "Franklin's Ghost"
 
     def get_creator_name(self):
 	return self.bulletin.get_creator_name()

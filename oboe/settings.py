@@ -16,7 +16,13 @@ CACHES = {
 	 }
 }
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+#MAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'AKIAJII2NPAE6AN5YJGA'
+EMAIL_HOST_PASSWORD = 'ArEFaWJSSqTbR1GiwU+7067dNbpQ73BHXTIXx6XzybYA'
 
 DEFAULT_FROM_EMAIL = 'allevitan@gmail.com'
 
