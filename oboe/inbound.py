@@ -2,6 +2,7 @@ import json
 from base64 import b64decode
 from datetime import datetime
 from email.utils import mktime_tz, parsedate_tz
+import re
 
 
 class PostmarkInbound(object):
@@ -13,10 +14,25 @@ class PostmarkInbound(object):
         self.source = json.loads(self.json)
 
     def subject(self):
-        return self.source.get('Subject')
+        subject = self.source.get('Subject')
+        subject = re.sub(r'Fwd: ', '', subject)
+        return subject
 
     def sender(self):
         return self.source.get('FromFull')
+
+	def sender_email(self):
+		message = self.source.get('TextBody')
+		sender = re.search(r'\<.+\@.+\..+\>', message)
+        return sender.group(0)
+
+	def sender_name(self):
+		message = self.source.get('TextBody')
+		name = re.search(r'From\: .+ \<', message)
+		name = name.group(0)
+		return name[6:-2]
+
+	def sender_name(self):
 
     def to(self):
         return self.source.get('ToFull')
@@ -41,6 +57,12 @@ class PostmarkInbound(object):
 
     def text_body(self):
         return self.source.get('TextBody')
+
+	def text_body_fwd(self):
+		txtbody = self.source.get('TextBody')
+		body = re.split(r'\<olin\.filtr\@gmail\.com\>', txtbody, 1)
+		txtbody = body[1]
+		return body
 
     def html_body(self):
         return self.source.get('HtmlBody')

@@ -8,6 +8,7 @@ import re
 
 @csrf_exempt
 def standard_reply(request):
+	print "Email incoming..."
 	if request.method == 'POST':
 		inbound = PostmarkInbound(json = request.raw_post_data)
 		if mailinglist(inbound):
@@ -31,6 +32,14 @@ def basic_info(inbound):
 	sender = inbound.sender()#need to convert to userdata instance
 	timestamp = datetime.datetime.now()
 	message = inbound.text_body()
+	return subject, sender, timestamp, message
+
+def basic_info_fwd(inbound):
+	subject = inbound.subject()
+	sender = {'Email': inbound.sender_email(), 'Name': inbound.sender_name()}
+	timestamp = datetime.datetime.now()
+	message = inbound.text_body_fwd()
+	print subject, sender, timestamp, message
 	return subject, sender, timestamp, message
 
 '''def generate_name_old(sender):
@@ -83,7 +92,11 @@ def send_reply(inbound, mailing_list, helpfilter):
 
 	try:
 		#does user exist?
-		user = User.objects.get(email = sender['Email'])
+		try:
+			user = User.objects.get(email = sender['Email'])
+		except: 
+			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
+
 		userdata = user.userdata
 
 		#create new reply object
@@ -118,7 +131,10 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 
 		try:
 			#does user exist?
-			user = User.objects.get(email = sender['Email'])
+			try:
+				user = User.objects.get(email = sender['Email'])
+			except: 
+				user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
 			userdata = user.userdata
 
 			#create bulletin
@@ -151,7 +167,10 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 		
 		try:
 			#does user exist?
-			user = User.objects.get(email = sender['Email'])
+			try:
+				user = User.objects.get(email = sender['Email'])
+			except: 
+				user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
 			userdata = user.userdata
 
 			#create bulletin
@@ -224,7 +243,10 @@ def process(inbound):
 	
 	try:
 		#does user exist?
-		user = User.objects.get(email = sender['Email'])
+		try:
+			user = User.objects.get(email = sender['Email'])
+		except: 
+			user = User.objects.get(username = '.'.join(sender['Name'].lower().split()))
 		userdata = user.userdata
 
 		#create new reply object
