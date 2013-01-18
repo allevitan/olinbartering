@@ -2,8 +2,8 @@
 {% with thread.reply_set.all|dictsort:"timestamp"|last as latestreply %}
 <div class="mcon" id="{{ thread.id }}">
   <h5 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:5px;"><a onclick="loadthread({{ thread.id }}); checkForMail();">{{ thread.bulletin.subject|title }}</a></h5>
-  <div class="faded pull-right" style="margin-left:5px;">{% if latestreply.sender == user.userdata %}<span id="tofrom{{ thread.id }}">to</span> 
-    {% for member in thread.users.all %}{% if member != user.userdata %}{{ member.user.first_name }}{% endif %}{% endfor %}{% else %}<span id="tofrom{{ thread.id }}">from</span> {{ latestreply.sender.user.first_name }}{% endif %}</div>
+  <div class="faded pull-right" style="margin-left:5px;"><span id="tofrom{{ thread.id }}">{% if latestreply.sender and latestreply.sender == user.userdata %}to{% else %}from{% endif %}</span> {% include "elements/threadname.html" with thread=thread firstname='True' %}</div>
+
   <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#202020"><span class="faded" newtag="{{ thread.id }}" style="display:{% if latestreply.read or latestreply.sender == user.userdata %}none{% else %}inline{% endif %};">new: </span>{{ latestreply.message|truncatechars:50 }} </div>
 </div>
 {% endwith %}

@@ -1,0 +1,1 @@
+<span id="replyname">{% if not reply.anon %}<a href="/profile/{{reply.sender.user}}">{{ reply.sender }}</a>{% elif reply.thread.anon_name  %}{{ reply.thread.anon_name }}{% else %}{{ reply.thread.anon_email }}{% endif %}</span>

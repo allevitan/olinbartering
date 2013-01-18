@@ -22,7 +22,7 @@ def mailbox(request):
         pks = []
         user = request.user
         for thread in mail:
-            if len(thread.users.all()) == 1:
+            if len(thread.users.all()) == 1 and not thread.anon:
                 pks.append(thread.id)
         mail = mail.exclude(id__in=pks)
         

@@ -9,7 +9,7 @@
 
 function half(){
 $("#bulletinbox").css({
-        height: ($(window).height() - $("#bulletinbox:last").offset().top) * 3 / 5 - 60
+	height: ($(window).height() - $("#bulletinbox:last").offset().top) * 3 / 5 - 60
     });
 }
 
@@ -29,7 +29,7 @@ $("#resolvebutton").click(function(){
    form = $($(this).attr('form'));
    $.post("/bulletin/resolve/", form.serialize(), function(data){
       if (data == 'Not yourself...'){
-         $("#id_username").attr('placeholder',data).val('');
+	 $("#id_username").attr('placeholder',data).val('');
       } else {
       form.hide();
       }
@@ -108,7 +108,7 @@ $("#id_free").click(function(){
 	  {% endif %}
 	  <h4>{% if bulletin.missive_set.all|length > 1 %}Update {{ bulletin.missive_set.all|length }}:{% else %}Update:{% endif %}</h4>
 	  {{ bulletinform.missive }}
-	</form>	
+	</form>
 	{% endif %}
 	{% endif %}
 	{% if bulletin.advice %}
@@ -120,11 +120,11 @@ $("#id_free").click(function(){
 	{% for missive in bulletin.missive_set.all|dictsortreversed:"timestamp" %}
 	<h5>
 	{% if forloop.revcounter0 = 0 %}
-	Original:  
+	Original:
 	{% elif forloop.revcounter0 = 1 %}
-	Update: 
+	Update:
 	{% else %}
-	Update {{ forloop.revcounter0 }}: 
+	Update {{ forloop.revcounter0 }}:
 	{% endif %}
 	<small>({{ missive.timestamp|timesince }} ago)</small></h5>
 	<p style="font-size:16px;">{{ missive.message }}</p>
@@ -148,7 +148,7 @@ $("#id_free").click(function(){
 	<form action="" method="POST">
 	  <input type="submit" class="btn sharp" value="Reply" id="id_submit" style="margin-top:2px;">
 	  {% csrf_token %}
-	  <input type="hidden" name="visibility" value="Private" >	  
+	  <input type="hidden" name="visibility" value="Private" >
 	  <div class="btn-group pull-right" data-toggle-name="visibility" data-toggle="buttons-radio" id="id_visibility" >
 	    <div></div>
 	    <input type="button" class="btn sharp" value="Public" >
@@ -160,11 +160,11 @@ $("#id_free").click(function(){
 	</form>
 	{% for reply in replies %}
 	<hr style="margin:0px;">
-	<h5>{{ reply.sender }}: <small>({{ reply.timestamp|timesince }} ago)</small></h5>
+	<h5>{% include "elements/replyname.html" with reply=reply %}<small>({{ reply.timestamp|timesince }} ago)</small></h5>
 	<p>{{ reply.message }}</p>
 	{% endfor %}
       </div>
     </div>
-  </div>	
+  </div>
 </div>
 {% endblock %}

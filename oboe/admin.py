@@ -18,9 +18,16 @@ class MissiveInline(admin.StackedInline):
 class BulletinAdmin(admin.ModelAdmin):
     inlines = (MissiveInline,)
 
+class ReplyInline(admin.StackedInline):
+    model = models.Reply
+
+class ThreadAdmin(admin.ModelAdmin):
+    inlines = (ReplyInline, )
+
 admin.site.register(models.Filter)
 admin.site.register(models.Bulletin, BulletinAdmin)
 admin.site.register(models.Missive)
 admin.site.register(models.UserData)
+admin.site.register(models.Reply_Thread, ThreadAdmin)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
