@@ -1,1 +1,11 @@
-{% if not thread.anon %}{% for member in thread.users.all %}{% if member != user.userdata %}<a href="/profile/{{ member.user }}/">{% if not firstname %}{{member}}{% else %}{{ member.user.first_name }}{% endif %}</a>{% endif %}{% endfor %}{% elif thread.anon_name %}{% if not firstname %}{{ thread.anon_name }}{% else %}{{ thread.anon_name|truncatewords:1|cut:"." }}{% endif %}{% else %}{% if not firstname %}{{ thread.anon_email }}{% else %}{{ thread.anon_email|truncatechars:"20" }}{% endif %}{% endif %}
+{% if not thread.anon and not thread.bulletin.anon %}
+  {% if thread.bulletin.creator == user.userdata %}
+    <a href="/profile/{{ thread.replier.user }}/">{% if firstname %}{{ thread.get_replier_first_name }}{% else %}{{ thread.get_replier_name }}{% endif %}</a>
+  {% else %}
+    <a href="/profile/{{ thread.bulletin.creator.user }}/">{% if firstname %}{{ thread.get_creator_first_name }}{% else %}{{ thread.get_creator_name }}{% endif %}</a>
+  {% endif %}
+{% elif not thread.anon %}
+  {% if firstname %}{{ thread.get_creator_first_name }}{% else %}{{ thread.get_creator_name }}{% endif %}
+{% else %}
+  {% if firstname %}{{ thread.get_replier_first_name }}{% else %}{{ thread.get_replier_name }}{% endif %}
+{% endif %}

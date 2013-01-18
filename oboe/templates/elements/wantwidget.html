@@ -1,5 +1,9 @@
 {% extends "elements/bulletinwidget.html" %}
 
 {% block extrainfo %}
+{% if bulletin.anon %}
+Carpe
+{% else %}
 {% if bulletin.free %}Free{% else %}Cheap{% endif %}
+{% endif %}
 {% endblock %}

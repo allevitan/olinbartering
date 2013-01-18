@@ -35,12 +35,12 @@ DIRNAME = os.path.dirname(__file__)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add '', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'devenvironment/testdatabase',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+	'ENGINE': 'django.db.backends.sqlite3', # Add '', 'mysql', 'sqlite3' or 'oracle'.
+	'NAME': 'devenvironment/testdatabase',                      # Or path to database file if using sqlite3.
+	'USER': '',                      # Not used with sqlite3.
+	'PASSWORD': '',                  # Not used with sqlite3.
+	'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+	'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -125,14 +125,14 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
 	"oboe.context_processors.site_area",
-        "oboe.context_processors.is_webkit",
+	"oboe.context_processors.is_webkit",
 	"django.contrib.auth.context_processors.auth",
 	"django.core.context_processors.debug",
 	"django.core.context_processors.i18n",
 	"django.core.context_processors.media",
 	"django.core.context_processors.static",
 	"django.contrib.messages.context_processors.messages")
-	
+
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -155,8 +155,8 @@ TEMPLATE_DIRS = (
 
 THUMBNAIL_ALIASES = {
     '': {
-        'inlist': {'size': (64,64), 'crop': True}
-        },
+	'inlist': {'size': (64,64), 'crop': True}
+	},
 }
 
 INSTALLED_APPS = (
@@ -183,23 +183,23 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+	'require_debug_false': {
+	    '()': 'django.utils.log.RequireDebugFalse'
+	}
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+	'mail_admins': {
+	    'level': 'ERROR',
+	    'filters': ['require_debug_false'],
+	    'class': 'django.utils.log.AdminEmailHandler'
+	}
 
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
+	'django.request': {
+	    'handlers': ['mail_admins'],
+	    'level': 'ERROR',
+	    'propagate': True,
+	},
     }
 }

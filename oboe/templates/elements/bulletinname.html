@@ -1,0 +1,5 @@
+{% if bulletin.anon %}
+{{ bulletin.get_creator_name }}
+{% else %}
+<a href="/profile/{{ bulletin.creator.user }}">{{ bulletin.get_creator_name }}</a>
+{% endif %}

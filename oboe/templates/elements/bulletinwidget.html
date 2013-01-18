@@ -3,17 +3,20 @@
 {% for bulletin in bulletins %}
 <div class="bcon">
   <div class="thumbbox">
+    {% if not bulletin.anon %}
     {% thumbnail bulletin.creator.pic "65x65" crop="center" as im %}
     <img class="profthumb" src="{{ im.url }}">
     {% endthumbnail %}
-    <img src="" class="profthumb">
+    {% else %}
+    <img class="profthumb" src="http://www.placekitten.com/65/65/">
+    {% endif %}
   </div>
   <div class="filter">
     {{ bulletin.tag.name|upper }}
   </div>
   <h5 class="bulltitle">
     {% if bulletin.missive_set.all|length > 1 %}
-    <span class="updateflag">UPDATE{% if bulletin.missive_set.all|length > 2 %} {{ bulletin.missive_set.all|length|add:"-1" }}{% endif %}: 
+    <span class="updateflag">UPDATE{% if bulletin.missive_set.all|length > 2 %} {{ bulletin.missive_set.all|length|add:"-1" }}{% endif %}:
     </span>
     {% endif %}
     <a href="/bulletin/{{ bulletin.id }}">
@@ -27,7 +30,7 @@
     {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200 }}
   </div>
 </div>
-<h5 class="creatorname"><a href="/profile/{{ bulletin.creator.user }}/">{{ bulletin.creator }}</a></h5>
+<h5 class="creatorname">{% include "elements/bulletinname.html" with bulletin=bulletin %}</h5>
 <span class="timebox">
   <span class="extrainfo">{% block extrainfo %}{% endblock %} - </span>
   <span class="timesince">

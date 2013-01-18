@@ -1,5 +1,9 @@
 {% extends "elements/bulletinwidget.html" %}
 
 {% block extrainfo %}
+{% if bulletin.anon %}
+Helpme
+{% else %}
 {{ bulletin.reply_thread_set.count }} Response{{ bulletin.reply_thread_set.count|pluralize }}
+{% endif %}
 {% endblock %}
