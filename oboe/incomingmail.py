@@ -52,9 +52,9 @@ def handle_mailing_list(helpfilter, inbound):
 	subject = inbound.subject()
 	
 	if "Re: " in subject:
-		send_reply(inbound, mailing_list)
+		return send_reply(inbound, mailing_list)
 	else:
-		send_bulletin(inbound, mailing_list, helpfilter)
+		return send_bulletin(inbound, mailing_list, helpfilter)
 
 def send_reply(inbound, mailing_list):
 	#send reply
@@ -84,6 +84,7 @@ def send_reply(inbound, mailing_list):
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
 									 timestamp = timestamp, message = message)
 		reply.save()
+		return HttpResponse('Success!')
 
 	except:
 		#user does not exist - generate basic info for reply
@@ -93,6 +94,7 @@ def send_reply(inbound, mailing_list):
 									 timestamp = timestamp, message = message)
 
 		reply.save()
+		return HttpResponse('Success!')
 
 def send_bulletin(inbound, mailing_list, helpfilter):
 	subject, sender, timestamp, message = basic_info(inbound)
@@ -113,15 +115,31 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 			user = User.objects.get(email = sender['Email'])
 			userdata = user.userdata
 
+			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
 											   location = 'NA', tag = tag, creator = userdata)
+
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			
+			missive.save()
 			bulletin.save()
+			return HttpResponse('Success!')
 		
 		except:
+			#user does not exist
 			name, email = generate_name(sender)
 
+			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
 												location = 'NA', tag = tag, name=name, email=email)
+
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			
+			missive.save()
+			bulletin.save()
+			return HttpResponse('Success!')
 
 	else:
 		
@@ -135,15 +153,31 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 			userdata = user.userdata
 			print "Userdata call complete."
 
+			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
 											   location = 'NA', tag = tag, creator = userdata, free=False)
+
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			
+			missive.save()
 			bulletin.save()
+			return HttpResponse('Success!')
 		
 		except:
+			#user does not exist
 			name, email = generate_name(sender)
 
+			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
 												location = 'NA', tag = tag, name=name, email=email, free=False)
+
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			
+			missive.save()
+			bulletin.save()
+			return HttpResponse('Success!')
 	
 
 def match_filter(subject, helpfilter):
@@ -186,6 +220,7 @@ def process(inbound):
 		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
 								     timestamp = timestamp, message = message)
 		reply.save()
+		return HttpResponse('Success!')
 
 	except:
 		#user does not exist - generate basic info for reply
@@ -195,6 +230,7 @@ def process(inbound):
 								     timestamp = timestamp, message = message)
 
 		reply.save()
+		return HttpResponse('Success!')
 
 
 	
