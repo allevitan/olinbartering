@@ -9,6 +9,7 @@
 {% endif %}
 
 {% include "djangojs/fill.js" with ident=".scrollbox" %}
+{% include "djangojs/radioButtons.js" %}
 
 function updateSidebar(pk){
   $('span[newtag="' + pk + '"]').css('display','none');
@@ -19,7 +20,10 @@ function updateSidebar(pk){
 function loadthread(pk){
   var URI = "/mail/thread/" + pk + "/";
   checkForMail(function(){updateSidebar(pk)});
-  $("#bigbox").load(URI);
+  $.get(URI, function(data){
+    $("#bigbox").html(data);
+    loadbuttons();    
+  });
 }
 
 $(document).ready(function(){

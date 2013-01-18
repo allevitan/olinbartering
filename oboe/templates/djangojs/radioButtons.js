@@ -1,4 +1,4 @@
-jQuery(function($) {
+function loadbuttons() {
   $('.btn-group[data-toggle-name]').each(function(){
     var group   = $(this);
     var form    = group.parents('form').eq(0);
@@ -14,4 +14,6 @@ jQuery(function($) {
       }
     });
   });
-});
+}
+
+$(document).ready(loadbuttons());
