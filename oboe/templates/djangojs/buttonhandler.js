@@ -59,9 +59,15 @@ $("{{ helpmebutton }}").click(function(){
     btn = $(this)
     if(btn.text() == '+HelpMe'){
 	btn.button('loading');
-	btn.button('with');
+	$("{{ helpbox }}").load("/elements/help/include/", function(){
+	    $("{{ truncate }}").dotdotdot({watch:true});
+	    btn.button('with');
+	});
     } else {
 	btn.button('loading');
-	btn.button('without');
+	$("{{ helpbox }}").load("/elements/help/exclude/", function(){
+	    $("{{ truncate }}").dotdotdot({watch:true});
+	    btn.button('without');
+	});
     }
 });
