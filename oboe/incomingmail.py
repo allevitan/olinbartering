@@ -9,7 +9,7 @@ import re
 @csrf_exempt
 def standard_reply(request):
 	if request.method == 'POST':
-		inbound = PostmarkInbound(json = request.raw_past_data)
+		inbound = PostmarkInbound(json = request.raw_post_data)
 		if mailinglist(inbound):
 			return mailinglist_process(inbound)
 		else:
@@ -21,7 +21,7 @@ def mailinglist(inbound):
 
 def mailinglist_process(inbound):
 	'''Process helpme's and carpe's'''
-	if "[Carpe]" in subject:
+	if "[Carpe]" in inbound.subject():
 		return handle_mailing_list(False, inbound)					
 	else:
 		return handle_mailing_list(True, inbound)
@@ -33,22 +33,28 @@ def basic_info(inbound):
 	message = inbound.text_body()
 	return subject, sender, timestamp, message
 
-def generate_name(sender):
+'''def generate_name_old(sender):
 	email_halves = re.split(r'\@', sender)
 	name = email_halves[0]
 	names = re.split(r'\.', name)
 	name = ' '.join([name.title() for name in names])
-	return name
+	return name'''
+
+def generate_name(sender):
+	name = sender['Name']
+	email = sender['Email']
+	return name, email
 
 def handle_mailing_list(helpfilter, inbound):
 	#Assign to mailing list
 	if helpfilter: mailing_list = 'Helpme'
 	else: mailing_list = 'Carpe'
+	subject = inbound.subject()
 	
 	if "Re: " in subject:
 		send_reply(inbound, mailing_list)
 	else:
-		send_bulletin(inbound, mailing_list)
+		send_bulletin(inbound, mailing_list, helpfilter)
 
 def send_reply(inbound, mailing_list):
 	#send reply
@@ -71,7 +77,7 @@ def send_reply(inbound, mailing_list):
 
 	try:
 		#does user exist?
-		user = user.objects.get(email = sender)
+		user = User.objects.get(email = sender['Email'])
 		userdata = user.userdata
 
 		#create new reply object
@@ -81,14 +87,14 @@ def send_reply(inbound, mailing_list):
 
 	except:
 		#user does not exist - generate basic info for reply
-		name = generate_name(sender)
+		name, email = generate_name(sender)
 	
-		reply = Reply.objects.create(thread = reply_thread, name = name, email = sender, public = True, 
+		reply = Reply.objects.create(thread = reply_thread, name = name, email = email, public = True, 
 									 timestamp = timestamp, message = message)
 
 		reply.save()
 
-def send_bulletin(inbound, mailing_list):
+def send_bulletin(inbound, mailing_list, helpfilter):
 	subject, sender, timestamp, message = basic_info(inbound)
 
 	#remove tag from subject line
@@ -104,7 +110,7 @@ def send_bulletin(inbound, mailing_list):
 
 		try:
 			#does user exist?
-			user = user.objects.get(email = sender)
+			user = User.objects.get(email = sender['Email'])
 			userdata = user.userdata
 
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
@@ -112,27 +118,32 @@ def send_bulletin(inbound, mailing_list):
 			bulletin.save()
 		
 		except:
-			name = generate_name(sender)
+			name, email = generate_name(sender)
 
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
-												location = 'NA', tag = tag, name=name, email=sender)
+												location = 'NA', tag = tag, name=name, email=email)
 
 	else:
 		
 		try:
 			#does user exist?
-			user = user.objects.get(email = sender)
+			print "Start"
+			print sender['Email']
+			#Having trouble querying database
+			user = User.objects.get(email = sender['Email'])
+			print "User database query successful"
 			userdata = user.userdata
+			print "Userdata call complete."
 
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
 											   location = 'NA', tag = tag, creator = userdata, free=False)
 			bulletin.save()
 		
 		except:
-			name = generate_name(sender)
+			name, email = generate_name(sender)
 
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
-												location = 'NA', tag = tag, name=name, email=sender, free=False)
+												location = 'NA', tag = tag, name=name, email=email, free=False)
 	
 
 def match_filter(subject, helpfilter):
@@ -151,6 +162,7 @@ def process(inbound):
 
 	timestamp = datetime.datetime.now()
 	message = inbound.text_body()
+	subject = inbound.subject()
 
 	#remove "Re:" from subject line
 	bulletin_subject = re.sub(r'Re\:', '', subject)	
@@ -167,7 +179,7 @@ def process(inbound):
 	
 	try:
 		#does user exist?
-		user = user.objects.get(email = sender)
+		user = User.objects.get(email = sender['Email'])
 		userdata = user.userdata
 
 		#create new reply object
@@ -177,9 +189,9 @@ def process(inbound):
 
 	except:
 		#user does not exist - generate basic info for reply
-		name = generate_name(sender)
+		name, email = generate_name(sender)
 		
-		reply = Reply.objects.create(thread = reply_thread, name = name, email = sender, public = True, 
+		reply = Reply.objects.create(thread = reply_thread, name = name, email = email, public = True, 
 								     timestamp = timestamp, message = message)
 
 		reply.save()
