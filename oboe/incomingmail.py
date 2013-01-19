@@ -16,6 +16,12 @@ def standard_reply(request):
 		else:
 			return process(inbound)
 
+def resolved(subject, message):
+	regex = r'(?<!un)resolve'
+	subject_match = re.search(regex, subject)
+	message_match = re.search(regex, message)
+	return subject_match or message_match
+
 def mailinglist(inbound):
 	'''Check to see if email originated in carpe or helpme'''
 	return "[Carpediem]" in inbound.subject() or "[Helpme]" in inbound.subject()
@@ -76,6 +82,11 @@ def send_reply(inbound, mailing_list, helpfilter):
 
 	#remove everything but latest response
 	message = latest_response(message)
+
+	if resolved(subject, message):
+		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
+		bulletin.resolved = True
+		bulletin.save()
 	
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
@@ -219,6 +230,12 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
 			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
 	
+	#resolve bulletin if needed
+	if resolved(subject, message):
+		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
+		bulletin.resolved = True
+		bulletin.save()
+
 	#generate new bulletin
 	if helpfilter:
 		return send_help_bulletin(data)
@@ -253,13 +270,16 @@ def process(inbound):
 	#remove everything but latest response
 	message = latest_response(message)
 
-	print bulletin_subject
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
 	
 	#check if reply_thread already exists, create one if not	
 
 	sender = inbound.sender()#need to convert to userdata instance
+		
+	if resolved(subject, message):
+		bulletin.resolved = True
+		bulletin.save()
 	
 	try:
 		#does user exist?
