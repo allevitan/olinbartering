@@ -170,62 +170,17 @@ class Reply_Thread(models.Model):
     anon_email = models.EmailField(blank=True)
     anon_name = models.CharField(max_length=75, blank=True)
 
-    def get_replier_name(self):
-	if self.anon:
-	    if self.anon_name:
-		return self.anon_name
-	    else: return self.anon_email
-	else:
-            if self.replier:
-                return self.replier.__unicode__()
-            else: return "Franklin W. Olin's Ghost"
-
-    def get_replier_first_name(self):
-	if self.anon:
-	    if self.anon_name:
-		return self.anon_name.split(" ")[0]
-	    else: return self.anon_email.split("@")[0]
-	else:
-            if self.replier:
-                return self.replier.__unicode__().split(" ")[0]
-            else: return "Franklin's Ghost"
-
-    def get_replier_email(self):
-	if self.anon:
-            return self.anon_email
-	else:
-            if self.replier:
-                return self.replier.user.email
-            else: return None
-
-    def get_creator_name(self):
-	return self.bulletin.get_creator_name()
-
-    def get_creator_first_name(self):
-	return self.bulletin.get_creator_first_name()
-    
-    def get_creator_email(self):
-        return self.bulletin.get_creator_email()
-    
-    def __unicode__(self):
-	return "%s" % self.bulletin
->>>>>>> 51e2931f17f013a4ba7e68a153090a3c40b8b34f
+   
 
 class Reply(models.Model):
-	thread = models.ForeignKey(Reply_Thread)
-	sender = models.ForeignKey(UserData, blank=True, null=True)
-	public = models.BooleanField(default=False)
-	message = models.TextField()
-	timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
-	read = models.BooleanField(default=False)
+    thread = models.ForeignKey(Reply_Thread)
+    sender = models.ForeignKey(UserData, blank=True, null=True)
+    public = models.BooleanField(default=False)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    read = models.BooleanField(default=False)
 
     #whether or not this is from the anonymous user
-<<<<<<< HEAD
-	anon = models.BooleanField(default=False)
-
-	def __unicode__(self):
-		return "%s" % self.message
-=======
     anon = models.BooleanField(default=False)
     
     def get_replier_name(self):
@@ -247,5 +202,5 @@ class Reply(models.Model):
         else: return self.get_replier_email()
     
     def __unicode__(self):
-	return "%s" % self.message
->>>>>>> 51e2931f17f013a4ba7e68a153090a3c40b8b34f
+		return "%s" % self.message
+
