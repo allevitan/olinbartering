@@ -131,7 +131,6 @@ class Reply_Thread(models.Model):
 	anon = models.BooleanField(default=False)
 
     #only used if there's an anonymous user
-<<<<<<< HEAD
 	anon_email = models.EmailField(blank=True)
 	anon_name = models.CharField(max_length=75, blank=True)
 
