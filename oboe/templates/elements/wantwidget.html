@@ -1,7 +1,7 @@
 {% extends "elements/bulletinwidget.html" %}
 
 {% block extrainfo %}
-{% if bulletin.anon %}
+{% if bulletin.anon or bulletin.tag.name == 'Carpediem' %}
 Carpe
 {% else %}
 {% if bulletin.free %}Free{% else %}Cheap{% endif %}
