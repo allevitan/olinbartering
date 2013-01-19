@@ -92,6 +92,15 @@ class Bulletin(models.Model):
 			else: 
 				return "Franklin W. Olin's Ghost"
 
+	def get_creator_email(self):
+		if self.anon:
+			return self.anon_email
+		else:
+			if self.creator:
+				return self.creator.user.email
+			else: 
+				return None
+
 	def get_absolute_url(self):
 		return "/bulletin/%d/" % self.id
 
