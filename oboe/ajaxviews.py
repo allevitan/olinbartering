@@ -3,7 +3,20 @@ from django.http import HttpResponseRedirect
 from models import Bulletin
 import datetime
 
-
+def pullfeed(userdata, helpbulletin):
+    bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=helpbulletin).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
+    if helpbulletin and userdata.filterhelp:
+        filters = userdata.filters.filter(helpfilter=True)
+        bulletins = bulletins.filter(tag__in=filters)
+    elif not helpbulletin and userdata.filterwant:
+        filters = userdata.filters.filter(helpfilter=False)
+        bulletins = bulletins.filter(tag__in=filters)
+    if helpbulletin and not userdata.includehelpme:
+        bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='helpme')
+    elif not helpbulletin and not userdata.includecarpe:
+        bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='carpediem')
+    print 'made it'
+    return bulletins
 
 def help_raw(request):
     """Render all relevant & unresolved help bulletins."""
@@ -12,9 +25,7 @@ def help_raw(request):
         request.user.userdata.filterhelp = False
         request.user.userdata.save()
         #Query for and return the list of bulletins
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=True).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if not request.user.userdata.includecarpe:
-            bulletins = bulletins.exclude(anon=True)
+        bulletins = pullfeed(request.user.userdata, True)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -29,9 +40,7 @@ def help_filtered(request):
         request.user.userdata.save()
         #Query the database for the filters and bulletins
         filters = request.user.userdata.filters.filter(helpfilter=True)
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=True).filter(tag__in=filters).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if not request.user.userdata.includehelpme:
-            bulletins = bulletins.exclude(anon=True)
+        bulletins = pullfeed(request.user.userdata, True)
         return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -42,9 +51,7 @@ def want_raw(request):
         request.user.userdata.filterwant = False
         request.user.userdata.save()
         #Query and return the appropriate bulletins
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=False).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if not request.user.userdata.includecarpe:
-            bulletins = bulletins.exclude(anon=True)
+        bulletins = pullfeed(request.user.userdata, False)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -59,9 +66,7 @@ def want_filtered(request):
         request.user.userdata.save()
         #Query for the filters and the bulletins
         filters = request.user.userdata.filters.filter(helpfilter=False)
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=False).filter(tag__in=filters).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if not request.user.userdata.includecarpe:
-            bulletins = bulletins.exclude(anon=True)
+        bulletins = pullfeed(request.user.userdata, False)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -73,10 +78,7 @@ def includehelpme(request):
         #Set the user's preference to including helpme
         request.user.userdata.includehelpme = True
         request.user.userdata.save()
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=True).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if request.user.userdata.filterhelp:
-            filters = request.user.userdata.filters.filter(helpfilter=True)
-            bulletins = bulletins.filter(tag__in=filters)
+        bulletins = pullfeed(request.user.userdata, False)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -87,10 +89,7 @@ def excludehelpme(request):
         #Set the user's preference to excluding helpme
         request.user.userdata.includehelpme = False
         request.user.userdata.save()
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=True).exclude(anon=True).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if request.user.userdata.filterhelp:
-            filters = request.user.userdata.filters.filter(helpfilter=True)
-            bulletins = bulletins.filter(tag__in=filters)
+        bulletins = pullfeed(request.user.userdata, True)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })  
     else: return render(request, '404.html')
 
@@ -101,10 +100,7 @@ def includecarpe(request):
         #Set the user's preference to including carpe
         request.user.userdata.includecarpe = True
         request.user.userdata.save()
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=False).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if request.user.userdata.filterwant:
-            filters = request.user.userdata.filters.filter(helpfilter=False)
-            bulletins = bulletins.filter(tag__in=filters)
+        bulletins = pullfeed(request.user.userdata, False)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
@@ -115,9 +111,6 @@ def excludecarpe(request):
         #Set the user's preference to excluding carpe
         request.user.userdata.includecarpe = False
         request.user.userdata.save()
-        bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=False).exclude(anon=True).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
-        if request.user.userdata.filterwant:
-            filters = request.user.userdata.filters.filter(helpfilter=False)
-            bulletins = bulletins.filter(tag__in=filters)
+        bulletins = pullfeed(request.user.userdata, False)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
