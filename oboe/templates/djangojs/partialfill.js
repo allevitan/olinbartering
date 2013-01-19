@@ -11,3 +11,7 @@ $(window).resize(function(){
 $(document).ready(function(){
     partial();
 });
+
+$(document).ajaxComplete(function(){
+    partial();
+});

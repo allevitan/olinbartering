@@ -4,7 +4,8 @@
 
 <script>
 
-{% include "djangojs/fill.js" with ident=".scrollbox" %}
+{% include "djangojs/partialfill.js" with ident=".scrollbox" offset=" - 100" %}
+{% include "djangojs/scroll.js" %}
 {% include "djangojs/bootstrap-fileupload.js" %}
 
 $(document).ready(function(){
@@ -55,35 +56,26 @@ $(document).ready(function(){
 {% include "djangocss/scroll.css" %}
 {% include "djangocss/bootstrap-fileupload.css" %}
 {% include "djangocss/bootstrap-fileupload.min.css" %}
-.custom_margin { margin-bottom:20px; }
-.custom_height { height:500px; }
-.custom_padding_general { padding-top:50px;padding-bottom:50px;min-width:525px; }
-.custom_padding_filters { padding-right:20px; padding-left:20px;min-width:525px; }
-.centered_margin { text-align:center;margin-bottom:5px; }
-.filter_padding { padding-top:8px;padding-bottom:15px; }
-.relative { position:relative; }
+
+.center { text-align:center; }
 .tight_hr { margin-top:10px;margin-bottom:10px; }
-.helpTitle { margin-top:0px;margin-bottom:0px;margin-left:70px; }
-.wantTitle { margin-top:0px;margin-bottom:0px;margin-left:85px; } 
-#left { float:left;margin-left:-20px; }
-#right { float:right;margin-right:-20px; }
+#filterheader { margin-top:0px; margin-bottom:10px; }
 -webkit-text-fill-color:#880000;
 
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid show" id="contentbox">
-
-  <div class="page-header show centered_margin" style="margin-top:0px;">
+<div class="container-fluid show" style="min-width:940px;" id="contentbox">
+  <div class="page-header" id="filterheader">
     <h1 style = "margin-top:0px;">
-       <small><strong>Manage Filters</strong></small>
+      <small><strong>Manage Filters</strong></small>
     </h1>
   </div>
-	{% include "elements/filterSubPage.html" %}
-	<div class="well" style="text-align:center;position:relative;bottom:25px;padding:5px;">
-	<a href="/filterSuggestions/" style="font-size:20px;">Suggest a new filter!</a>
-	</div>
+  {% include "elements/filterSubPage.html" %}
+  <div class="well" style="text-align:center; padding:10px; margin-bottom:25px; margin-top:-15px;">
+    <a href="/filterSuggestions/" style="font-size:20px;">Suggest a new filter!</a>
+  </div>
 </div>
 
 {% endblock %}
