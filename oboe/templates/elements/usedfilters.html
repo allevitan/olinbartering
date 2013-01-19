@@ -1,5 +1,5 @@
 <div class="pull-left">
-  <h4 class="center">Do you want?</h4>
+  <h4 class="center" style="width:100%;">Do you want?</h4>
   <hr class="tight_hr">
   {% for filter in wantfilters %}
   <div class="input-prepend wantfilter" id="{{ filter.name }}" helpfilter="False">
@@ -7,9 +7,16 @@
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
   </div>
   {% endfor %}
+
+  <!--Hidden div to correct title alignment -->
+  <div class="input-append" id="" style="height:0; visibility:hidden;">
+    <input class="filterDisplay" type="text">
+    <button class="btn" type="button">-</button>
+  </div>
+
 </div>
 <div class="pull-right">
-  <h4 class="center">Can you help?</h4>
+  <h4 class="center" style="width:100%;">Can you help?</h4>
   <hr class="tight_hr">
   
   {% for filter in helpfilters %}
@@ -20,9 +27,9 @@
   {% endfor %}
 
   <!--Hidden div to correct title alignment -->
-  <div class="input-append" id="" style="height:0; visibility:hidden; display:inline;">
-    <input class="filterDisplay" style="background-color:#FBFBFB;" type="text" readonly>
-    <button class="btn btn-danger" type="button">-</button>
+  <div class="input-append" id="" style="height:0; visibility:hidden;">
+    <input class="filterDisplay" type="text" readonly>
+    <button class="btn" type="button">-</button>
   </div>
 </div>	  
 

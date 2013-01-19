@@ -5,7 +5,9 @@
 <script>
 
 {% include "djangojs/partialfill.js" with ident=".scrollbox" offset=" - 100" %}
+{% if not webkit %}
 {% include "djangojs/scroll.js" %}
+{% endif %}
 {% include "djangojs/bootstrap-fileupload.js" %}
 
 $(document).ready(function(){
@@ -62,21 +64,11 @@ $(document).ready(function(){
 #filterheader { margin-top:0px; margin-bottom:10px; }
 -webkit-text-fill-color:#880000;
 
-{% if webkit %}
-.helpfilter {
-	padding-left:0px;
-}
-.wantfilter {
-	margin-right:0px;
-	padding-right:0px;
-}
-{% endif %}
-
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid show" style="min-width:940px;" id="contentbox">
+<div class="container-fluid show" style="min-width:1150px;" id="contentbox">
   <div class="page-header" id="filterheader">
     <h1 style = "margin-top:0px;">
       <small><strong>Manage Filters</strong></small>
