@@ -37,7 +37,7 @@ def basic_info(inbound):
 def latest_response(message):
 	reply_end = message.find('From:')	
 	if reply_end != -1:
-		message = message[:reply_end+1]	
+		message = message[:reply_end]	
 	return message
 
 def generate_name(sender):
