@@ -20,7 +20,7 @@ def resolved(subject, message):
 	regex = r'(?<!un)resolve'
 	subject_match = re.search(regex, subject)
 	message_match = re.search(regex, message)
-	return subject_match or message_match
+	return subject_match.group(0) or message_match.group(0)
 
 def mailinglist(inbound):
 	'''Check to see if email originated in carpe or helpme'''
@@ -87,6 +87,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
 		bulletin.resolved = True
 		bulletin.save()
+		return HttpResponse('Success!')
 	
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
@@ -235,9 +236,10 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
 		bulletin.resolved = True
 		bulletin.save()
+		return HttpResponse('Success!')
 
 	#generate new bulletin
-	if helpfilter:
+	elif helpfilter:
 		return send_help_bulletin(data)
 	else:
 		return send_want_bulletin(data)
@@ -280,6 +282,7 @@ def process(inbound):
 	if resolved(subject, message):
 		bulletin.resolved = True
 		bulletin.save()
+		return HttpResponse('Success!')
 	
 	try:
 		#does user exist?
