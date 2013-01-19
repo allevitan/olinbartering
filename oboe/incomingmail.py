@@ -115,6 +115,11 @@ def send_reply(inbound, mailing_list, helpfilter):
 		reply_thread.save()
 		return HttpResponse('Success!')
 
+def reformat_carpe(message):
+	message_parts = re.split(r'[\_]+', message, 1)
+	message = message_parts[0]
+	return message
+
 def send_help_bulletin(data): #should use **kwargs here
 	subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
 	tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
@@ -155,6 +160,8 @@ def send_help_bulletin(data): #should use **kwargs here
 def send_want_bulletin(data): #should use **kwargs here
 		subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
 		tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
+
+		message = reformat_carpe(message)
 		
 		try:
 			#does user exist?
