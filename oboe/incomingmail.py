@@ -116,7 +116,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 		return HttpResponse('Success!')
 
 def reformat_carpe(message):
-	message_parts = re.split(r'[\_]+', message, 1)
+	message_parts = re.split(r'[\_]{20,60}', message, 1)
 	message = message_parts[0]
 	return message
 
@@ -196,6 +196,10 @@ def send_want_bulletin(data): #should use **kwargs here
 			return HttpResponse('Success!')
 
 
+def trim_message(message):
+	regex = r'On [A-Z][a-z]{2,3}\,'
+	message_parts = re.split(regex, message, 1)
+	return message_parts[0]
 
 def send_bulletin(inbound, mailing_list, helpfilter):
 	subject, sender, timestamp, message = basic_info(inbound)
@@ -203,6 +207,10 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	#remove mailing_list from subject line
 	regex = r'\[' + mailing_list + '\] '
 	subject = re.sub(regex, '', subject)
+
+	#remove replies from message
+	regex = r'On [A-Z][a-z]{2,3}\,'
+	message = trim_message(message) 
 
 	#send bulletin
 	tag = match_filter(subject, helpfilter)
