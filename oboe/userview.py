@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from forms import LoginForm, RegistrationForm, ChangePasswordForm
 from forms import UserProfileForm, EditFilterForm, ManageFiltersForm
 from forms import PasswordResetForm
-from models import UserData, Missive, Filter, Bulletin
+from models import UserData, Missive, Filter, Bulletin, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
 from django.views.decorators.csrf import csrf_exempt
@@ -88,6 +88,8 @@ def register(request):
 				userdata.filters.add(carpefilter)
 				user.save()
 				userdata.save()
+				#attach previous carpes/helpmes to new user
+				linkPrevious(userdata)
 				user = auth.authenticate(username=username, password=password)
 				auth.login(request, user)
 				return HttpResponseRedirect('/')
@@ -317,3 +319,26 @@ def profilepage(request, username):
 	return render(request, 'profilepage.html', {'request': request, 'owner':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 
+def linkPrevious(userdata):
+	bulletins = Bulletin.objects.filter(anon=True).filter(anon_email__iexact=userdata.user.email)
+	for bulletin in bulletins:
+		bulletin.anon = False
+		bulletin.creator = userdata
+		bulletin.save()
+		for thread in bulletin.reply_thread_set.all():
+			for reply in thread.reply_set.all():
+				if reply.anon:
+					reply.anon = False
+					reply.sender = userdata
+					reply.save()
+	threads = Reply_Thread.objects.filter(anon=True).filter(anon_email__iexact=userdata.user.email)
+	for thread in threads:
+		thread.anon = False
+		thread.replier = userdata
+		thread.save()
+		for reply in thread.reply_set.all():
+			if reply.anon:
+				reply.anon = False
+				reply.sender = userdata
+				reply.save()
+	return [bulletins.count(), threads.count()]

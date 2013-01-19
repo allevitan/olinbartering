@@ -21,7 +21,7 @@ def pullfeed(userdata, helpbulletin):
 def help(request):
     if request.user.is_authenticated():
         bulletins = pullfeed(request.user.userdata, True)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
 def want(request):
@@ -38,7 +38,7 @@ def help_raw(request):
         request.user.userdata.save()
         #Query for and return the list of bulletins
         bulletins = pullfeed(request.user.userdata, True)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
 def help_filtered(request):
@@ -91,7 +91,7 @@ def includehelpme(request):
         request.user.userdata.includehelpme = True
         request.user.userdata.save()
         bulletins = pullfeed(request.user.userdata, True)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
 def excludehelpme(request):
@@ -102,7 +102,7 @@ def excludehelpme(request):
         request.user.userdata.includehelpme = False
         request.user.userdata.save()
         bulletins = pullfeed(request.user.userdata, True)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })  
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })  
     else: return render(request, '404.html')
 
 def includecarpe(request):
@@ -113,7 +113,7 @@ def includecarpe(request):
         request.user.userdata.includecarpe = True
         request.user.userdata.save()
         bulletins = pullfeed(request.user.userdata, False)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
 def excludecarpe(request):
@@ -124,5 +124,5 @@ def excludecarpe(request):
         request.user.userdata.includecarpe = False
         request.user.userdata.save()
         bulletins = pullfeed(request.user.userdata, False)
-        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+        return render(request, 'elements/helpwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
