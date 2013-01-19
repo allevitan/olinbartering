@@ -134,7 +134,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 		reply_thread.save()
 		return HttpResponse('Success!')
 
-def reformat_carpe(message):
+def reformat(message):
 	message_parts = re.split(r'[\_]{20,60}', message, 1)
 	message = message_parts[0]
 	return message
@@ -143,6 +143,8 @@ def send_help_bulletin(data): #should use **kwargs here
 	subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
 	tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
 	
+	message = reformat(message)
+
 	try:
 		#does user exist?
 		user = get_user(sender)
@@ -180,7 +182,7 @@ def send_want_bulletin(data): #should use **kwargs here
 		subject, sender, timestamp, message = data['subject'], data['sender'], data['timestamp'], data['message']
 		tag, relevance, helpfilter = data['tag'], data['relevance'], data['helpfilter']
 
-		message = reformat_carpe(message)
+		message = reformat(message)
 		
 		try:
 			#does user exist?
