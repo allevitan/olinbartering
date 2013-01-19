@@ -60,10 +60,12 @@
 		<h4>Resolved: {{ owner.userdata.score }} {% if owner.userdata.score > 1 %} problems {% elif owner.userdata.score == 0 %} problems {% else %} problem {% endif %}</h4>
 		<h4>Help Filters: 
 		{% for filter in helpfilters %}
-			{% if filter != helpfilters|last %}
-				{{ filter }},
-			{% else %}
-				{{ filter }}
+			{% if filter != 'Helpme' %}
+				{% if filter != helpfilters|last %}
+					{{ filter }},
+				{% else %}
+					{{ filter }}
+				{% endif %}
 			{% endif %}
 			{% empty %}
 			None
@@ -71,13 +73,15 @@
 		</h4>
 		<h4>Want Filters: 
 		{% for filter in wantfilters %}
-			{% if filter != wantfilters|last %}
-				{{ filter }},
-			{% else %}
-				{{ filter }}
+			{% if filter != 'Carpediem' %}
+				{% if filter != wantfilters|last %}
+					{{ filter }},
+				{% else %}
+					{{ filter }}
+				{% endif %}
 			{% endif %}
-				{% empty %}
-				None
+			{% empty %}
+			None
 		{% endfor %}
 		</h4>
 	  </div>

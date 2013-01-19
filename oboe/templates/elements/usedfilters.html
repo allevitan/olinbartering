@@ -2,10 +2,12 @@
   <h4 class="center">Do you want?</h4>
   <hr class="tight_hr">
   {% for filter in wantfilters %}
+  {% if filter.name != 'Carpediem' %}
   <div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
     <button class="btn btn-danger delFilter" type="button">-</button>
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
   </div>
+  {% endif %}
   {% endfor %}
 
   <!--Hidden div to correct title alignment -->
@@ -21,10 +23,12 @@
   <hr class="tight_hr">
   
   {% for filter in helpfilters %}
+  {% if filter.name != 'Helpme' %}
   <div class="input-append" id="{{ filter.name }}" helpfilter="True">
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
     <button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
   </div>
+  {% endif %}
   {% endfor %}
 
   <!--Hidden div to correct title alignment -->
