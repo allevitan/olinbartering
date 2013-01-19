@@ -45,7 +45,7 @@
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
 	  <div class="scrollbox-inner" id="smallbox" style="padding-top:20px;padding-bottom:20px;">
-	    {% thumbnail user.userdata.pic "350x350" crop="center" as im %}
+	    {% thumbnail owner.userdata.pic "350x350" crop="center" as im %}
 			<img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:10px;border-radius:10px;">
 		{% endthumbnail %}
 	  </div>
