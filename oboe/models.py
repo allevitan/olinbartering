@@ -88,6 +88,14 @@ class Bulletin(models.Model):
                 return self.creator.__unicode__().split(" ")[0]
             else: return "Franklin W. Olin's Ghost"
 
+    def get_creator_email(self):
+	if self.anon:
+            return self.anon_email
+	else:
+            if self.creator:
+                return self.creator.user.email
+            else: return None
+
     def get_absolute_url(self):
 	return "/bulletin/%d/" % self.id
 
@@ -142,12 +150,23 @@ class Reply_Thread(models.Model):
                 return self.replier.__unicode__().split(" ")[0]
             else: return "Franklin's Ghost"
 
+    def get_replier_email(self):
+	if self.anon:
+            return self.anon_email
+	else:
+            if self.replier:
+                return self.replier.user.email
+            else: return None
+
     def get_creator_name(self):
 	return self.bulletin.get_creator_name()
 
     def get_creator_first_name(self):
 	return self.bulletin.get_creator_first_name()
-
+    
+    def get_creator_email(self):
+        return self.bulletin.get_creator_email()
+    
     def __unicode__(self):
 	return "%s" % self.bulletin
 
@@ -162,6 +181,24 @@ class Reply(models.Model):
 
     #whether or not this is from the anonymous user
     anon = models.BooleanField(default=False)
-
+    
+    def get_replier_name(self):
+        if self.anon and self.thread.anon:
+            return self.thread.get_replier_name()
+        elif self.anon and not self.thread.anon():
+            return self.thread.get_creator_name()
+        else: return self.sender.__unicode__()
+    
+    def get_to_email(self):
+        if self.anon and self.thread.anon:
+            return self.thread.get_creator_email()
+        elif self.anon and not self.thread.anon: 
+            return self.thread.get_replier_email()
+        elif self.thread.anon:
+            return self.thread.get_creator_email()
+        elif self.sender == self.thread.replier:
+            return self.thread.get_creator_email()
+        else: return self.get_replier_email()
+    
     def __unicode__(self):
 	return "%s" % self.message
