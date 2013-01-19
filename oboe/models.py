@@ -167,8 +167,8 @@ class Reply_Thread(models.Model):
 	def __unicode__(self):
 		return "%s" % self.bulletin
 
-    anon_email = models.EmailField(blank=True)
-    anon_name = models.CharField(max_length=75, blank=True)
+	anon_email = models.EmailField(blank=True)
+	anon_name = models.CharField(max_length=75, blank=True)
 
    
 
