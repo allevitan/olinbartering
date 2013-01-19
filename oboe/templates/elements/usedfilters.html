@@ -1,19 +1,19 @@
-<div class="pull-left">
+<div class="pull-left wantfilter">
   <h4 class="center">Do you want?</h4>
   <hr class="tight_hr">
   {% for filter in wantfilters %}
-  <div class="input-prepend wantfilter" id="{{ filter.name }}" helpfilter="False">
+  <div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
     <button class="btn btn-danger delFilter" type="button">-</button>
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
   </div>
   {% endfor %}
-</div>
-<div class="pull-right">
-  <h4 class="center">Can you help?</h4>
-  <hr class="tight_hr">
+</div> 
+<div class="pull-right helpfilter">
+  <h4 class="center helpfilter">Can you help?</h4>
+  <hr class="tight_hr helpfilter">
   
   {% for filter in helpfilters %}
-  <div class="input-append helpfilter" id="{{ filter.name }}" helpfilter="True">
+  <div class="input-append" id="{{ filter.name }}" helpfilter="True">
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
     <button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
   </div>
