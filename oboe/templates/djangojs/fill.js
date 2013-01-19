@@ -11,3 +11,7 @@ $(window).resize(function(){
 $(document).ready(function(){
     abso();
 });
+
+$(document).ajaxComplete(function(){
+    abso();
+});

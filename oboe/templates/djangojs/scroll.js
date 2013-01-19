@@ -16,3 +16,10 @@ $(document).ready(function(){
     "padding-right": 25
   });
 });
+
+$(document).ajaxComplete(function(){
+  $(".scrollbox").css({
+    "margin-right": 0 - scrollwidth,
+    "padding-right": 25
+  });
+});

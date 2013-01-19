@@ -1,0 +1,31 @@
+<div class="pull-left">
+  <h4 class="center">Do you want?</h4>
+  <hr class="tight_hr">
+  <div class="input-prepend">
+    <button class="btn btn-success addWantFilter" type="button">+</button>
+    {{ form.wanttag }} 
+  </div>
+  <hr class="tight_hr">
+  {% for filter in unusedWantFilters %}
+  <div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
+    <button class="btn btn-success addWantFilterList" type="button">+</button>
+    <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="pull-right">
+  <h4 class="center">Can you help?</h4>
+  <hr class="tight_hr">
+  <div class="input-append">
+    {{ form.helptag }}
+    <button class="btn btn-success addHelpFilter" type="button">+</button>
+  </div>
+  <hr class="tight_hr">
+  {% for filter in unusedHelpFilters %}
+  <div class="input-append" id="{{ filter.name }}" helpfilter="True">
+    <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
+    <button class="btn btn-success addHelpFilterList" id="button_{{filter.name}}" type="button">+</button>
+  </div>
+  {% endfor %}
+</div>
