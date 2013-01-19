@@ -2,8 +2,6 @@
 
 {% block scripts %}
 <script src="/static/js/jquery.js"></script>
-<script>{% include "djangojs/bootstrap-fileupload.js" %}</script>
-<script>{% include "djangojs/center.js" with ident=".well-large" %}</script>
 <script>
 $(document).ready(function(){
 	$('.editProfile').live('click', function() {
@@ -13,6 +11,8 @@ $(document).ready(function(){
 	});
 });
 </script>
+<script>{% include "djangojs/bootstrap-fileupload.js" %}</script>
+<script>{% include "djangojs/center.js" with ident=".well-large" %}</script>
 {% endblock %}
 	
 
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
 <hr>
 
-<form action="" method="post" class="form-horizontal inner_form"> 
+<form action="" method="post" class="form-horizontal inner_form" enctype="multipart/form-data"> 
 	{% csrf_token %}
 
 	{% if form.first_name.errors %}
@@ -90,7 +90,7 @@ $(document).ready(function(){
 	{% else %}
 	<div class="control-group">
 	{% endif %}
-	<label class="control-label" for="id_first_name">Profile Picture:</label>
+	<label class="control-label">Profile Picture:</label>
 	<div class="fileupload fileupload-new controls" data-provides="fileupload">
   		<div class="input-append">
     			<div class="uneditable-input span2"><i class="icon-file fileupload-exists"></i> 

@@ -68,7 +68,6 @@ def register(request):
 	if request.method == 'POST':
 		form = RegistrationForm(request.POST, request.FILES)
 		if form.is_valid():
-			print "success"
 			cleaned_data = form.clean()
 			first_name = cleaned_data['first_name'].strip()
 			last_name = cleaned_data['last_name'].strip()
@@ -102,7 +101,7 @@ def register(request):
 
 def editProfile(request):	
 	if request.user.is_authenticated():
-		form = UserProfileForm(request.POST, request.FILES)
+		form =UserProfileForm(request.POST, request.FILES)
 		if form.is_valid():
 			cleaned_data = form.clean()
 
@@ -112,6 +111,8 @@ def editProfile(request):
 			email = cleaned_data['emailAddress']
 			dorm = cleaned_data['dorm']
 			pic = request.FILES.get('pic','')
+			print request.POST
+			print request.FILES
 
 			#update user fields
 			user = User.objects.get(username = request.user)
@@ -120,8 +121,9 @@ def editProfile(request):
 			user.last_name = last_name
 			user.email = email
 			userdata.dorm = dorm
+
 			if pic:
-				userdata.pic = pic #currently not functioning properly
+				userdata.pic = pic
 
 			#save results
 			user.save()
