@@ -19,10 +19,11 @@ function updateSidebar(pk){
 
 function loadthread(pk){
   var URI = "/mail/thread/" + pk + "/";
-  checkForMail(function(){updateSidebar(pk)});
+  updateSidebar(pk);
   $.get(URI, function(data){
     $("#bigbox").html(data);
     loadbuttons();    
+    checkForMail(function(){updateSidebar(pk)});
   });
 }
 

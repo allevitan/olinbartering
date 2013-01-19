@@ -78,7 +78,7 @@ def includehelpme(request):
         #Set the user's preference to including helpme
         request.user.userdata.includehelpme = True
         request.user.userdata.save()
-        bulletins = pullfeed(request.user.userdata, False)
+        bulletins = pullfeed(request.user.userdata, True)
         return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
     else: return render(request, '404.html')
 
