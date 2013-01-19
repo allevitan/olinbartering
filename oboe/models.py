@@ -98,7 +98,6 @@ class Bulletin(models.Model):
 	def __unicode__(self):
 		return self.subject
 
-
 class Missive(models.Model):
 	timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
 	message = models.TextField()
@@ -123,6 +122,7 @@ class Reply_Thread(models.Model):
 	anon = models.BooleanField(default=False)
 
     #only used if there's an anonymous user
+<<<<<<< HEAD
 	anon_email = models.EmailField(blank=True)
 	anon_name = models.CharField(max_length=75, blank=True)
 
@@ -158,6 +158,50 @@ class Reply_Thread(models.Model):
 
 	def __unicode__(self):
 		return "%s" % self.bulletin
+=======
+    anon_email = models.EmailField(blank=True)
+    anon_name = models.CharField(max_length=75, blank=True)
+
+    def get_replier_name(self):
+	if self.anon:
+	    if self.anon_name:
+		return self.anon_name
+	    else: return self.anon_email
+	else:
+            if self.replier:
+                return self.replier.__unicode__()
+            else: return "Franklin W. Olin's Ghost"
+
+    def get_replier_first_name(self):
+	if self.anon:
+	    if self.anon_name:
+		return self.anon_name.split(" ")[0]
+	    else: return self.anon_email.split("@")[0]
+	else:
+            if self.replier:
+                return self.replier.__unicode__().split(" ")[0]
+            else: return "Franklin's Ghost"
+
+    def get_replier_email(self):
+	if self.anon:
+            return self.anon_email
+	else:
+            if self.replier:
+                return self.replier.user.email
+            else: return None
+
+    def get_creator_name(self):
+	return self.bulletin.get_creator_name()
+
+    def get_creator_first_name(self):
+	return self.bulletin.get_creator_first_name()
+    
+    def get_creator_email(self):
+        return self.bulletin.get_creator_email()
+    
+    def __unicode__(self):
+	return "%s" % self.bulletin
+>>>>>>> 51e2931f17f013a4ba7e68a153090a3c40b8b34f
 
 class Reply(models.Model):
 	thread = models.ForeignKey(Reply_Thread)
@@ -168,7 +212,32 @@ class Reply(models.Model):
 	read = models.BooleanField(default=False)
 
     #whether or not this is from the anonymous user
+<<<<<<< HEAD
 	anon = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return "%s" % self.message
+=======
+    anon = models.BooleanField(default=False)
+    
+    def get_replier_name(self):
+        if self.anon and self.thread.anon:
+            return self.thread.get_replier_name()
+        elif self.anon and not self.thread.anon():
+            return self.thread.get_creator_name()
+        else: return self.sender.__unicode__()
+    
+    def get_to_email(self):
+        if self.anon and self.thread.anon:
+            return self.thread.get_creator_email()
+        elif self.anon and not self.thread.anon: 
+            return self.thread.get_replier_email()
+        elif self.thread.anon:
+            return self.thread.get_creator_email()
+        elif self.sender == self.thread.replier:
+            return self.thread.get_creator_email()
+        else: return self.get_replier_email()
+    
+    def __unicode__(self):
+	return "%s" % self.message
+>>>>>>> 51e2931f17f013a4ba7e68a153090a3c40b8b34f

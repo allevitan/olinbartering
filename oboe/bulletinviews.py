@@ -81,21 +81,9 @@ def view(request, pk):
 	    if request.POST['visibility'] == 'Public':
 		public = True
 	    else: public = False
-	    user = request.user.userdata
-	    if user != bulletin.creator or public:
-
-		#send public message
-		message = cleaned_data['message']
-
-		#generate new thread if needed
-		if allreplies.filter(sender=user).exists():
-		    thread = (allreplies.filter(sender=user)[0]).thread
-		else:
-		    thread = Reply_Thread.objects.create(bulletin=bulletin, replier=user)
-		    #save info
-		    thread.save()
-		reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
-		reply.save()
+	    if request.user.userdata != bulletin.creator or public:
+                message = cleaned_data['message']
+                outmail.replyToBulletin(bulletin, message, request.user.userdata, public)
 
     #update page
     form = ReplyForm()

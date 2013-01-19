@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from models import Bulletin
 import datetime
+from django.utils import timezone
 
 def pullfeed(userdata, helpbulletin):
-    bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=helpbulletin).filter(relevance__gte=datetime.datetime.now()).order_by("-update")
+    bulletins = Bulletin.objects.filter(resolved=False).filter(helpbulletin=helpbulletin).filter(relevance__gte=datetime.datetime.now(timezone.get_current_timezone())).order_by("-update")
     if helpbulletin and userdata.filterhelp:
         filters = userdata.filters.filter(helpfilter=True)
         bulletins = bulletins.filter(tag__in=filters)
@@ -15,8 +16,19 @@ def pullfeed(userdata, helpbulletin):
         bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='helpme')
     elif not helpbulletin and not userdata.includecarpe:
         bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='carpediem')
-    print 'made it'
     return bulletins
+
+def help(request):
+    if request.user.is_authenticated():
+        bulletins = pullfeed(request.user.userdata, True)
+        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+    else: return render(request, '404.html')
+
+def want(request):
+    if request.user.is_authenticated():
+        bulletins = pullfeed(request.user.userdata, False)
+        return render(request, 'elements/wantwidget.html', { 'bulletins': bulletins })
+    else: return render(request, '404.html')
 
 def help_raw(request):
     """Render all relevant & unresolved help bulletins."""

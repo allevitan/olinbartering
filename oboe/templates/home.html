@@ -20,6 +20,15 @@ $(document).ready(function(){
     });
 });
 
+function refreshLists(){
+    $("#helpbox").load("/elements/help/");
+    $("#wantbox").load("/elements/want/");
+}
+
+$(document).ready(function(){
+    setInterval(refreshLists, 240000);
+});
+
 </script>
 
 {% endblock %}

@@ -246,7 +246,7 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 			pass
 
 	#generate new bulletin
-	elif helpfilter:
+	if helpfilter:
 		return send_help_bulletin(data)
 	else:
 		return send_want_bulletin(data)
