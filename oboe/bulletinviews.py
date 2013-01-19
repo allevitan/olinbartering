@@ -59,8 +59,8 @@ def create(request):
     else: form = CreateBulletinForm()
     if len(errors) >= 3:
 	errors.append('get your life together.')
-    helptags = Filter.objects.filter(helpfilter=True)
-    wanttags = Filter.objects.filter(helpfilter=False)
+    helptags = Filter.objects.filter(helpfilter=True).exclude(name__iexact='Helpme')
+    wanttags = Filter.objects.filter(helpfilter=False).exclude(name__iexact='Carpediem')
     return render(request, 'create.html', {'form':form, 'helptags':helptags, 'wanttags':wanttags, 'errors':errors})
 
 

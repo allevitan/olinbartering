@@ -10,8 +10,8 @@
     <img class="profthumb" src="http://www.placekitten.com/65/65/">
     {% endif %}
   </div>
-  <div class="filter">
-    {% include "elements/infostring.html" %}
+  <div class="pull-right">
+    {% if bulletin.helpbulletin %}Can you Help?{% else %}Do you Want?{% endif %} {% include "elements/infostring.html" %}
   </div>
   <h5 class="bulltitle">
     {% if bulletin.resolved %}
@@ -24,21 +24,18 @@
       {{ bulletin.subject|title }}
     </a>
   </h5>
+  <span class="pull-right" style="margin-top:15px;">
+    <span class="timesince">
+      {% if bulletin.missive_set.all|length > 1 %}
+      Updated {{ bulletin.update|timesince|truncatewords:"2"|cut:", ..." }}
+      {% else %}
+      {{ bulletin.creation|timesince|truncatewords:"2"|cut:", ..." }}{% endif %} ago
+    </span>
+  </span>
   <div class="message">
     {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200 }}
   </div>
 </div>
-<h5 class="creatorname">{% include "elements/bulletinname.html" with bulletin=bulletin %}</h5>
-<span class="timebox">
-  <span class="extrainfo">
-{% if bulletin.helpbulletin %}Can you Help?{% else %}Do you Want?{% endif %} - </span>
-  <span class="timesince">
-    {% if bulletin.missive_set.all|length > 1 %}
-    Updated {{ bulletin.update|timesince|truncatewords:"2"|cut:", ..." }}
-    {% else %}
-    {{ bulletin.creation|timesince|truncatewords:"2"|cut:", ..." }}{% endif %} ago
-  </span>
-</span>
 {% if not forloop.last %}
 <hr style="margin:5px">
 {% endif %}
