@@ -170,7 +170,6 @@ class Reply_Thread(models.Model):
     def __unicode__(self):
 	return "%s" % self.bulletin
 
-
 class Reply(models.Model):
     thread = models.ForeignKey(Reply_Thread)
     sender = models.ForeignKey(UserData, blank=True, null=True)
