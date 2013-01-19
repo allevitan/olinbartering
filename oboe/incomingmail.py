@@ -20,8 +20,11 @@ def resolved(subject, message):
 	regex = r'(?<!un)resolve'
 	subject_match = re.search(regex, subject, flags=re.IGNORECASE)
 	message_match = re.search(regex, message, flags=re.IGNORECASE)
-	if subject_match or message_match:
-		return True
+	if message_match:
+		return subject
+	if subject_match:
+		subject = re.sub(r'resolved[\:|\-| ][ ]?', '',  subject, flags=re.IGNORECASE)
+		return subject
 	return False
 
 def mailinglist(inbound):
@@ -86,6 +89,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 	message = latest_response(message)
 
 	if resolved(bulletin_subject, message):
+		bulletin_subject = resolved(bulletin_subject, message)
 		print bulletin_subject
 		bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 		bulletin.resolved = True
@@ -233,10 +237,14 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
 			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
+
+	print 'debugging...'
 	
 	#resolve bulletin if needed
 	if resolved(subject, message):
 		try:
+			subject = resolved(subject, message)
+			print subject
 			bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
 			bulletin.resolved = True
 			bulletin.save()
@@ -244,6 +252,8 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 		except:
 			#bulletin DNE
 			pass
+	
+	print 'resolve error...'
 
 	#generate new bulletin
 	if helpfilter:
@@ -285,7 +295,6 @@ def process(inbound):
 
 	#remove everything but latest response
 	message = latest_response(message)
-
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
 	
