@@ -18,9 +18,11 @@ def standard_reply(request):
 
 def resolved(subject, message):
 	regex = r'(?<!un)resolve'
-	subject_match = re.search(regex, subject)
-	message_match = re.search(regex, message)
-	return subject_match or message_match
+	subject_match = re.search(regex, subject, flags=re.IGNORECASE)
+	message_match = re.search(regex, message, flags=re.IGNORECASE)
+	if subject_match or message_match:
+		return True
+	return False
 
 def mailinglist(inbound):
 	'''Check to see if email originated in carpe or helpme'''
@@ -83,8 +85,9 @@ def send_reply(inbound, mailing_list, helpfilter):
 	#remove everything but latest response
 	message = latest_response(message)
 
-	if resolved(subject, message):
-		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
+	if resolved(bulletin_subject, message):
+		print bulletin_subject
+		bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 		bulletin.resolved = True
 		bulletin.save()
 		return HttpResponse('Success!')
@@ -233,10 +236,14 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	
 	#resolve bulletin if needed
 	if resolved(subject, message):
-		bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
-		bulletin.resolved = True
-		bulletin.save()
-		return HttpResponse('Success!')
+		try:
+			bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
+			bulletin.resolved = True
+			bulletin.save()
+			return HttpResponse('Success!')
+		except:
+			#bulletin DNE
+			pass
 
 	#generate new bulletin
 	elif helpfilter:
@@ -279,7 +286,7 @@ def process(inbound):
 
 	sender = inbound.sender()#need to convert to userdata instance
 		
-	if resolved(subject, message):
+	if resolved(bulletin_subject, message):
 		bulletin.resolved = True
 		bulletin.save()
 		return HttpResponse('Success!')
