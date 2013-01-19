@@ -111,8 +111,6 @@ def editProfile(request):
 			email = cleaned_data['emailAddress']
 			dorm = cleaned_data['dorm']
 			pic = request.FILES.get('pic','')
-			print request.POST
-			print request.FILES
 
 			#update user fields
 			user = User.objects.get(username = request.user)
