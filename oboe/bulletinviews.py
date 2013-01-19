@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.db.models import Q
 from models import Bulletin, Missive, Filter, Reply_Thread, Reply, UserData
 from forms import CreateBulletinForm, UpdateBulletinForm, ReplyForm, ResolverCreditForm
 import datetime
@@ -172,10 +173,22 @@ def update(request, pk):
     #direct successful requests to the home page, where they see the update
     return HttpResponseRedirect('/home/');
 
+def search(request):
+    if request.user.is_authenticated and request.method == 'GET':
+        query = request.GET.get('q','')
+        if not query == '':
+            print query
+            bulletins = Bulletin.objects.filter(Q(subject__icontains=query) | Q(tag__name__icontains=query)).order_by("resolved", "-creation")
+        else:
+            bulletins = Bulletin.objects.none()
+        return render(request, "archivesearch.html", {'bulletins':bulletins, 'query':query})
+    else: return HttpResponseRedirect("/login/")
+
 
 from django.conf.urls import patterns, url
 urls = patterns('',
 		url(r'^(?P<pk>\d+)/$', view),
 		url(r'^resolve/$', resolve),
 		url(r'^(?P<pk>\d+)/update/$', update),
+                url(r'^search/', search),
 )
