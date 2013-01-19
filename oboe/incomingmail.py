@@ -20,7 +20,7 @@ def resolved(subject, message):
 	regex = r'(?<!un)resolve'
 	subject_match = re.search(regex, subject)
 	message_match = re.search(regex, message)
-	return subject_match.group(0) or message_match.group(0)
+	return subject_match or message_match
 
 def mailinglist(inbound):
 	'''Check to see if email originated in carpe or helpme'''
