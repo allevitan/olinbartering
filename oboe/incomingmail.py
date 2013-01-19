@@ -48,7 +48,7 @@ def generate_name(sender):
 def handle_mailing_list(helpfilter, inbound):
 	#Assign to mailing list
 	if helpfilter: mailing_list = 'Helpme'
-	else: mailing_list = 'Carpe'
+	else: mailing_list = 'Carpediem'
 	subject = inbound.subject()
 	
 	if "Re: " in subject:
