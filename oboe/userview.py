@@ -83,6 +83,10 @@ def register(request):
 				user.first_name = first_name
 				user.last_name = last_name
 				userdata = UserData.objects.create(user=user,score=0,dorm=dorm, pic=pic)
+				helpmefilter = Filter.objects.get(name = 'Helpme', helpfilter = True)
+				carpefilter = Filter.objects.get(name = 'Carpediem', helpfilter = False)
+				userdata.filters.add(helpmefilter)
+				userdata.filters.add(carpefilter)
 				user.save()
 				userdata.save()
 				user = auth.authenticate(username=username, password=password)
