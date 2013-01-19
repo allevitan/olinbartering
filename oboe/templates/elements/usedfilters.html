@@ -2,7 +2,7 @@
   <h4 class="center">Do you want?</h4>
   <hr class="tight_hr">
   {% for filter in wantfilters %}
-  <div class="input-prepend" id="{{ filter.name }}" helpfilter="False">
+  <div class="input-prepend wantfilter" id="{{ filter.name }}" helpfilter="False">
     <button class="btn btn-danger delFilter" type="button">-</button>
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
   </div>
@@ -13,11 +13,17 @@
   <hr class="tight_hr">
   
   {% for filter in helpfilters %}
-  <div class="input-append" id="{{ filter.name }}" helpfilter="True">
+  <div class="input-append helpfilter" id="{{ filter.name }}" helpfilter="True">
     <input class="filterDisplay" style="background-color:#FBFBFB;" id="{{ filter.name }}" type="text" value="{{ filter.name }}" readonly>
     <button class="btn btn-danger delFilter" id="button_{{filter.name}}" type="button">-</button>
   </div>
   {% endfor %}
+
+  <!--Hidden div to correct title alignment -->
+  <div class="input-append" id="" style="height:0; visibility:hidden; display:inline;">
+    <input class="filterDisplay" style="background-color:#FBFBFB;" type="text" readonly>
+    <button class="btn btn-danger" type="button">-</button>
+  </div>
 </div>	  
 
 

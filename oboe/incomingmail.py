@@ -228,7 +228,7 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	message = trim_message(message) 
 
 	#send bulletin
-	tag = match_filter(subject, helpfilter)
+	tag = match_filter(subject, message, helpfilter)
 	relevance = datetime.datetime.now() + datetime.timedelta(7)
 
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
@@ -253,8 +253,8 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 			
 	
 
-def match_filter(subject, helpfilter):
-	#search for a matching filter if filter does not exist
+def match_filter(subject, message, helpfilter):
+	#search subject for a matching filter if filter does not exist
 	for word in subject.split():
 		try:
 			#return tag
@@ -262,6 +262,13 @@ def match_filter(subject, helpfilter):
 			return tag
 		except:
 			pass
+	
+	#search body of email if no tag found in subject
+	message = message.lower()
+	for filterObject in Filter.objects.filter(helpfilter=helpfilter):
+		if filterObject.name.lower() in message:
+			return filterObject
+		
 	#Nothing is found, return mailing_list name as placeholder
 	if helpfilter: mailing_list = "Helpme"
 	else: mailing_list = "Carpediem"

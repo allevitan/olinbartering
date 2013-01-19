@@ -62,6 +62,16 @@ $(document).ready(function(){
 #filterheader { margin-top:0px; margin-bottom:10px; }
 -webkit-text-fill-color:#880000;
 
+{% if webkit %}
+.helpfilter {
+	padding-left:0px;
+}
+.wantfilter {
+	margin-right:0px;
+	padding-right:0px;
+}
+{% endif %}
+
 {% endblock %}
 
 {% block content %}
