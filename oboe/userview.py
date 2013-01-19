@@ -317,3 +317,24 @@ def profilepage(request, username):
 	return render(request, 'profilepage.html', {'request': request, 'owner':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
 
 
+def linkPrevious(userdata):
+	bulletins = Bulletin.objects.filter(anon=True).filter(anon_email__iexact=userdata.user.email)
+	for bulletin in bulletins:
+		bulletin.anon = False
+		bulletin.creator = userdata
+		bulletin.save()
+		for thread in bulletin.reply_thread_set.all():
+			for reply in thread.reply_set.all():
+				if reply.anon:
+					reply.anon = False
+					reply.sender = userdata
+					reply.save()
+	threads = Reply_Thread.objects.filter(anon=True).filter(anon_email__iexact=userdata.user.email)
+	for thread in threads:
+		thread.anon = False
+		for reply in thread.reply_set.all():
+			if reply.anon:
+				reply.anon = False
+				reply.sender = userdata
+				reply.save()
+	return [bulletins.count(), threads.count()]

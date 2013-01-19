@@ -2,10 +2,7 @@
 
 
 {% block scripts %}
-<script src="/static/js/jquery.js"></script>
-
 <script>
-{% include "djangojs/center.js" with ident=".wrapper" %}
 </script>
 
 <!--<script> 
@@ -16,74 +13,65 @@
 
 {% block content %}
 
-<div class="wrapper">
-
-<div class="well well-large extra_space">
-
-<h2 style="text-align:center;"><b>Login</b></h2>
-
-<hr>
-
-<form action="" method="post" class="form-horizontal inner_form"> 
+<div class="container-fluid" style="max-width:940px;">
+  <div class="page-header">
+    <h1 class="pull-right"><small>Login below...</small></h1>
+    <h1>Welcome to Filtr!</h1>
+  </div>
+  <div class="row-fluid">
+    <div class="span3"></div>
+    <div class="well well-large span6">
+      <h2 style="text-align:center;"><b>Login</b></h2>
+      <hr>
+      <form action="" method="post" class="form-horizontal inner_form"> 
 	{% csrf_token %}
-
-
-	{% if form_error %}
-    <div class="control-group error">
-	{% else %}
-	<div class="control-group">
-	{% endif %}
-        {% for error in form.username.errors %}
-			<p class="help-inline">{{ error }}</p>
-		{% endfor %}
-        <label class="control-label" for="id_email">Username:</label>
-		<div class="controls">
-			{{ form.username }}
-		</div>
-    </div>
 	
-	{% if form_error %}
-    <div class="control-group error">
-	{% else %}
-	<div class="control-group">
-	{% endif %}
-        {% for error in form.password.errors %}
-			<p class="help-inline">{{ error }}</p>
-		{% endfor %}
-        <label class="control-label" for="id_password">Password:</label>
-		<div class="controls">
-			{{ form.password }}
-		</div>
-    </div>
-
-<hr>
-
-	<div class="control-group">
-		<div class="controls">
-			<input type="submit" value="Login" class="btn btn-success"/>
-		</div>
-    </div>
-
-</form>
-
-</div>
-
-{% if not form_error %}
-	<div class="well well-large" style="margin-left:auto; margin-right:auto; width:425px; text-align:center; padding:60px; margin-bottom: 15px;">
-	<h2><b>Don't have an account?</b></h2>
-	<hr>
-	<a href="/register" class="btn btn-success"/>Sign up!</a>
+	<div class="{% if form_error %}control-group error{% else %}control-group{% endif %}">
+          {% for error in form.username.errors %}
+          <p class="help-inline">{{ error }}</p>
+          {% endfor %}
+          <label class="control-label" for="id_email">Username:</label>
+          <div class="controls">
+	    {{ form.username }}
+          </div>
 	</div>
-{% else %}
-	<div class="well well-large" style="margin-left:auto; margin-right:auto; width:425px;text-align:center; padding:60px; margin-bottom: 15px;">
-	<h2><b>Forgot your password?</b></h2>
-	<hr>
-	<a href="/resetPassword" class="btn btn-success"/>Reset Password</a>
+	<div class="{% if form_error %}control-group error{% else %}control-group{% endif %}">
+          {% for error in form.password.errors %}
+	  <p class="help-inline">{{ error }}</p>
+	  {% endfor %}
+          <label class="control-label" for="id_password">Password:</label>
+	  <div class="controls">
+	    {{ form.password }}
+	  </div>
 	</div>
-
+	
+	<hr>
+	
+	<div class="control-group">
+	  <div class="controls">
+	    <input type="submit" value="Login" class="btn btn-success"/>
+	  </div>
+	</div>
+      </form>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span3"></div>
+    {% if not form_error %}
+    <div class="well well-large span6" style="text-align:center;">
+      <h2><b>Don't have an account?</b></h2>
+      <hr>
+      <a href="/register" class="btn btn-success">Sign up!</a>
+    </div>
+    {% else %}
+    <div class="well well-large span6" style="text-align:center;">
+      <h2><b>Forgot your password?</b></h2>
+      <hr>
+      <a href="/resetPassword" class="btn btn-success">Reset Password</a>
+    </div>
+  </div>
+  {% endif %}
 </div>
-{% endif %}
-
 {% endblock %}
 
 
