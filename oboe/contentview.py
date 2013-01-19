@@ -103,7 +103,7 @@ def contact(request):
 			message = cleaned_data['message']
 			emailAddress = cleaned_data['emailAddress']
 			message = "Filtr Feedback from %s:\n%s"  %(emailAddress,message)
-			email = EmailMessage(subject, message, 'allevitan@gmail.com', ['abraham.levitan@students.olin.edu', 'madison.may@students.olin.edu'])
+			email = EmailMessage(subject, message, 'olin.filtr@gmail.com', ['allevitan@gmail.com', 'madison.may@students.olin.edu'])
 			email.send(fail_silently=False)
 			return HttpResponseRedirect('/')
 
