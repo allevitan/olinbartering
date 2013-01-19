@@ -69,7 +69,7 @@ $(document).ready(function(){
 
     <div class="span6">
       <div class="btn-toolbar" style="position:relative;">
-	<button id="helpmebtn" class="btn btn-small" data-without-text="+HelpMe" data-with-text="-HelpMe" style="position:absolute; left:0; bottom:0;">{% if user.userdata.includehelpme %}-Helpme{% else %}+HelpMe{% endif %}</button>
+	<button id="helpmebtn" class="btn btn-small" data-without-text="+HelpMe" data-with-text="-HelpMe" style="position:absolute; left:0; bottom:0;">{% if user.userdata.includehelpme %}-HelpMe{% else %}+HelpMe{% endif %}</button>
 	{% if user.is_authenticated %}<button id="helpbtn" class="btn btn-small" data-raw-text="Filter" data-filtered-text="Go Raw" style="position:absolute; right:0; bottom:0;">{% if user.userdata.filterhelp %}Go Raw{% else %}Filter{% endif %}</button>{% endif %}
 	<h3 style="text-align:center;">Can You Help?</h3>
       </div>
