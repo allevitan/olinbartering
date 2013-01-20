@@ -160,7 +160,7 @@ class Reply_Thread(models.Model):
 
 	def get_replier_email(self):
 		if self.anon:
-			return self.anon_email:
+			return self.anon_email
 		else:
 			if self.replier:
 				return self.replier.user.email
