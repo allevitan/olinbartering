@@ -21,9 +21,13 @@ def replyToBulletin(bulletin, message, user, public):
         thread = Reply_Thread.objects.create(bulletin=bulletin, replier=user)
         #save info
         thread.save()
+    replyWithThread(thread, message, user, public)
+    
+def replyWithThread(thread, message, user, public):
     reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
     reply.save()
     sendToCreator(reply)
+    
 
 
 def createEmail(missive):

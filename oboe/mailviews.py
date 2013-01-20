@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from models import Reply_Thread, Reply
 from django.core.mail import send_mail
 from forms import ReplyForm
+import outmail
 
 def base(request):
     """Redirect to mailbox."""
@@ -38,6 +39,7 @@ def mailbox(request):
 def thread(request, pk):
     """Render a single thread's info, usually for the mailbox"""
 
+    print 'made it!'
     thread = Reply_Thread.objects.get(id=pk)
     info={}
 
@@ -60,9 +62,7 @@ def thread(request, pk):
 		else: public = False
 		user = request.user.userdata
 		message = cleaned_data['message']
-		reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
-		thread.save()
-		reply.save()
+                outmail.replyWithThread(thread, message, user, public)
     #Filling out the necessary context
     form = ReplyForm()
     info.update({'form':form, 'new':new});
