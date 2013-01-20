@@ -83,7 +83,9 @@ def send_reply(inbound, mailing_list, helpfilter):
 	subject = re.sub(regex, '', subject)
 
 	#remove "Re:" from subject line
-	bulletin_subject = re.sub(r'Re\: ', '', subject)	
+	bulletin_subject = re.sub(r'Re\: ', '', subject)
+
+	print bulletin_subject	
 
 	#remove everything but latest response
 	message = latest_response(message)
