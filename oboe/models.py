@@ -158,11 +158,23 @@ class Reply_Thread(models.Model):
 			else: 
 				return "Franklin's Ghost"
 
+	def get_replier_email(self):
+		if self.anon:
+			return self.anon_email:
+		else:
+			if self.replier:
+				return self.replier.user.email
+			else: 
+				return "ghost.of.frank@students.olin.edu"
+	
 	def get_creator_name(self):
 		return self.bulletin.get_creator_name()
 
 	def get_creator_first_name(self):
 		return self.bulletin.get_creator_first_name()
+
+	def get_creator_email(self):
+		return self.bulletin.get_creator_email()
 
 	def __unicode__(self):
 		return "%s" % self.bulletin
