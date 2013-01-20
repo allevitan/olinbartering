@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="page-header">
+    <h1 class="pull-right"><small>Get ready for some serious excitement...</small></h1>
+    <h1>Hey there, new user!</h1>
+  </div>
+  <div class="row-fluid">
+    <div class="span3"></div>
+    <div class="well well-large span6">
+      <h2>Would you like to link old emails to your account?</h2>
+      <p>
+	We normally store Helpme and Carpediem emails for a week before getting rid of them. If you'd like, we can automatically link emails from the past week to your account - If not, we'll keep them separate and throw them out on schedule.
+      </p>
+      <form class="pull-right" action="" method="POST">
+	{% csrf_token %}
+	<input type="hidden" name="link" value="True">
+	<input class="btn" type="submit" value="Yes, link them up!">
+      </form>
+      <form class="pull-left" action="" method="POST">
+	{% csrf_token %}
+	<input type="hidden" name="link" value="False">
+	<input class="btn" type="submit" value="No, thanks.">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

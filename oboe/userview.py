@@ -92,7 +92,7 @@ def register(request):
 				linkPrevious(userdata)
 				user = auth.authenticate(username=username, password=password)
 				auth.login(request, user)
-				return HttpResponseRedirect('/')
+				return HttpResponseRedirect('/link/')
 			else: 
 				form = RegistrationForm()
 				render(request, 'registration.html', {'form':form})
@@ -100,6 +100,14 @@ def register(request):
 		form = RegistrationForm()
 	
 	return render(request, 'registration.html', {'form':form})
+
+def linkOld(request):
+	if request.user.is_authenticated:
+		if request.method == 'POST' and request.POST['link'] == 'True':
+			linkPrevious(request.user.userdata)
+			return HttpResponseRedirect('/home/')
+		else: return render(request, 'linkPrevious.html')
+	return HttpResponseRedirect('/home/')
 
 def editProfile(request):	
 	if request.user.is_authenticated():
