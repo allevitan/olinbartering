@@ -103,9 +103,11 @@ def register(request):
 
 def linkOld(request):
 	if request.user.is_authenticated:
-		if request.method == 'POST' and request.POST['link'] == 'True':
-			linkPrevious(request.user.userdata)
-			return HttpResponseRedirect('/home/')
+		if request.method == 'POST':
+			if request.POST['link'] == 'True':
+				linkPrevious(request.user.userdata)
+				return HttpResponseRedirect('/home/')
+			else: return HttpResponseRedirect('/home/')
 		else: return render(request, 'linkPrevious.html')
 	return HttpResponseRedirect('/home/')
 
