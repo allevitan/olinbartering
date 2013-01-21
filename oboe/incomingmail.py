@@ -8,7 +8,6 @@ import re
 
 @csrf_exempt
 def standard_reply(request):
-	print "Email incoming..."
 	if request.method == 'POST':
 		inbound = PostmarkInbound(json = request.raw_post_data)
 		if mailinglist(inbound):
@@ -101,6 +100,12 @@ def send_reply(inbound, mailing_list, helpfilter):
 	try:
 		#does user exist?
 		user = get_user(sender)
+
+		if bulletin.creator == user:
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			missive.save()
+
 
 		userdata = user.userdata
 
@@ -234,7 +239,7 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 
 	#send bulletin
 	tag = match_filter(subject, message, helpfilter)
-	relevance = datetime.datetime.now() + datetime.timedelta(7)
+	relevance = datetime.datetime.now() + datetime.timedelta(3)
 
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
 			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
@@ -252,8 +257,6 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 		except:
 			#bulletin DNE
 			pass
-	
-	print 'resolve error...'
 
 	#generate new bulletin
 	if helpfilter:
