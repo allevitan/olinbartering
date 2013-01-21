@@ -86,6 +86,7 @@ def send_reply(inbound, mailing_list, helpfilter):
 
 	#remove everything but latest response
 	message = latest_response(message)
+	message = trim_message(message) 
 
 	if resolved(bulletin_subject, message):
 		bulletin_subject = resolved(bulletin_subject, message)
@@ -234,7 +235,6 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	subject = re.sub(regex, '', subject)
 
 	#remove replies from message
-	regex = r'On [A-Z][a-z]{2,3}\,'
 	message = trim_message(message) 
 
 	#send bulletin
@@ -298,6 +298,10 @@ def process(inbound):
 
 	#remove everything but latest response
 	message = latest_response(message)
+
+	#remove replies
+	message = trim_message(message) 
+	
 	#find bulletin and reply_thread in database that match email title
 	bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject)
 	
@@ -322,7 +326,7 @@ def process(inbound):
 			reply_thread = Reply_Thread.objects.create(bulletin = bulletin)
 	
 		#create new reply object
-		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = True, 
+		reply = Reply.objects.create(thread = reply_thread, sender = userdata, public = False, 
 								     timestamp = timestamp, message = message)
 		reply.save()
 		reply_thread.save()
@@ -338,7 +342,7 @@ def process(inbound):
 		except: 
 			reply_thread = Reply_Thread.objects.create(bulletin = bulletin, anon_email = email, anon_name = name, anon = True)
 
-		reply = Reply.objects.create(thread = reply_thread, anon=True, public = True, 
+		reply = Reply.objects.create(thread = reply_thread, anon=True, public = False, 
 								     timestamp = timestamp, message = message)
 
 		reply.save()
