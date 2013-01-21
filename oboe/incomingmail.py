@@ -23,7 +23,7 @@ def resolved(subject, message):
 	if message_match:
 		return subject
 	if subject_match:
-		subject = re.sub(r'resolved[\:|\-| ][ ]?', '',  subject, flags=re.IGNORECASE)
+		subject = re.sub(r'\[?resolved\]?[\:|\-]?[ ]?', '',  subject, flags=re.IGNORECASE)
 		return subject
 	return False
 
@@ -85,14 +85,11 @@ def send_reply(inbound, mailing_list, helpfilter):
 	#remove "Re:" from subject line
 	bulletin_subject = re.sub(r'Re\: ', '', subject)
 
-	print bulletin_subject	
-
 	#remove everything but latest response
 	message = latest_response(message)
 
 	if resolved(bulletin_subject, message):
 		bulletin_subject = resolved(bulletin_subject, message)
-		print bulletin_subject
 		bulletin = Bulletin.objects.get(subject__iexact = bulletin_subject, helpbulletin=helpfilter)
 		bulletin.resolved = True
 		bulletin.save()
@@ -248,7 +245,6 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	if resolved(subject, message):
 		try:
 			subject = resolved(subject, message)
-			print subject
 			bulletin = Bulletin.objects.get(subject__iexact = subject, helpbulletin=helpfilter)
 			bulletin.resolved = True
 			bulletin.save()
