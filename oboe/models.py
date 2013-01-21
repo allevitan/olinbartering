@@ -22,10 +22,10 @@ class UserData(models.Model):
 
 	filters = models.ManyToManyField(Filter, blank=True)
 
-	filterhelp = models.BooleanField(default=True);
-	filterwant = models.BooleanField(default=True);
-	includehelpme = models.BooleanField(default=True);
-	includecarpe = models.BooleanField(default=True
+	filterhelp = models.BooleanField(default=True)
+	filterwant = models.BooleanField(default=True)
+	includehelpme = models.BooleanField(default=True)
+	includecarpe = models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return "%s %s" %( self.user.first_name, self.user.last_name)
