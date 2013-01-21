@@ -71,7 +71,7 @@ $("#id_free").click(function(){
 
 {% block content %}
 <div class="container-fluid" id="contentbox">
-  <h3 style="margin-left:25px;"><span class="faded">{% if bulletin.helpbulletin %}Help!{% else %}Want?{% endif %}</span> {{ bulletin.subject|title }}</h3>
+  <h3 style="margin-left:25px;"><span class="faded">{% if bulletin.helpbulletin %}Help!{% else %}Want?{% endif %}</span> {{ bulletin.subject }}</h3>
   <div class="well well-large well-scroll">
     <div class="scrollbox" id="bulletinbox">
       <div class="scrollbox-inner">
