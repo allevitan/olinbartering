@@ -239,7 +239,7 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 
 	#send bulletin
 	tag = match_filter(subject, message, helpfilter)
-	relevance = datetime.datetime.now() + datetime.timedelta(3)
+	relevance = datetime.datetime.now() + datetime.timedelta(1)
 
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
 			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
