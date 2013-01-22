@@ -131,6 +131,12 @@ def reply(inbound):
 		bulletin.resolved = True
 		bulletin.save()
 		return HttpResponse('Success!')
+
+	if bulletin.creator == user.userdata:
+		#create missive
+		missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+		missive.save()
+		return HttpResponse('Success!')
 	
 	try:
 		#does user exist?
@@ -200,7 +206,7 @@ def mailinglist_reply(inbound, mailing_list, helpfilter):
 			#create missive
 			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
 			missive.save()
-
+			return HttpResponse('Success!')
 
 		userdata = user.userdata
 
