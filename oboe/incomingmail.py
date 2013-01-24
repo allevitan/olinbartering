@@ -131,18 +131,18 @@ def reply(inbound):
 		bulletin.resolved = True
 		bulletin.save()
 		return HttpResponse('Success!')
-
-	if bulletin.creator == user.userdata:
-		#create missive
-		missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
-		missive.save()
-		return HttpResponse('Success!')
 	
 	try:
 		#does user exist?
 		user = get_user(sender)
-
 		userdata = user.userdata
+
+		
+		if bulletin.creator == user.userdata:
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			missive.save()
+			return HttpResponse('Success!')
 		
 		try: 
 			reply_thread = Reply_Thread.objects.get(bulletin = bulletin)
@@ -254,9 +254,7 @@ def send_bulletin(inbound, mailing_list, helpfilter):
 	relevance = datetime.datetime.now() + datetime.timedelta(1)
 
 	data = {'subject': subject, 'sender': sender, 'timestamp': timestamp, 'message': message, 
-			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} 
-
-	print 'debugging...'
+			'tag':tag, 'relevance':relevance, 'helpfilter':helpfilter} '
 	
 	#resolve bulletin if needed
 	if resolved(subject, message):
@@ -285,8 +283,14 @@ def send_help_bulletin(data): #should use **kwargs here
 	try:
 		#does user exist?
 		user = get_user(sender)
-
 		userdata = user.userdata
+
+		
+		if bulletin.creator == user.userdata:
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			missive.save()
+			return HttpResponse('Success!')
 
 		#create bulletin
 		bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
@@ -324,8 +328,13 @@ def send_want_bulletin(data): #should use **kwargs here
 		try:
 			#does user exist?
 			user = get_user(sender)
-
 			userdata = user.userdata
+
+			if bulletin.creator == user.userdata:
+				#create missive
+				missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+				missive.save()
+				return HttpResponse('Success!')
 
 			#create bulletin
 			bulletin = Bulletin.objects.create(subject = subject, creation = timestamp, relevance = relevance,
