@@ -33,7 +33,7 @@ class UserData(models.Model):
 
 class Bulletin(models.Model):
 	creator = models.ForeignKey(UserData, related_name="%(class)s_created", blank=True, null=True)
-	subject = models.CharField(max_length=50)
+	subject = models.CharField(max_length=100)
 	creation = models.DateTimeField(auto_now=False, auto_now_add=True)
 	update = models.DateTimeField(auto_now=True, auto_now_add=True)
 	relevance = models.DateTimeField(auto_now=False, auto_now_add=False)
