@@ -29,7 +29,7 @@
     {{ bulletin.location }}
   </div>
   <div class="message">
-    {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200 }}
+    {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200|striptags }}
   </div>
 </div>
 <h5 class="creatorname">{% include "elements/bulletinname.html" with bulletin=bulletin %}</h5>

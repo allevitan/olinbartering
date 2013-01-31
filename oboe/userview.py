@@ -105,7 +105,7 @@ def linkOld(request):
 	if request.user.is_authenticated:
 		if request.method == 'POST' and request.POST['link'] == 'True':
 			linkPrevious(request.user.userdata)
-			return HttpResponseRedirect('/home/')
+			return HttpResponseRedirect('/manageFilters/')
 		else: return render(request, 'linkPrevious.html')
 	return HttpResponseRedirect('/home/')
 

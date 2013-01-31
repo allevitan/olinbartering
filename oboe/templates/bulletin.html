@@ -127,7 +127,7 @@ $("#id_free").click(function(){
 	Update {{ forloop.revcounter0 }}:
 	{% endif %}
 	<small>({{ missive.timestamp|timesince }} ago)</small></h5>
-	<p style="font-size:16px;">{{ missive.message }}</p>
+	<p style="font-size:16px;">{{ missive.message|safe }}</p>
 	{% if forloop.revcounter0 != 0 %}
 	<hr>
 	{% endif %}
@@ -161,7 +161,7 @@ $("#id_free").click(function(){
 	{% for reply in replies %}
 	<hr style="margin:0px;">
 	<h5>{% include "elements/replyname.html" with reply=reply %}<small>({{ reply.timestamp|timesince }} ago)</small></h5>
-	<p>{{ reply.message }}</p>
+	<p>{{ reply.message|safe }}</p>
 	{% endfor %}
       </div>
     </div>

@@ -41,7 +41,7 @@ def basic_info(inbound):
 	subject = inbound.subject()	
 	sender = inbound.sender()
 	timestamp = datetime.datetime.now()
-	message = inbound.text_body()
+	message = inbound.html_body()
 	return subject, sender, timestamp, message
 
 def latest_response(message):
