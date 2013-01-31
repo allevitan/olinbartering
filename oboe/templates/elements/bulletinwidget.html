@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load filtrs %}
 
 {% for bulletin in bulletins %}
 <div class="bcon">
@@ -29,7 +30,7 @@
     {{ bulletin.location }}
   </div>
   <div class="message">
-    {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200|striptags }}
+    {{ bulletin.missive_set.all|dictsort:"timestamp"|last|truncatechars:200|replacebr|striptags|linebreaksbr }}
   </div>
 </div>
 <h5 class="creatorname">{% include "elements/bulletinname.html" with bulletin=bulletin %}</h5>
