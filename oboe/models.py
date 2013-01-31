@@ -22,10 +22,10 @@ class UserData(models.Model):
 
 	filters = models.ManyToManyField(Filter, blank=True)
 
-	filterhelp = models.BooleanField(default=True);
-	filterwant = models.BooleanField(default=True);
-	includehelpme = models.BooleanField(default=False);
-	includecarpe = models.BooleanField(default=False);
+	filterhelp = models.BooleanField(default=True)
+	filterwant = models.BooleanField(default=True)
+	includehelpme = models.BooleanField(default=True)
+	includecarpe = models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return "%s %s" %( self.user.first_name, self.user.last_name)
@@ -33,7 +33,7 @@ class UserData(models.Model):
 
 class Bulletin(models.Model):
 	creator = models.ForeignKey(UserData, related_name="%(class)s_created", blank=True, null=True)
-	subject = models.CharField(max_length=50)
+	subject = models.CharField(max_length=100)
 	creation = models.DateTimeField(auto_now=False, auto_now_add=True)
 	update = models.DateTimeField(auto_now=True, auto_now_add=True)
 	relevance = models.DateTimeField(auto_now=False, auto_now_add=False)

@@ -44,9 +44,7 @@ def createEmail(missive):
     return mail.EmailMessage(subject, message)
 
 def sendToFilter(missive):
-    print 'called'
     email = createEmail(missive)
-    print 'created email'
     userlist = missive.bulletin.tag.userdata_set.exclude(user=missive.bulletin.creator)
     connection = mail.get_connection()
     connection.open()
