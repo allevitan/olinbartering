@@ -137,7 +137,7 @@ def reply(inbound):
 		user = get_user(sender)
 		userdata = user.userdata
 
-		
+		print ("Bulletin creator: %s\nUser.userdata: %s" %(str(bulletin.creator), str(user.userdata)))
 		if bulletin.creator == user.userdata:
 			#create missive
 			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
@@ -159,6 +159,12 @@ def reply(inbound):
 	except:
 		#user does not exist - generate basic info for reply
 		name, email = generate_name(sender)
+
+		if bulletin.anon_name == name:
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			missive.save()
+			return HttpResponse('Success!')
 		
 		#another candidate for **kwargs
 		try: 
@@ -202,7 +208,7 @@ def mailinglist_reply(inbound, mailing_list, helpfilter):
 		#does user exist?
 		user = get_user(sender)
 
-		if bulletin.creator == user:
+		if bulletin.creator == user.userdata:
 			#create missive
 			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
 			missive.save()
@@ -226,6 +232,12 @@ def mailinglist_reply(inbound, mailing_list, helpfilter):
 	except:
 		#user does not exist - generate basic info for reply
 		name, email = generate_name(sender)
+
+		if bulletin.anon_name == name:
+			#create missive
+			missive = Missive.objects.create(timestamp = timestamp, message = message, bulletin = bulletin)
+			missive.save()
+			return HttpResponse('Success!')
 		
 		try: 
 			reply_thread = Reply_Thread.objects.get(bulletin = bulletin, anon_email = email, anon_name = name, anon=True)
