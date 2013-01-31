@@ -23,7 +23,7 @@ def create(request):
 	    reltime = datetime.timedelta(hours=data['hiddenrel'])
 	    relevance = datetime.datetime.now() + reltime
 	    location = data['hiddenloc']
-
+            send = data['hiddensend']
 	    if location not in ["NA","EH","WH","AC","CC","MH","LP"]:
 		errors.append("that's not a real location")
 
@@ -46,7 +46,9 @@ def create(request):
 	    message = data['missive']
 
 	    if not errors:
-		outmail.createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free)
+		missive = outmail.createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free)
+                if send == 'True':
+                    outmail.sendToList(missive)
 		return HttpResponseRedirect("/home/")
 
 	else:

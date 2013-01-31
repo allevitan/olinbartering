@@ -7,6 +7,7 @@ def createBulletin(subject, message, creator, location, relevance, tag, helpbull
     missive = Missive.objects.create(message=message, bulletin=bulletin)
     missive.save()
     sendToFilter(missive)
+    return missive
 
 def updateBulletin(bulletin, message):
     missive = Missive.objects.create(message=message, bulletin=bulletin)
@@ -50,16 +51,23 @@ def sendToFilter(missive):
     connection.open()
     for user in userlist:
         email.to = [user.user.email]
-        connection.send_messages([email])
+        try:
+            connection.send_messages([email])
+        except:
+            pass
     connection.close()
 
 
 def sendToList(missive):
     email = createEmail(missive)
     if missive.bulletin.helpbulletin:
-        email.to = 'helpme@lists.olin.edu'
-    else: email.to = 'carpediem@lists.olin.edu'
-    email.send()
+        pass#email.to = ['helpme@lists.olin.edu']
+    else: 
+        pass#email.to = ['carpediem@lists.olin.edu']
+    try:
+        email.send()
+    except:
+        pass
 
 def sendToCreator(reply):
     subject = "RE: %s" % reply.thread.bulletin.subject
@@ -67,4 +75,7 @@ def sendToCreator(reply):
     address = reply.get_to_email()
     email = mail.EmailMessage(subject, message)
     email.to = [address]
-    email.send()
+    try:
+        email.send()
+    except:
+        pass
