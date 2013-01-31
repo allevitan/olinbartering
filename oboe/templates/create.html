@@ -10,7 +10,7 @@
 
 {% include "djangojs/partialfill.js" with ident="#id_missive" offset=" - 60 " %}
 
-$("#id_type").button();
+$("#id_type, #id_send").button();
 
 $("#id_type").click(function(){
     var btn = $(this);
@@ -28,7 +28,21 @@ $("#id_type").click(function(){
             $('#id_tag').typeahead({source: helptagdata});
         });
     }
+})
+;
+
+$("#id_send").click(function(){
+    var btn = $(this);
+    if(btn.hasClass("active")){
+        btn.removeClass("active");
+        $('input[name="hiddensend"]').val("False");
+    } else {
+        btn.addClass("active");
+        $('input[name="hiddensend"]').val("True");
+    }
 });
+
+
 
 {% include "djangojs/radioButtons.js" %}
 
@@ -73,21 +87,23 @@ $("#id_tag").typeahead({
 	{% endif %}
 	<form style="margin-bottom:-10px;" action="" method="post" enctype="multipart/form-data">
 	  {% csrf_token %}
+	  {{ form.hiddensend }}
 	  {{ form.hiddentype }}
 	  {{ form.hiddenloc }}
 	  {{ form.hiddenrel }}
 	  {{ form.hiddenprice }}
 	  <div class="row-fluid">
-	    <div class="span8 input-prepend">
+	    <div class="span9 input-prepend">
+	      <input class="btn active" type="button" id="id_send" value="Email">
 	      <input class="btn" type="button" id="id_type" value="Help!" data-help-text="Help!" data-want-text="Want?">
 	      {{ form.subject }}
 	    </div>
-	    <div class="span4">
+	    <div class="span3">
 	      {{ form.tag }}
 	    </div>
 	  </div>
 	  <div class="row-fluid" style="margin-bottom:5px;">
-	    <div class="span8">
+	    <div class="span9">
 	      <div class="btn-group" data-toggle-name="hiddenloc" style="float:left;" data-toggle="buttons-radio">
 		<input class="btn sharp" disabled type="button" value="Location: " id="id_loc">Location:
 		<input class="btn sharp" type="button" value="NA" id="id_loc">
@@ -110,7 +126,7 @@ $("#id_tag").typeahead({
 		<input class="btn sharp" disabled type="button" id="id_rel" value="Hours">
 	      </div>
 	    </div>
-	    <div class="span4">
+	    <div class="span3">
 	      <div class="btn-group" style="display:none; float:left;" id="price_toggle" data-toggle-name="hiddenprice" data-toggle="buttons-radio">
 		<input class="btn sharp" type="button" id="id_price" value="Free" style="width:75px;">
 		<input class="btn sharp" type="button" id="id_price" value="Cheap" style="width:75px;">

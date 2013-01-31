@@ -9,7 +9,7 @@ input.textsharp, textarea.textsharp{
     border-radius:0px;
 }
 
-#id_type{
+#id_type, #id_send{
     padding:2px;
     border-radius:0px;
     width:15%;
@@ -24,7 +24,7 @@ input.textsharp, textarea.textsharp{
 }
 
 #id_subject{
-    width:85%;
+    width:70%;
 }
 
 #id_missive{
