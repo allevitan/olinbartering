@@ -10,7 +10,11 @@ input.textsharp, textarea.textsharp{
 }
 
 #id_type, #id_send{
+    {% if not webkit %}
     padding:2px;
+    {% else %}
+    padding:1px;
+    {% endif %}
     border-radius:0px;
     width:15%;
 }
