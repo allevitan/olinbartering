@@ -17,19 +17,18 @@ $("#id_type").click(function(){
     var name = $(this).attr('data-toggle-name')
     if(btn.attr("value") == 'Help!'){
         btn.button('want');
-        $("#price_toggle").slideDown(function(){
+        $("#price_toggle").stop().slideDown(function(){
             $('input[name="hiddentype"]').val('Want');
             $('#id_tag').typeahead({source: wanttagdata});
         });
     } else {
         btn.button('help');
-        $("#price_toggle").slideUp(function(){
+        $("#price_toggle").stop().slideUp(function(){
             $('input[name="hiddentype"]').val('Help');
             $('#id_tag').typeahead({source: helptagdata});
         });
     }
-})
-;
+});
 
 $("#id_send").click(function(){
     var btn = $(this);
