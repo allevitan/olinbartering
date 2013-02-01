@@ -6,12 +6,13 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import ContactForm, PasswordResetForm, selectBulletinForm
-from forms import MultiProfileDisplay
+from forms import MultiProfileDisplay, SortByFilter
 from forms import ReplyForm, UpdateBulletinForm, ResolverCreditForm, FilterSuggestionForm
 from models import UserData, Missive, Filter, Bulletin, Reply, Reply_Thread
 from django.core.mail import send_mail, EmailMessage
 from passgen import generate_password
 from datetime import datetime
+import re
 
 
 def about(request):
@@ -23,32 +24,40 @@ def about(request):
 def people(request):
 	if request.user.is_authenticated():
 		if request.method == 'POST':
-			form = MultiProfileDisplay(request.POST, request.FILES)
-			if form.is_valid():
-				cleaned_data = form.clean()
-				user_name = cleaned_data['username']
+			if 'username' in request.POST:
+				form = MultiProfileDisplay(request.POST)
+				if form.is_valid():
+					cleaned_data = form.clean()
+					user_name = cleaned_data['username']
 
-				#username follows form "first.last"
-				username = '.'.join(user_name.lower().split())
+					#username follows form "first.last"
+					username = '.'.join(user_name.lower().split())
+					return HttpResponseRedirect('/profile/'+username+'/')
 
-				#Maybe be useful in the future 
-				'''
-				filterText = cleaned_data['filters']
-				filterType = cleaned_data['filterType']
-				if filterText == "None":
-					users = UserData.objects.all()
-				else:
-					chosenFilter = Filter.objects.filter(name=filterText, helpfilter = filterType)
-					users = UserData.objects.filter(filters__id=chosenFilter)
-				'''
-				return HttpResponseRedirect('/profile/'+username+'/')
+			elif 'filternames' in request.POST:
+				form = SortByFilter(request.POST)
+				if form.is_valid():
+					try:
+						cleaned_data = form.clean()
+						filterName = cleaned_data['filternames']
+						filterName = re.split(' - ', filterName, 1)
+						filterText, filterType = filterName[1], filterName[0]
+						chosenFilter = Filter.objects.filter(name=filterText, helpfilter=filterType)
+						users = UserData.objects.filter(filters__id=chosenFilter).order_by("user")
+						form = MultiProfileDisplay()
+						form2 = SortByFilter()
+						filterText = "None"
+						return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
+					except:
+						return HttpResponseRedirect('/people/')
 		else:
 		
 			#query database for list of all users and redisplay the same page.
 			users = UserData.objects.all().order_by("user")
 			form = MultiProfileDisplay()
+			form2 = SortByFilter()
 			filterText = "None"
-		return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText})
+		return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
 	else:
 		return HttpResponseRedirect('/login/')
 

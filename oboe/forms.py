@@ -90,6 +90,14 @@ class MultiProfileDisplay(forms.Form):
 	users = [str(user) for user in UserData.objects.all()]
 	username = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Search by username...', 'data-source': mark_safe(users).replace("'", '"')}))
 
+class SortByFilter(forms.Form):
+
+	helpfilters = [str("Help" + ' - ' + filterName.name) for filterName in Filter.objects.all() if filterName.helpfilter and filterName.name != "Helpme"] 
+	wantfilters = [str("Want" + ' - ' + filterName.name) for filterName in Filter.objects.all() if not filterName.helpfilter and filterName.name != "Carpediem"]
+	filters = helpfilters + wantfilters
+
+	filternames = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off','placeholder':'Search by filter...', 'data-source': mark_safe(filters).replace("'", '"')}))
+
 	#Has potential for future use in a FilterDisplay class
 	'''
 	filters = Filter.objects.all()

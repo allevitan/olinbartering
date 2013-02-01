@@ -14,15 +14,30 @@
 
 {% block content %}
 
-<form action="" method="post" style="text-align:center;margin-left:5px;margin-right:5px;margin-top:0px;" enctype="multipart/form-data"> 
+<div class="row-fluid">
+<div style="margin-right:auto; margin-left:auto; width:600px;">
+<form action="" method="post" style="text-align:center;margin-left:5px;margin-right:5px;margin-top:0px;float:right;" enctype="multipart/form-data"> 
 	{% csrf_token %}
 
 	<div class="input-append">
 		{{ form.username }}
-		<button class="btn btn-success addHelpFilter" type="submit">Go</button>
+		<button class="btn btn-success" type="submit">Go</button>
 	</div>
 
 </form>
+
+<form action="" method="post" style="text-align:center;margin-left:5px;margin-right:5px;margin-top:0px;float:left;" enctype="multipart/form-data"> 
+	{% csrf_token %}
+
+	<div class="input-append">
+		{{ form2.filternames }}
+		<button class="btn btn-success" type="submit">Go</button>
+	</div>
+
+</form>
+</div>
+</div>
+
 
 {% include "elements/profilesearch.html" %}
 
