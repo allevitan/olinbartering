@@ -11,6 +11,17 @@ def keepbreaks(value):
     value = defaultfilters.striptags(value)
     return defaultfilters.linebreaksbr(value)
 
+@register.filter(name='convertback', is_safe=True)
+@defaultfilters.stringfilter
+def convertback(value):
+    """turns an html string into plain text, but keeps all the <br>s"""
+    value = value.replace("&lt;", "<")
+    value = value.replace("&gt;", ">")
+    value = value.replace("&#39;", "'")
+    value = value.replace('&quot;', '"')
+    value = value.replace("&amp;", "&")
+    return value
+
 @register.filter(name='replace')
 @defaultfilters.stringfilter
 def replace(value, args):

@@ -52,6 +52,9 @@ DATABASES = {
 
 # if we're on the production server
 if dj_database_url.config():
+	DEBUG = True
+	TEMPLATE_DEBUG = DEBUG
+	THUMBNAIL_DEBUG = True
 	DATABASES['default'] = dj_database_url.config()
 	DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 	from memcacheify import memcacheify

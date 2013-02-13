@@ -41,7 +41,7 @@ def basic_info(inbound):
 	subject = inbound.subject()	
 	sender = inbound.sender()
 	timestamp = datetime.datetime.now()
-	message = inbound.html_body()
+	message = inbound.text_body()
 	return subject, sender, timestamp, message
 
 def latest_response(message):
@@ -58,15 +58,6 @@ def generate_name(sender):
 def trim_message(message):
 	regex = r'On [A-Z][a-z]{2,3}\,'
 	message = re.split(regex, message, 1)[0]
-	regex2 = r'<\W*(script).*?<\W*/\W*(script).*?>'
-	regex2c = re.compile(regex2, re.DOTALL)
-	regex3 = r'<\W*/?\W*(body).*?>'
-	regex3c = re.compile(regex3, re.DOTALL)
-	regex4 = r'<\W*/?\W*(html).*?>'
-	regex4c = re.compile(regex4, re.DOTALL)
-	message = re.sub(regex2c, '', message)
-	message = re.sub(regex3c, '', message)
-	message = re.sub(regex4c, '', message)
 	return message
 
 
