@@ -1,4 +1,4 @@
-olinbartering
+Filtr 
 =============
 
 A student project completed over winter break 2013 to simply the public mailing lists at Olin.
