@@ -11,7 +11,7 @@
     {% endif %}
   </div>
   <div class="pull-right">
-    {% if bulletin.helpbulletin %}Can you Help?{% else %}Do you Want?{% endif %} {% include "elements/infostring.html" %}
+    {% include "elements/infostring.html" with showtype=1 %}
   </div>
   <h5 class="bulltitle">
     {% if bulletin.resolved %}
