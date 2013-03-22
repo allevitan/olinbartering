@@ -22,6 +22,7 @@ def login(request):
         sesh = request.POST.get('sessionid','')
         who = requests.get('http://olinapps.com/api/me?sessionid=%s' % sesh)
         request.session['who'] = who.json().get('user').get('id')
+        print request.session['who']
         everybody = requests.get('http://directory.olinapps.com/api/people?sessionid=%s' % sesh).json().get('people')
         peeps = {}
         for person in everybody:
