@@ -13,39 +13,24 @@ from models import UserData, Missive, Filter, Bulletin, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
 from django.views.decorators.csrf import csrf_exempt
+import requests
 
-def login(request): 
-	if request.method == 'POST':  #check to see if form has been submitted
-		form = LoginForm(request.POST)  #capture data
-		if form.is_valid():  #validate data
-			cleaned_data = form.clean()
-			username = cleaned_data['username']
-   			password = cleaned_data['password']
-			if username and password:
-				try: #attempt to use email to login
-					currentuser = User.objects.get(email = username)
-					user = auth.authenticate(username = currentuser.username, password = password)
-					auth.login(request, user)
-					return HttpResponseRedirect('/')
-					
-				except: #assume that an actual username has been entered
-					user = auth.authenticate(username=username, password=password)
-					if user is not None and user.is_active:
-						# Correct password, and the user is marked "active"
-						auth.login(request, user)
-						# Render home page.
-						return HttpResponseRedirect('/')
-					
-				form = LoginForm()
-				return render(request, 'login.html', {'form': form, 'form_error':True})
-				
-    		else:
-        		# Return to login page.
-				form = LoginForm()
-				return render(request, 'login.html', {'form': form, 'form_error':True})
-	else:
-		form = LoginForm() #load blank form
-	return render(request, 'login.html', {'form': form, 'form_error':False})
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':  #check to see if form has been submitted
+        sesh = request.POST.get('sessionid','')
+        print sesh
+        who = requests.get('http://olinapps.com/api/me?sessionid=%s' % sesh)
+        who = who.json().get('user').get('id')
+        everybody = requests.get('http://directory.olinapps.com/api/people?sessionid=%s' % sesh).json()
+        everybody = everybody.get('people')
+        peeps = {}
+        for person in everybody:
+            peeps[person.get('email').split('@')[0]] = person
+        print peeps[who]
+        return HttpResponseRedirect('/home/')
+    else:
+        return HttpResponseRedirect('http://olinapps.com/external?callback=http://127.0.0.1:8000/login/')
 
 def logout(request):
 	if request.user.is_authenticated():

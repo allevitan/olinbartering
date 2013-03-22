@@ -11,5 +11,7 @@ django-storages==1.1.6
 gunicorn==0.16.1
 psycopg2==2.4.6
 pylibmc==1.2.3
+requests==1.1.0
+simplejson==3.0.7
 sorl-thumbnail==11.12
 wsgiref==0.1.2
