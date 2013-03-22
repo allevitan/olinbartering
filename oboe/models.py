@@ -9,7 +9,7 @@ class Filter(models.Model):
 	helpfilter = models.BooleanField(choices=(
 	    (True, 'Help'),
 	    (False, 'Want')))
-    
+
 	def __unicode__(self):
 		return self.name
 
@@ -21,9 +21,9 @@ class UserData(models.Model):
     filterwant = models.BooleanField(default=True)
     includehelpme = models.BooleanField(default=True)
     includecarpe = models.BooleanField(default=True)
-    
+
     def __unicode__(self):
-        return "%s %s" %( self.user.first_name, self.user.last_name)
+        return self.uid
 
 
 class Bulletin(models.Model):
@@ -44,7 +44,7 @@ class Bulletin(models.Model):
         ))
     reply_count = models.IntegerField(default=0)
     tag = models.ForeignKey(Filter)
-    
+
     helpbulletin = models.BooleanField(choices=(
         (True, 'Help'),
         (False, 'Want')))
@@ -90,7 +90,7 @@ class Reply_Thread(models.Model):
     def __unicode__(self):
         return "%s" % self.bulletin
 
-   
+
 
 class Reply(models.Model):
     thread = models.ForeignKey(Reply_Thread)

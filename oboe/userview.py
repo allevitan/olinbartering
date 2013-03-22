@@ -31,13 +31,14 @@ def login(request):
         for person in everybody:
             uid = person.get('email').split('@')[0]
             peeps[uid] = person
-            if Userdata.objects.filter(uid = uid).count() == 0:
-                dude = Userdata.create(uid=uid,score=0)
+            if UserData.objects.filter(uid = uid).count() == 0:
+                dude = UserData.objects.create(uid=uid,score=0)
+                print dude.name
         cache.set('peeps', peeps)
-        request.session['pk'] = Userdata.objects.get(uid = uid).pk
-        
-        
-        
+        request.session['pk'] = UserData.objects.get(uid = uid).pk
+
+
+
         return HttpResponseRedirect('/home/')
     else:
         return HttpResponseRedirect('http://olinapps.com/external?callback=http://127.0.0.1:8000/login/')
