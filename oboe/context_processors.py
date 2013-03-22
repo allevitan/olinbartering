@@ -1,3 +1,5 @@
+from django.core.cache import cache
+
 def site_area(request):
     splitpath = request.path.split('/')
     return {'site_area':splitpath[1]}
@@ -7,6 +9,14 @@ def is_webkit(request):
     if "webkit" in useragent.lower():
         return {'webkit':True}
     else: return {'webkit':False}
+        
+def who_dis(request):
+    return {'me' : cache.get('peeps').get(request.session.get('who'))}
+
+def the_folk(request):
+    peeps = cache.get('peeps')
+    #Some error handling if the cache has been flushed - put in later
+    return {'peeps' : cache.get('peeps')}
 
 if __name__ == '__main__':
     from django.http import HttpRequest

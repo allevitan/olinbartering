@@ -7,12 +7,7 @@
 	  {% if user.username %}
 	  <li>
 	    <a href="/profile/{{ user }}/" class="navbar-link">
-	       Hi, 
-	      {% if user.first_name %}
-	        {{ user.first_name|capfirst }}
-	      {% else %}
-	        {{ user.username }}
-	      {% endif %}
+	       Hi, {{ me.name }}
 	    </a>
 	  </li>
 	  <li>

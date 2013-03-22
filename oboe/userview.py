@@ -13,21 +13,20 @@ from models import UserData, Missive, Filter, Bulletin, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
 from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
 import requests
 
 @csrf_exempt
 def login(request):
     if request.method == 'POST':  #check to see if form has been submitted
         sesh = request.POST.get('sessionid','')
-        print sesh
         who = requests.get('http://olinapps.com/api/me?sessionid=%s' % sesh)
-        who = who.json().get('user').get('id')
-        everybody = requests.get('http://directory.olinapps.com/api/people?sessionid=%s' % sesh).json()
-        everybody = everybody.get('people')
+        request.session['who'] = who.json().get('user').get('id')
+        everybody = requests.get('http://directory.olinapps.com/api/people?sessionid=%s' % sesh).json().get('people')
         peeps = {}
         for person in everybody:
             peeps[person.get('email').split('@')[0]] = person
-        print peeps[who]
+        cache.set('peeps', peeps)
         return HttpResponseRedirect('/home/')
     else:
         return HttpResponseRedirect('http://olinapps.com/external?callback=http://127.0.0.1:8000/login/')
