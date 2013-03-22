@@ -34,64 +34,103 @@ def login(request):
 def logout(request):
     #Make it do something!
     return HttpResponseRedirect('/')
-	
 
-def editProfile(request):	
-	if request.user.is_authenticated():
-		form =UserProfileForm(request.POST, request.FILES)
-		if form.is_valid():
-			cleaned_data = form.clean()
 
-			#extract form info (could potentially use .serialize() to remove redundant code)
-			first_name = cleaned_data['first_name'].strip()
-			last_name = cleaned_data['last_name'].strip()
-			email = cleaned_data['emailAddress']
-			dorm = cleaned_data['dorm']
-			pic = request.FILES.get('pic','')
+def editProfile(request):
+	form =UserProfileForm(request.POST, request.FILES)
+	if form.is_valid():
+		cleaned_data = form.clean()
 
-			#update user fields
-			user = User.objects.get(username = request.user)
-			userdata = user.userdata
-			user.first_name = first_name
-			user.last_name = last_name
-			user.email = email
-			userdata.dorm = dorm
+		#extract form info (could potentially use .serialize() to remove redundant code)
+		first_name = cleaned_data['first_name'].strip()
+		last_name = cleaned_data['last_name'].strip()
+		email = cleaned_data['emailAddress']
+		dorm = cleaned_data['dorm']
+		pic = request.FILES.get('pic','')
 
-			if pic:
-				userdata.pic = pic
+		#update user fields
+		user = User.objects.get(username = request.user)
+		userdata = user.userdata
+		user.first_name = first_name
+		user.last_name = last_name
+		user.email = email
+		userdata.dorm = dorm
 
-			#save results
-			user.save()
-			userdata.save()
+		if pic:
+			userdata.pic = pic
 
-			#resubmit user data to pre-fill form
-			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = UserProfileForm(initial=data)
-			return render(request, 'editProfile.html', {'form':form})
-		else: 
+		#save results
+		user.save()
+		userdata.save()
 
-			#if a form error occurs
-			user = request.user
-			userdata = user.userdata
-			
-			#re-render the form - the html page will handle the error display
-			data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-			form = UserProfileForm(initial = data)
-			return render(request, 'editProfile.html', {'form':form})
+		#resubmit user data to pre-fill form
+		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+		form = UserProfileForm(initial=data)
+		return render(request, 'editProfile.html', {'form':form})
 	else:
-		return HttpResponseRedirect('/login')
+
+		#if a form error occurs
+		user = request.user
+		userdata = user.userdata
+
+		#re-render the form - the html page will handle the error display
+		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
+		form = UserProfileForm(initial = data)
+		return render(request, 'editProfile.html', {'form':form})
 
 def filterList(request):
 	pass
 
-def manageFilters(request):	
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/login')
-	else:
+def manageFilters(request):
+
+	user = request.user
+	userdata = user.userdata
+
+	#seperate filters and sort by name
+	helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+	wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+
+	#generate list of all helpfilters
+	globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
+	globalwantfilters = set(Filter.objects.filter(helpfilter=False))
+
+	#compute difference (filters user does not have enabled)
+	unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
+	unusedWantFilters = set(globalwantfilters - set(wantfilters))
+
+	#get user data to pre-fill form with
+	form = ManageFiltersForm(user = user)
+
+	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
+												 'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
+
+@csrf_exempt
+def editFilters(request, help=False, delete=False):
+	#user data is passed to form for processing - potential violation of MVC philosophy
+	user = request.user
+	form = EditFilterForm(user, request.POST, request.FILES)
+	if form.is_valid():
+		cleaned_data = form.clean()
 		user = request.user
 		userdata = user.userdata
+		try:
+			if help:
+				userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=True))
+			else:
+				userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=False))
+		except:
+			if help: #add a help filter to users ManyToMany field
+				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
+			elif not delete: #add a want filter
+				userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
+			else: #delete a filter
+				if request.POST.get('helpfilter', '') == "True":
+					helpfilter = True
+				else:
+					helpfilter = False
+				userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
 
-		#seperate filters and sort by name
+		#sort the new data
 		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
 		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
 
@@ -103,81 +142,33 @@ def manageFilters(request):
 		unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
 		unusedWantFilters = set(globalwantfilters - set(wantfilters))
 
-		#get user data to pre-fill form with
-		form = ManageFiltersForm(user = user)
-
-	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
-												 'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
-
-@csrf_exempt
-def editFilters(request, help=False, delete=False):	
-	if request.user.is_authenticated():
-
-		#user data is passed to form for processing - potential violation of MVC philosophy 
-		user = request.user
-		form = EditFilterForm(user, request.POST, request.FILES)
-		if form.is_valid():
-			cleaned_data = form.clean()
-			user = request.user
-			userdata = user.userdata
-			try: 
-				if help:
-					userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=True))
-				else:
-					userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=False))	
-			except:
-				if help: #add a help filter to users ManyToMany field
-					userdata.filters.add(Filter.objects.get(name=cleaned_data[u'helptag'], helpfilter=True))
-				elif not delete: #add a want filter
-					userdata.filters.add(Filter.objects.get(name=cleaned_data[u'wanttag'], helpfilter=False))
-				else: #delete a filter
-					if request.POST.get('helpfilter', '') == "True":
-						helpfilter = True
-					else:
-						helpfilter = False
-					userdata.filters.remove(Filter.objects.get(name = request.POST.get('name', ''), helpfilter=helpfilter))
-
-			#sort the new data
-			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
-			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
-
-			#generate list of all helpfilters
-			globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
-			globalwantfilters = set(Filter.objects.filter(helpfilter=False))
-
-			#compute difference (filters user does not have enabled)
-			unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
-			unusedWantFilters = set(globalwantfilters - set(wantfilters))
-	
-			#save changes and render the page again via AJAX call
-			user.save()
-			userdata.save()
-			form = EditFilterForm(user = user)
-			return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
-															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
-		else:
-			
-			#in the event of form errors
-			user = request.user
-			userdata = user.userdata
-			
-			#resort filters and render page again with error display
-			helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
-			wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
-
-			#generate list of all helpfilters
-			globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
-			globalwantfilters = set(Filter.objects.filter(helpfilter=False))
-
-			#compute difference (filters user does not have enabled)
-			unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
-			unusedWantFilters = set(globalwantfilters - set(wantfilters))
-
-			form = EditFilterForm(user = user)
-			return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters, 
-															'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
+		#save changes and render the page again via AJAX call
+		user.save()
+		userdata.save()
+		form = EditFilterForm(user = user)
+		return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
+														'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 	else:
-			return HttpResponseRedirect('/login')
+
+		#in the event of form errors
+		user = request.user
+		userdata = user.userdata
+
+		#resort filters and render page again with error display
+		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
+		wantfilters = sorted([filterName for filterName in userdata.filters.all() if not filterName.helpfilter], key = lambda x: x.name)
+
+		#generate list of all helpfilters
+		globalhelpfilters = set(Filter.objects.filter(helpfilter=True))
+		globalwantfilters = set(Filter.objects.filter(helpfilter=False))
+
+		#compute difference (filters user does not have enabled)
+		unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
+		unusedWantFilters = set(globalwantfilters - set(wantfilters))
+
+		form = EditFilterForm(user = user)
+		return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
+														'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 
 def editWantFilters(request):
 	help = False
