@@ -1,18 +1,16 @@
 {% load thumbnail %}
 <div style="margin-left:5px; margin-right:5px;margin-top:25px">
-{% for userdata in users %}
+{% for peep in peeps %}
 <div class="well span4">
 	<span class=" span" style="margin-left:2px;margin-top:0px;margin-bottom:0px;margin-right:18px;">
-		{% thumbnail userdata.pic "100x100" crop="center" as im %}
-	        <img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:5px;border-radius:5px;">
-		{% endthumbnail%}
+	    <img src="{{ peep.thumbnail }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:5px;border-radius:5px;height:100px">
 	</span>
 	<span class="span2" style="text-align:center;margin-top:20px;margin-bottom:10px">
 		<a href = "/profile/{{ userdata.user.first_name|lower }}.{{ userdata.user.last_name|lower }}/">
-		<p><b>{{ userdata.user.first_name }} {{ userdata.user.last_name }}<b><p></a>
+		<p><b>{{ peep.name }}<b><p></a>
 		<hr style="margin-top:5px;margin-bottom:5px;">
-		<p>{{ userdata.dorm }}<p>	
+		<p>{{ userdata.dorm }}<p>
 	</span>
-</div> 
+</div>
 {% endfor %}
 </div>

@@ -9,14 +9,15 @@ def is_webkit(request):
     if "webkit" in useragent.lower():
         return {'webkit':True}
     else: return {'webkit':False}
-        
+
 def who_dis(request):
     return {'me' : cache.get('peeps').get(request.session.get('who'))}
 
 def the_folk(request):
     peeps = cache.get('peeps')
+    peeps = [peep for peep in peeps.values()]
     #Some error handling if the cache has been flushed - put in later
-    return {'peeps' : cache.get('peeps')}
+    return {'peeps' : peeps}
 
 if __name__ == '__main__':
     from django.http import HttpRequest

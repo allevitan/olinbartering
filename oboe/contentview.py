@@ -16,53 +16,47 @@ import re
 
 
 def about(request):
-	if request.user.is_authenticated():
-		return render(request, 'about.html')
-	else:
-		return HttpResponseRedirect('/login/')
+	return render(request, 'about.html')
 
 def people(request):
-	if request.user.is_authenticated():
-		if request.method == 'POST':
-			if 'username' in request.POST:
-				form = MultiProfileDisplay(request.POST)
-				if form.is_valid():
+	if request.method == 'POST':
+		if 'username' in request.POST:
+			form = MultiProfileDisplay(request.POST)
+			if form.is_valid():
+				cleaned_data = form.clean()
+				user_name = cleaned_data['username']
+
+				#username follows form "first.last"
+				username = '.'.join(user_name.lower().split())
+				return HttpResponseRedirect('/profile/'+username+'/')
+
+		elif 'filternames' in request.POST:
+			form = SortByFilter(request.POST)
+			if form.is_valid():
+				try:
 					cleaned_data = form.clean()
-					user_name = cleaned_data['username']
-
-					#username follows form "first.last"
-					username = '.'.join(user_name.lower().split())
-					return HttpResponseRedirect('/profile/'+username+'/')
-
-			elif 'filternames' in request.POST:
-				form = SortByFilter(request.POST)
-				if form.is_valid():
-					try:
-						cleaned_data = form.clean()
-						filterName = cleaned_data['filternames']
-						filterName = re.split(' - ', filterName, 1)
-						filterText, filterType = filterName[1], filterName[0]
-						chosenFilter = Filter.objects.filter(name=filterText, helpfilter=filterType)
-						users = UserData.objects.filter(filters__id=chosenFilter).order_by("user")
-						form = MultiProfileDisplay()
-						form2 = SortByFilter()
-						filterText = "None"
-						return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
-					except:
-						return HttpResponseRedirect('/people/')
-		else:
-		
-			#query database for list of all users and redisplay the same page.
-			users = UserData.objects.all().order_by("user")
-			form = MultiProfileDisplay()
-			form2 = SortByFilter()
-			filterText = "None"
-		return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
+					filterName = cleaned_data['filternames']
+					filterName = re.split(' - ', filterName, 1)
+					filterText, filterType = filterName[1], filterName[0]
+					chosenFilter = Filter.objects.filter(name=filterText, helpfilter=filterType)
+					users = UserData.objects.filter(filters__id=chosenFilter)
+					form = MultiProfileDisplay()
+					form2 = SortByFilter()
+					filterText = "None"
+					return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
+				except:
+					return HttpResponseRedirect('/people/')
 	else:
-		return HttpResponseRedirect('/login/')
+
+		#query database for list of all users and redisplay the same page.
+		users = UserData.objects.all()
+		form = MultiProfileDisplay()
+		form2 = SortByFilter()
+		filterText = "None"
+	return render(request, 'MultiProfileDisplay.html', {'users':users, 'form':form, 'filterText': filterText, 'form2':form2})
 
 def getFilter(name, helpfilter):
-	
+
 	#better to ask forgiveness than permission
 	#attempt to access filter object in database and create an entry if it does not exist
 	try:
@@ -70,17 +64,17 @@ def getFilter(name, helpfilter):
 			bulletinFilter = Filter.objects.get(name = name, helpfilter=True)
 		else:
 			bulletinFilter = Filter.objects.get(name = name, helpfilter=False)
-	except: 
+	except:
 		if helpfilter:
 			bulletinFilter = Filter.objects.create(name = name, helpfilter=True)
 		else:
-			bulletinFilter = Filter.objects.create(name = name, helpfilter=False)	
+			bulletinFilter = Filter.objects.create(name = name, helpfilter=False)
 		bulletinFilter.save()
 	return bulletinFilter
 
 def filterSuggestions(request):
 
-	if request.method == "POST": 
+	if request.method == "POST":
 		form = FilterSuggestionForm(request.POST)
 		if form.is_valid:
 
@@ -99,7 +93,7 @@ def filterSuggestions(request):
 		form = FilterSuggestionForm()
 		return render(request, 'filterSuggestions.html', {'form': form})
 	else: HttpResponseRedirect('/login/')
-		
+
 
 def contact(request):
 	if request.method == 'POST':
@@ -124,4 +118,4 @@ def contact(request):
 
 	#redirect to login page if user is not authenticated
 	else: return HttpResponseRedirect('/login/')
-	
+
