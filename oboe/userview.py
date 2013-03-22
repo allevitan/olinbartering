@@ -4,11 +4,8 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.contrib import auth
 from django.contrib.auth.models import User
-from forms import LoginForm, RegistrationForm, ChangePasswordForm
 from forms import UserProfileForm, EditFilterForm, ManageFiltersForm
-from forms import PasswordResetForm
 from models import UserData, Missive, Filter, Bulletin, Reply_Thread
 from django.core.mail import send_mail
 from passgen import generate_password
@@ -18,19 +15,33 @@ import requests
 
 @csrf_exempt
 def login(request):
-    if request.method == 'POST':  #check to see if form has been submitted
+
+    if request.method == 'POST':  #check to see if we've logged in
+
+        #Find the session ID from olinapps
         sesh = request.POST.get('sessionid','')
+
+        #Figure out who we are and store it
         who = requests.get('http://olinapps.com/api/me?sessionid=%s' % sesh)
         request.session['who'] = who.json().get('user').get('id')
-        print request.session['who']
+
+        #Get the data on everyone and cache it
         everybody = requests.get('http://directory.olinapps.com/api/people?sessionid=%s' % sesh).json().get('people')
         peeps = {}
         for person in everybody:
-            peeps[person.get('email').split('@')[0]] = person
+            uid = person.get('email').split('@')[0]
+            peeps[uid] = person
+            if Userdata.objects.filter(uid = uid).count() == 0:
+                dude = Userdata.create(uid=uid,score=0)
         cache.set('peeps', peeps)
+        request.session['pk'] = Userdata.objects.get(uid = uid).pk
+        
+        
+        
         return HttpResponseRedirect('/home/')
     else:
         return HttpResponseRedirect('http://olinapps.com/external?callback=http://127.0.0.1:8000/login/')
+
 def logout(request):
     #Make it do something!
     return HttpResponseRedirect('/')

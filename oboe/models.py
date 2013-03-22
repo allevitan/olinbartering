@@ -14,8 +14,8 @@ class Filter(models.Model):
 		return self.name
 
 class UserData(models.Model):
-    user = models.CharField(max_length=100)
-    score = models.IntegerField()
+    uid = models.CharField(max_length=100)
+    score = models.IntegerField(default=0)
     filters = models.ManyToManyField(Filter, blank=True)
     filterhelp = models.BooleanField(default=True)
     filterwant = models.BooleanField(default=True)
