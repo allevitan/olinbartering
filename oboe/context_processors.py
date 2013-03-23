@@ -15,7 +15,7 @@ def who_dis(request):
 
 def the_folk(request):
     peeps = cache.get('peeps')
-    peeps = [peep for peep in peeps.values()]
+    # peeps = [peep for peep in peeps.values()]
     #Some error handling if the cache has been flushed - put in later
     return {'peeps' : peeps}
 
