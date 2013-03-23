@@ -13,6 +13,7 @@ CACHES = {
 	'default': {
 		'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
 		'LOCATION':'127.0.0.1:11211',
+        'TIMEOUT': 1200000
 	 }
 }
 
@@ -61,8 +62,8 @@ if dj_database_url.config():
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     from memcacheify import memcacheify
     CACHES = memcacheify()
-    CACHES['default']['TIMEOUT'] = 300000
-
+    CACHES['default']['TIMEOUT'] = 30000
+    
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
