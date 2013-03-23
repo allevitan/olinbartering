@@ -1,5 +1,6 @@
 from django import template
 from django.template import defaultfilters
+from django.core.cache import cache
 
 register = template.Library()
 
@@ -31,3 +32,40 @@ def replace(value, args):
     if args[1][0] == ' ':
         args[1] = args[1][1:]
     return value.replace(args[0], args[1])
+
+
+# The filters that find data from the cache
+@register.filter(name='photo')
+@defaultfilters.stringfilter
+def photo(value):
+    """finds the url for a users photo from the memcache"""
+    return getpeepdata(value.name, 'name', error="http://www.placekitten.com/80/80")
+
+@register.filter(name='thumb', is_safe=True)
+@defaultfilters.stringfilter
+def thumb(value, args):
+    return value
+
+@register.filter(name='name')
+@defaultfilters.stringfilter
+def name(value):
+    return getpeepdata(value.name, 'name)'
+
+@register.filter(name='thumb')
+@defaultfilters.stringfilter
+def email(value):
+    return getpeepdata(value.name, 'email')
+
+
+def getpeepdata(name, thing, error=None):
+    try:
+        thing = cache.get('peeps').get(name).get(thing)
+    except:
+        thing = False
+    #If the user doesn't have the thing, the try/except won't trigger -
+    #This catches it.
+    if thing:
+        return thing
+    else:
+        return error
+    
