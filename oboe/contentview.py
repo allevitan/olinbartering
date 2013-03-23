@@ -89,10 +89,8 @@ def filterSuggestions(request):
 			return HttpResponseRedirect('/editProfile/')
 
 	#initial page render
-	if request.user.is_authenticated():
-		form = FilterSuggestionForm()
-		return render(request, 'filterSuggestions.html', {'form': form})
-	else: HttpResponseRedirect('/login/')
+	form = FilterSuggestionForm()
+	return render(request, 'filterSuggestions.html', {'form': form})
 
 
 def contact(request):
@@ -111,11 +109,6 @@ def contact(request):
 			return HttpResponseRedirect('/')
 
 	#initial page render
-	elif request.user.is_active and request.user.is_authenticated():
-		data = {'emailAddress':request.user.email}
-		form = ContactForm(initial=data)
-		return render(request, 'contact.html', {'form':form})
-
-	#redirect to login page if user is not authenticated
-	else: return HttpResponseRedirect('/login/')
+	form = ContactForm()
+	return render(request, 'contact.html', {'form':form})
 
