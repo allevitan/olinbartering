@@ -11,7 +11,9 @@ def is_webkit(request):
     else: return {'webkit':False}
 
 def who_dis(request):
-    return {'me' : cache.get('peeps').get(request.session.get('who'))}
+    dis = request.session.get('who')
+    print cache
+    return {'me' : cache.get('peeps').get(dis)}
 
 def the_folk(request):
     peeps = cache.get('peeps')

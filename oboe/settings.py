@@ -39,6 +39,8 @@ MANAGERS = ADMINS
 
 DIRNAME = os.path.dirname(__file__)
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
 DATABASES = {
     'default': {
 	'ENGINE': 'django.db.backends.sqlite3', # Add '', 'mysql', 'sqlite3' or 'oracle'.
@@ -52,13 +54,14 @@ DATABASES = {
 
 # if we're on the production server
 if dj_database_url.config():
-	DEBUG = True
-	TEMPLATE_DEBUG = DEBUG
-	THUMBNAIL_DEBUG = True
-	DATABASES['default'] = dj_database_url.config()
-	DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-	from memcacheify import memcacheify
-	CACHES = memcacheify()
+    DEBUG = True
+    TEMPLATE_DEBUG = DEBUG
+    THUMBNAIL_DEBUG = True
+    DATABASES['default'] = dj_database_url.config()
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    from memcacheify import memcacheify
+    CACHES = memcacheify()
+    CACHES['default']['TIMEOUT'] = 300000
 
 
 # Local time zone for this installation. Choices can be found here:
