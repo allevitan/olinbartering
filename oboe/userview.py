@@ -36,6 +36,7 @@ def login(request):
                 print dude.name
         cache.set('peeps', peeps)
         request.session['pk'] = UserData.objects.get(uid = uid).pk
+        request.session['userdata'] = UserData.objects.get(uid = uid)
 
 
 

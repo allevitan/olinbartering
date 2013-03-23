@@ -17,8 +17,8 @@ def mailbox(request):
     if request.user.is_authenticated():
 
 	#Return all threads including the user, properly ordered
-	mail = Reply_Thread.objects.filter(bulletin__creator=request.user.userdata)
-	mail2 = Reply_Thread.objects.filter(replier=request.user.userdata)
+	mail = Reply_Thread.objects.filter(bulletin__creator=request.session['userdata'])
+	mail2 = Reply_Thread.objects.filter(replier=request.session['userdata'])
 
 	mail = mail | mail2
 	mail = mail.order_by("-update")
@@ -45,10 +45,10 @@ def thread(request, pk):
 
     #You have to belong to the thread to access it!
     if (request.user.is_authenticated()
-	and request.user.userdata in [thread.bulletin.creator, thread.replier]):
+	and request.session['userdata'] in [thread.bulletin.creator, thread.replier]):
 	info.update({'thread':thread})
 	new=[]
-	for reply in thread.reply_set.exclude(sender=request.user.userdata).filter(read=False):
+	for reply in thread.reply_set.exclude(sender=request.session['userdata']).filter(read=False):
 	    new.append(reply.id)
 	    reply.read=True
 	    reply.save()
@@ -60,7 +60,7 @@ def thread(request, pk):
 		if request.POST['visibility'] == 'Public':
 		    public = True
 		else: public = False
-		user = request.user.userdata
+		user = request.session['userdata']
 		message = cleaned_data['message']
                 outmail.replyWithThread(thread, message, user, public)
     #Filling out the necessary context
@@ -70,8 +70,8 @@ def thread(request, pk):
 
 
 def newmail(request):
-    replies = Reply.objects.filter(read=False).filter(thread__bulletin__creator=request.user.userdata).exclude(sender=request.user.userdata)
-    replies2 = Reply.objects.filter(read=False).filter(thread__replier=request.user.userdata).exclude(sender=request.user.userdata)
+    replies = Reply.objects.filter(read=False).filter(thread__bulletin__creator=request.session['userdata']).exclude(sender=request.session['userdata'])
+    replies2 = Reply.objects.filter(read=False).filter(thread__replier=request.session['userdata']).exclude(sender=request.session['userdata'])
     replies = replies | replies2
     length = len(replies)
     if length >= 1:
