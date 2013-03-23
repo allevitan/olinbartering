@@ -198,11 +198,11 @@ def delFilters(request):
 def profilepage(request, username):
 
 	#handle invalid input
-	try: user = User.objects.get(username=username.lower())
+	try: user = UserData.objects.get(username=username.lower())
 	except: return HttpResponseRedirect('/people/')
 
 	#generate list of user filters to display in profile page
-	filters = user.userdata.filters.all()
+	filters = user.filters.all()
 	bulletins = sorted(Bulletin.objects.filter(creator=user.userdata), key = lambda bulletin: bulletin.update, reverse=True)
 	helpfilters = sorted([filterName.name for filterName in filters.all() if filterName.helpfilter and filterName.name != "Helpme"])
 	wantfilters = sorted([filterName.name for filterName in filters.all() if not filterName.helpfilter and filterName.name != "Carpediem"])

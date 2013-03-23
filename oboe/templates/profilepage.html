@@ -37,17 +37,15 @@
 {% block content %}
 <div class="container-fluid" id="contentbox">
   <div class="page-header">
-    <h1 style="float:right;"><small>{{ user.email }}</small></h1>
-    <h1>{{ owner.first_name|title }} {{ owner.last_name|title }}</h1>
+    <h1 style="float:right;"><small>{{ user|email }}</small></h1>
+    <h1>{{ owner|name }}</h1>
   </div>
   <div class="row-fluid">
     <div class="span4">
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
 	  <div class="scrollbox-inner" id="smallbox" style="padding-top:20px;padding-bottom:20px;">
-	    {% thumbnail owner.userdata.pic "350x350" crop="center" as im %}
-			<img src="{{ im.url }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:10px;border-radius:10px;">
-		{% endthumbnail %}
+			<img src="{{ owner|photo }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:10px;border-radius:10px;">
 	  </div>
 	  <div style="text-align:center;">
 	  	{% if user == request.user %}
@@ -56,9 +54,8 @@
 	  </div>
 	  <hr>
 	  <div style="text-align:left;">
-		<h4>Dorm: {{ owner.userdata.dorm }}</h4>
-		<h4>Resolved: {{ owner.userdata.score }} {% if owner.userdata.score > 1 %} problems {% elif owner.userdata.score == 0 %} problems {% else %} problem {% endif %}</h4>
-		<h4>Help Filters: 
+		<h4>Resolved: {{ owner.score }} {% if owner.score > 1 %} problems {% elif owner.score == 0 %} problems {% else %} problem {% endif %}</h4>
+		<h4>Help Filters:
 		{% for filter in helpfilters %}
 			{% if filter != 'Helpme' %}
 				{% if filter != helpfilters|last %}
@@ -71,7 +68,7 @@
 			None
 		{% endfor %}
 		</h4>
-		<h4>Want Filters: 
+		<h4>Want Filters:
 		{% for filter in wantfilters %}
 			{% if filter != 'Carpediem' %}
 				{% if filter != wantfilters|last %}
@@ -93,12 +90,12 @@
 	<div class="scrollbox">
 	  <div class="scrollbox-inner" id="bigbox" style="padding-top:15px;padding-bottom:15px;">
 		<div class="row-fluid">
-			<h3 style="float:left;">Recently posted by {{ owner.first_name|title }}:</h3>
+			<h3 style="float:left;">Recently posted by {{ owner|name }}:</h3>
 			<h1 style="float:right;"><small>{{ bulletins|length }} bulletins</small></h1>
 		</div>
 		<hr style="margin-top:0px;">
 
-		{% for bulletin in bulletins %} 
+		{% for bulletin in bulletins %}
 			{% include "elements/profilebulletin.html" %}
 		{% endfor %}
 
