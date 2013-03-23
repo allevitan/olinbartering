@@ -39,7 +39,7 @@ def replace(value, args):
 @defaultfilters.stringfilter
 def photo(value):
     """finds the url for a users photo from the memcache"""
-    return getpeepdata(value.name, 'name', error="http://www.placekitten.com/80/80")
+    return getpeepdata(value, 'thumbnail', error="http://www.placekitten.com/80/80")
 
 @register.filter(name='thumb', is_safe=True)
 @defaultfilters.stringfilter
@@ -49,23 +49,23 @@ def thumb(value, args):
 @register.filter(name='name')
 @defaultfilters.stringfilter
 def name(value):
-    return getpeepdata(value.name, 'name)'
+    return getpeepdata(value, 'name')
 
-@register.filter(name='thumb')
+@register.filter(name='email')
 @defaultfilters.stringfilter
 def email(value):
-    return getpeepdata(value.name, 'email')
+    return getpeepdata(value, 'email')
 
 
 def getpeepdata(name, thing, error=None):
     try:
         thing = cache.get('peeps').get(name).get(thing)
     except:
-        thing = False
+        thing = error
     #If the user doesn't have the thing, the try/except won't trigger -
     #This catches it.
     if thing:
         return thing
     else:
         return error
-    
+
