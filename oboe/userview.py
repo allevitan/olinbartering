@@ -51,49 +51,6 @@ def logout(request):
     #Make it do something!
     return HttpResponseRedirect('/')
 
-
-def editProfile(request):
-	form =UserProfileForm(request.POST, request.FILES)
-	if form.is_valid():
-		cleaned_data = form.clean()
-
-		#extract form info (could potentially use .serialize() to remove redundant code)
-		first_name = cleaned_data['first_name'].strip()
-		last_name = cleaned_data['last_name'].strip()
-		email = cleaned_data['emailAddress']
-		dorm = cleaned_data['dorm']
-		pic = request.FILES.get('pic','')
-
-		#update user fields
-		user = User.objects.get(username = request.user)
-		userdata = user.userdata
-		user.first_name = first_name
-		user.last_name = last_name
-		user.email = email
-		userdata.dorm = dorm
-
-		if pic:
-			userdata.pic = pic
-
-		#save results
-		user.save()
-		userdata.save()
-
-		#resubmit user data to pre-fill form
-		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-		form = UserProfileForm(initial=data)
-		return render(request, 'editProfile.html', {'form':form})
-	else:
-
-		#if a form error occurs
-		user = request.user
-		userdata = user.userdata
-
-		#re-render the form - the html page will handle the error display
-		data = {'first_name':user.first_name, 'last_name':user.last_name, 'emailAddress':user.email, 'dorm':userdata.dorm}
-		form = UserProfileForm(initial = data)
-		return render(request, 'editProfile.html', {'form':form})
-
 def filterList(request):
 	pass
 
@@ -122,12 +79,10 @@ def manageFilters(request):
 @csrf_exempt
 def editFilters(request, help=False, delete=False):
 	#user data is passed to form for processing - potential violation of MVC philosophy
-	user = request.user
+	userdata = UserData.objects.get(uid=username)
 	form = EditFilterForm(user, request.POST, request.FILES)
 	if form.is_valid():
 		cleaned_data = form.clean()
-		user = request.user
-		userdata = user.userdata
 		try:
 			if help:
 				userdata.filters.add(Filter.objects.get(name = request.POST.get('add', ''), helpfilter=True))
@@ -158,7 +113,6 @@ def editFilters(request, help=False, delete=False):
 		unusedWantFilters = set(globalwantfilters - set(wantfilters))
 
 		#save changes and render the page again via AJAX call
-		user.save()
 		userdata.save()
 		form = EditFilterForm(user = user)
 		return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
@@ -166,8 +120,7 @@ def editFilters(request, help=False, delete=False):
 	else:
 
 		#in the event of form errors
-		user = request.user
-		userdata = user.userdata
+		userdata = UserData.objects.get(uid=username)
 
 		#resort filters and render page again with error display
 		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
