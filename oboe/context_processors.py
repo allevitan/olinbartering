@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from models import UserData
 
 def site_area(request):
     splitpath = request.path.split('/')
@@ -11,15 +12,11 @@ def is_webkit(request):
     else: return {'webkit':False}
 
 def who_dis(request):
-    dis = request.session.get('who')
-    print cache
-    return {'me' : cache.get('peeps').get(dis)}
+    dis = request.session.get('pk')
+    return {'me' : UserData.objects.get(dis)}
 
 def the_folk(request):
-    peeps = cache.get('peeps')
-    # peeps = [peep for peep in peeps.values()]
-    #Some error handling if the cache has been flushed - put in later
-    return {'peeps' : peeps}
+    return {'folk' : UserData.objects.all()}
 
 if __name__ == '__main__':
     from django.http import HttpRequest

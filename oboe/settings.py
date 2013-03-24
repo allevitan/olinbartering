@@ -3,7 +3,6 @@
 import dj_database_url
 import os
 import os.path
-import context_processors
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -139,8 +138,8 @@ TEMPLATE_LOADERS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
 	"oboe.context_processors.site_area",
 	"oboe.context_processors.is_webkit",
-    "oboe.context_processors.who_dis",
-    "oboe.context_processors.the_folk",
+        "oboe.context_processors.who_dis",
+        "oboe.context_processors.the_folk",
 	"django.contrib.auth.context_processors.auth",
 	"django.core.context_processors.debug",
 	"django.core.context_processors.i18n",
