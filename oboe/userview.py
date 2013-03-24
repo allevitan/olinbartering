@@ -35,8 +35,11 @@ def login(request):
                 dude = UserData.objects.create(uid=uid,score=0)
                 print dude.name
         cache.set('peeps', peeps)
+
+        #Now that we know their in our database, get the pk
         request.session['pk'] = UserData.objects.get(uid = request.session['who']).pk
-        request.session['userdata'] = UserData.objects.get(uid = request.session['who'])
+        #And match the expiry to olinapps
+        request.session.set_expiry(0)
 
 
 
