@@ -1,7 +1,7 @@
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.views.static import * 
+from django.views.static import *
 from django.conf import settings
 import homeview, contentview, userview, ajaxviews, mailviews, bulletinviews, incomingmail
 
@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^bulletin/', include(bulletinviews.urls)),
     url(r'^new/$', bulletinviews.create),
     url(r'^logout/$', userview.logout),
-    url(r'^login/$', userview.login),	
+    url(r'^login/$', userview.login),
     url(r'^elements/help/$', ajaxviews.help),
     url(r'^elements/want/$', ajaxviews.want),
     url(r'^elements/help/raw/$', ajaxviews.help_raw),
@@ -31,7 +31,6 @@ urlpatterns = patterns('',
     url(r'^elements/want/include/$', ajaxviews.includecarpe),
     url(r'^elements/want/exclude/$', ajaxviews.excludecarpe),
     url(r'^people/$', contentview.people),
-    url(r'^elements/general_info/$', userview.editProfile),
 	url(r'^elements/edit_filters/want/$', userview.editWantFilters),
 	url(r'^elements/edit_filters/help/$', userview.editHelpFilters),
 	url(r'^elements/edit_filters/del/$', userview.delFilters),
