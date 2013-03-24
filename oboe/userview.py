@@ -35,8 +35,8 @@ def login(request):
                 dude = UserData.objects.create(uid=uid,score=0)
                 print dude.name
         cache.set('peeps', peeps)
-        request.session['pk'] = UserData.objects.get(uid = uid).pk
-        request.session['userdata'] = UserData.objects.get(uid = uid)
+        request.session['pk'] = UserData.objects.get(uid = request.session['who']).pk
+        request.session['userdata'] = UserData.objects.get(uid = request.session['who'])
 
 
 

@@ -1,3 +1,5 @@
+{% load filtrs %}
+
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid" style="min-width:940px">
@@ -6,8 +8,8 @@
         <ul class="nav pull-right">
 	  {% if user.username %}
 	  <li>
-	    <a href="/profile/{{ user }}/" class="navbar-link">
-	       Hi, {{ me.name }}
+	    <a href="/profile/{{ me }}/" class="navbar-link">
+	       Hi, {{ me|name }}
 	    </a>
 	  </li>
 	  <li>
