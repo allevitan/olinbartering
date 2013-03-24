@@ -79,9 +79,10 @@ def manageFilters(request):
 @csrf_exempt
 def editFilters(request, help=False, delete=False):
 	#user data is passed to form for processing - potential violation of MVC philosophy
-	userdata = UserData.objects.get(uid=username)
-	form = EditFilterForm(user, request.POST, request.FILES)
+	userdata = UserData.objects.get(uid=request.session['who'])
+	form = EditFilterForm(userdata, request.POST, request.FILES)
 	if form.is_valid():
+		print 'Valid Form'
 		cleaned_data = form.clean()
 		try:
 			if help:
@@ -114,13 +115,14 @@ def editFilters(request, help=False, delete=False):
 
 		#save changes and render the page again via AJAX call
 		userdata.save()
-		form = EditFilterForm(user = user)
+		form = EditFilterForm(user = userdata)
 		return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
 														'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 	else:
+		print 'Invalid Form'
 
 		#in the event of form errors
-		userdata = UserData.objects.get(uid=username)
+		userdata = UserData.objects.get(uid=request.session['who'])
 
 		#resort filters and render page again with error display
 		helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
@@ -134,7 +136,7 @@ def editFilters(request, help=False, delete=False):
 		unusedHelpFilters = set(globalhelpfilters - set(helpfilters))
 		unusedWantFilters = set(globalwantfilters - set(wantfilters))
 
-		form = EditFilterForm(user = user)
+		form = EditFilterForm(user = userdata)
 		return render(request, 'elements/filterSubPage.html', {'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
 														'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 
@@ -154,7 +156,7 @@ def delFilters(request):
 def profilepage(request, username):
 
 	#handle invalid input
-	try: user = UserData.objects.get(uid=username)
+	try: user = UserData.objects.get(uid=request.session['who'])
 	except: return HttpResponseRedirect('/people/')
 
 	print user
