@@ -1,4 +1,4 @@
-#forms.py 
+#forms.py
 
 from django import forms
 from django.db import models
@@ -7,7 +7,7 @@ from oboe import pathfinders, models
 from django.forms.widgets import SplitDateTimeWidget, SelectMultiple, Select
 from models import Filter, Bulletin, UserData
 from datetime import datetime, timedelta
-from django.utils.safestring import mark_safe 
+from django.utils.safestring import mark_safe
 
 class LoginForm(forms.Form):
 	username = forms.CharField(required=True, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Username or email address...'}))
@@ -37,12 +37,12 @@ class EditFilterForm(forms.Form):
 		'''genFilters returns a formatted list of filters that the user does not have enabled'''
 
 		#basic database query for user's enable filters
-		userFilters = self._user.userdata.filters.all()  
+		userFilters = self._user.filters.all()
 
 		#divide the filters into categories (help & want) and access name attribute -- then convert to string
 		userHelpFilters = set([str(userHelpFilter.name) for userHelpFilter in userFilters if userHelpFilter.helpfilter])
 		userWantFilters = set([str(userWantFilter.name) for userWantFilter in userFilters if not userWantFilter.helpfilter])
-		
+
 		#get list of all existing filters
 		filters = Filter.objects.all()
 
@@ -53,25 +53,25 @@ class EditFilterForm(forms.Form):
 		#perform set subtraction to generate the desired list of unenabled filters
 		helpFilters = helpFilters - userHelpFilters
 		wantFilters = wantFilters - userWantFilters
-	
+
 		#convert to list and return result
 		return list(helpFilters), list(wantFilters)
-		
+
 	def __init__(self, user, *args, **kwargs):
 		#__init__ method override needed to pass data from view to form (in this case, the variable user)
 		super(EditFilterForm, self).__init__(*args, **kwargs)
 		self._user = user
 		helpFilters, wantFilters = self.genFilters()
-		
+
 		#mark_safe and .replace method needed to override html formatting
 		self.fields['wanttag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off',\
-								'placeholder':'Tag...', 'data-source': mark_safe(wantFilters).replace("'", '"')}), required=False) 
+								'placeholder':'Tag...', 'data-source': mark_safe(wantFilters).replace("'", '"')}), required=False)
 		self.fields['helptag'] = forms.CharField(widget=forms.TextInput(attrs={'data-provide':'typeahead', 'autocomplete':'off',\
 								'placeholder':'Tag...', 'data-source': mark_safe(helpFilters).replace("'", '"')}), required=False)
 
 class ManageFiltersForm(EditFilterForm):
 	pass
-	
+
 class ChangePasswordForm(forms.Form):
 	oldPassword = forms.CharField(widget=forms.PasswordInput())
 	newPassword = forms.CharField(widget=forms.PasswordInput())
@@ -92,7 +92,7 @@ class MultiProfileDisplay(forms.Form):
 
 class SortByFilter(forms.Form):
 
-	helpfilters = [str("Help" + ' - ' + filterName.name) for filterName in Filter.objects.all() if filterName.helpfilter and filterName.name != "Helpme"] 
+	helpfilters = [str("Help" + ' - ' + filterName.name) for filterName in Filter.objects.all() if filterName.helpfilter and filterName.name != "Helpme"]
 	wantfilters = [str("Want" + ' - ' + filterName.name) for filterName in Filter.objects.all() if not filterName.helpfilter and filterName.name != "Carpediem"]
 	filters = helpfilters + wantfilters
 
@@ -113,7 +113,7 @@ class SortByFilter(forms.Form):
 	'''
 
 class selectBulletinForm(forms.Form):
-	
+
 	#__init__ overriding is again used to allow the use of request data
 	def __init__(self, *args, **kwargs):
 		bulletins = kwargs.pop('bulletins')

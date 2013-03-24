@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load thumbnail %}
+{% load filtrs %}
 
 {% block scripts %}
 
@@ -37,19 +38,19 @@
 {% block content %}
 <div class="container-fluid" id="contentbox">
   <div class="page-header">
-    <h1 style="float:right;"><small>{{ user|email }}</small></h1>
+    <h1 style="float:right;"><small>{{ owner|email }}</small></h1>
     <h1>{{ owner|name }}</h1>
   </div>
   <div class="row-fluid">
     <div class="span4">
       <div class="well well-large well-scroll">
 	<div class="scrollbox">
-	  <div class="scrollbox-inner" id="smallbox" style="padding-top:20px;padding-bottom:20px;">
+	  <div class="scrollbox-inner" id="smallbox" style="padding-top:20px;padding-bottom:20px;text-align:center">
 			<img src="{{ owner|photo }}" class="profthumb" style="border:1px;padding:0px;-moz-border-radius:10px;border-radius:10px;">
 	  </div>
 	  <div style="text-align:center;">
 	  	{% if user == request.user %}
-    		<a href="/editProfile/" class="btn">Edit Profile</a><a href="/manageFilters/" class="btn">Edit Filters</a>
+    		<a href="/manageFilters/" class="btn">Edit Filters</a>
 		{% endif %}
 	  </div>
 	  <hr>

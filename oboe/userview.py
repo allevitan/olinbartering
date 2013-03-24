@@ -99,8 +99,7 @@ def filterList(request):
 
 def manageFilters(request):
 
-	user = request.user
-	userdata = user.userdata
+	userdata = UserData.objects.get(uid = request.session['who'])
 
 	#seperate filters and sort by name
 	helpfilters = sorted([filterName for filterName in userdata.filters.all() if filterName.helpfilter], key = lambda x: x.name)
@@ -115,9 +114,9 @@ def manageFilters(request):
 	unusedWantFilters = set(globalwantfilters - set(wantfilters))
 
 	#get user data to pre-fill form with
-	form = ManageFiltersForm(user = user)
+	form = ManageFiltersForm(user = userdata)
 
-	return render(request, 'editProfile2.html', {'user':request.user, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
+	return render(request, 'editProfile2.html', {'user': userdata, 'form':form, 'helpfilters':helpfilters, 'wantfilters':wantfilters,
 												 'unusedHelpFilters':unusedHelpFilters, 'unusedWantFilters':unusedWantFilters})
 
 @csrf_exempt
@@ -202,12 +201,13 @@ def delFilters(request):
 def profilepage(request, username):
 
 	#handle invalid input
-	try: user = UserData.objects.get(username=username.lower())
+	try: user = UserData.objects.get(uid=username)
 	except: return HttpResponseRedirect('/people/')
 
+	print user
 	#generate list of user filters to display in profile page
 	filters = user.filters.all()
-	bulletins = sorted(Bulletin.objects.filter(creator=user.userdata), key = lambda bulletin: bulletin.update, reverse=True)
+	bulletins = sorted(Bulletin.objects.filter(creator=user), key = lambda bulletin: bulletin.update, reverse=True)
 	helpfilters = sorted([filterName.name for filterName in filters.all() if filterName.helpfilter and filterName.name != "Helpme"])
 	wantfilters = sorted([filterName.name for filterName in filters.all() if not filterName.helpfilter and filterName.name != "Carpediem"])
 	return render(request, 'profilepage.html', {'request': request, 'owner':user, 'bulletins':bulletins, 'helpfilters':helpfilters, 'wantfilters':wantfilters})
