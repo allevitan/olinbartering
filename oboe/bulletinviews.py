@@ -11,8 +11,6 @@ import outmail
 
 
 def create(request):
-    if not request.user.is_authenticated():
-	return HttpResponseRedirect('/login/')
     errors = []
     if request.method == 'POST':
 	form = CreateBulletinForm(request.POST)
@@ -98,7 +96,7 @@ def view(request, pk):
 
 
 def resolve(request):
-    if request.user.is_authenticated and request.method == 'POST':
+    if request.method == 'POST':
 	if request.POST.get('thread',''):
 	    pk = int(request.POST['thread'])
 	    thread = Reply_Thread.objects.get(pk=pk)
@@ -142,7 +140,7 @@ def resolve(request):
 def update(request, pk):
 
     #basic validation
-    if pk > 0 and request.user.is_authenticated() and request.method == 'POST':
+    if pk > 0 and request.method == 'POST':
 	bulletin = Bulletin.objects.get(pk=pk)
     else: return HttpResponseRedirect('/home/')
 
@@ -176,7 +174,7 @@ def update(request, pk):
     return HttpResponseRedirect('/home/');
 
 def search(request):
-    if request.user.is_authenticated and request.method == 'GET':
+    if request.method == 'GET':
         query = request.GET.get('q','')
         if not query == '':
             print query

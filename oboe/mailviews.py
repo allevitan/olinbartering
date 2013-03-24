@@ -14,27 +14,21 @@ def base(request):
 
 def mailbox(request):
     """Render the mailbox template if user is authenticated."""
-    if request.user.is_authenticated():
-
-	#Return all threads including the user, properly ordered
-	mail = Reply_Thread.objects.filter(bulletin__creator=request.session['userdata'])
-	mail2 = Reply_Thread.objects.filter(replier=request.session['userdata'])
-
-	mail = mail | mail2
-	mail = mail.order_by("-update")
-
-	#Filter out the threads that ONLY include the user
-	pks = []
-	user = request.user
-	for thread in mail:
-	    if thread.replier == thread.bulletin.creator:
-		pks.append(thread.id)
-	mail = mail.exclude(id__in=pks)
-
-	return render(request, 'mailbox.html', {'mail':mail})
-    else:
-	#send to login page if anonymous
-	return HttpResponseRedirect('/login/')
+    #Return all threads including the user, properly ordered
+    mail = Reply_Thread.objects.filter(bulletin__creator=request.session['userdata'])
+    mail2 = Reply_Thread.objects.filter(replier=request.session['userdata'])
+    
+    mail = mail | mail2
+    mail = mail.order_by("-update")
+    #Filter out the threads that ONLY include the user
+    pks = []
+    user = request.user
+    for thread in mail:
+        if thread.replier == thread.bulletin.creator:
+            pks.append(thread.id)
+    mail = mail.exclude(id__in=pks)
+    
+    return render(request, 'mailbox.html', {'mail':mail})
 
 def thread(request, pk):
     """Render a single thread's info, usually for the mailbox"""
@@ -44,8 +38,7 @@ def thread(request, pk):
     info={}
 
     #You have to belong to the thread to access it!
-    if (request.user.is_authenticated()
-	and request.session['userdata'] in [thread.bulletin.creator, thread.replier]):
+    if request.session['userdata'] in [thread.bulletin.creator, thread.replier]:
 	info.update({'thread':thread})
 	new=[]
 	for reply in thread.reply_set.exclude(sender=request.session['userdata']).filter(read=False):
@@ -70,8 +63,12 @@ def thread(request, pk):
 
 
 def newmail(request):
-    replies = Reply.objects.filter(read=False).filter(thread__bulletin__creator=request.session['userdata']).exclude(sender=request.session['userdata'])
-    replies2 = Reply.objects.filter(read=False).filter(thread__replier=request.session['userdata']).exclude(sender=request.session['userdata'])
+    replies = Reply.objects.filter(read=False)\
+        .filter(thread__bulletin__creator=request.session['userdata'])\
+        .exclude(sender=request.session['userdata'])
+    replies2 = Reply.objects.filter(read=False)\
+        .filter(thread__replier=request.session['userdata'])\
+        .exclude(sender=request.session['userdata'])
     replies = replies | replies2
     length = len(replies)
     if length >= 1:
