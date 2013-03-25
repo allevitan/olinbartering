@@ -1,16 +1,9 @@
-{% load thumbnail %}
 {% load filtrs %}
 
 {% for bulletin in bulletins %}
 <div class="bcon">
   <div class="thumbbox">
-    {% if not bulletin.anon %}
-    {% thumbnail bulletin.creator.pic "65x65" crop="center" as im %}
-    <img class="profthumb" src="{{ im.url }}">
-    {% endthumbnail %}
-    {% else %}
-    <img class="profthumb" src="http://www.placekitten.com/65/65/">
-    {% endif %}
+    {{ bulletin.creator|thumb:"65px,65px" }}
   </div>
   <div class="filter">
     {{ bulletin.tag.name|upper }}

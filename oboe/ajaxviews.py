@@ -13,9 +13,9 @@ def pullfeed(userdata, helpbulletin):
         filters = userdata.filters.filter(helpfilter=False)
         bulletins = bulletins.filter(tag__in=filters)
     if helpbulletin and not userdata.includehelpme:
-        bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='helpme')
+        bulletins = bulletins.exclude(tag__name__iexact='helpme')
     elif not helpbulletin and not userdata.includecarpe:
-        bulletins = bulletins.exclude(anon=True).exclude(tag__name__iexact='carpediem')
+        bulletins = bulletins.exclude(tag__name__iexact='carpediem')
     return bulletins
 
 def getUD(request):
@@ -45,7 +45,7 @@ def help_filtered(request):
     to the user's filters.
     """
     #Set the user's help filtering preference to filtered
-    Ud = getUD(request)
+    UD = getUD(request)
     UD.filterhelp = True
     UD.save()
     #Query the database for the filters and bulletins

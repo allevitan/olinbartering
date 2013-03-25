@@ -1,6 +1,7 @@
 from django import template
 from django.template import defaultfilters
 from django.core.cache import cache
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -25,13 +26,17 @@ def convertback(value):
 
 @register.filter(name='replace')
 @defaultfilters.stringfilter
-def replace(value, args):
+def replace(value, arg):
     """replaces all values of the first part of arg with the second, comma separated"""
-    args = args.split(',')
+    args = getargs(arg)
+    return value.replace(args[0], args[1])
+
+def getargs(arg):
+    args = arg.split(',')
     #If they use a space after the comma
     if args[1][0] == ' ':
         args[1] = args[1][1:]
-    return value.replace(args[0], args[1])
+    return args
 
 
 # The filters that find data from the cache
@@ -41,10 +46,11 @@ def photo(value):
     """finds the url for a users photo from the memcache"""
     return getpeepdata(value, 'thumbnail', error="http://www.placekitten.com/80/80")
 
-@register.filter(name='thumb', is_safe=True)
+@register.filter(name='thumb')
 @defaultfilters.stringfilter
-def thumb(value, args):
-    return value
+def thumb(value, arg):
+    args = getargs(arg)
+    return mark_safe('<img class="profthumb" style="height:' + args[0] + '; width:' + args[1] + '" src="' + photo(value) + '">')
 
 @register.filter(name='name')
 @defaultfilters.stringfilter
