@@ -50,7 +50,7 @@ def photo(value):
 @defaultfilters.stringfilter
 def thumb(value, arg):
     args = getargs(arg)
-    return mark_safe('<img class="profthumb" style="height:' + args[0] + '; width:' + args[1] + '" src="' + photo(value) + '">')
+    return mark_safe('<div class="profthumb" style="width:' + args[0] +  ';height:' + args[1] + ';overflow:hidden;"><img style="width:100%;" src="' + photo(value) + '"></div>')
 
 @register.filter(name='name')
 @defaultfilters.stringfilter
