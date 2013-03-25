@@ -25,6 +25,10 @@ class UserData(models.Model):
     def __unicode__(self):
         return self.uid
 
+    def name(self):
+        name = self.uid.split()
+        return ' '.join([word.title() for word in name])
+
 
 class Bulletin(models.Model):
     creator = models.ForeignKey(UserData, related_name="%(class)s_created")
@@ -89,8 +93,6 @@ class Reply_Thread(models.Model):
 
     def __unicode__(self):
         return "%s" % self.bulletin
-
-
 
 class Reply(models.Model):
     thread = models.ForeignKey(Reply_Thread)
