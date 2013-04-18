@@ -41,8 +41,6 @@ def login(request):
         #And match the expiry to olinapps
         request.session.set_expiry(0)
 
-
-
         return HttpResponseRedirect('/home/')
     else:
         return HttpResponseRedirect('http://olinapps.com/external?callback=http://127.0.0.1:8000/login/')

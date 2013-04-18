@@ -64,11 +64,11 @@ def thread(request, pk):
 
 def newmail(request):
     replies = Reply.objects.filter(read=False)\
-        .filter(thread__bulletin__creator=request.session['userdata'])\
-        .exclude(sender=request.session['userdata'])
+        .filter(thread__bulletin__creator=request.session['pk'])\
+        .exclude(sender=request.session['pk'])
     replies2 = Reply.objects.filter(read=False)\
-        .filter(thread__replier=request.session['userdata'])\
-        .exclude(sender=request.session['userdata'])
+        .filter(thread__replier=request.session['pk'])\
+        .exclude(sender=request.session['pk'])
     replies = replies | replies2
     length = len(replies)
     if length >= 1:
