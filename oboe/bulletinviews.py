@@ -14,7 +14,7 @@ def create(request):
         form = CreateBulletinForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            creator = UserData.objects.get(uid=request.session['who'])
+            creator = request.user.userdata
             subject = data['subject']
             reltime = datetime.timedelta(hours=data['hiddenrel'])
             relevance = datetime.datetime.now() + reltime
@@ -22,7 +22,7 @@ def create(request):
             send = data['hiddensend']
             if location not in ["NA","EH","WH","AC","CC","MH","LP"]:
                 errors.append("that's not a real location")
-
+            
             if data['hiddentype'] == "Help":
                 helpbulletin = True
                 try: tag = Filter.objects.filter(helpfilter=True).get(name=data['tag'])
@@ -64,8 +64,6 @@ def create(request):
 
 def view(request, pk):
 
-    user = UserData.objects.get(uid=request.session['who'])
-
     if pk > 0:
 
         #database queries for bulletin info
@@ -82,22 +80,20 @@ def view(request, pk):
             if request.POST['visibility'] == 'Public':
                 public = True
             else: public = False
-            if user != bulletin.creator or public:
+            if request.user.userdata != bulletin.creator or public:
                 message = cleaned_data['message']
-                outmail.replyToBulletin(bulletin, message, user, public)
+                outmail.replyToBulletin(bulletin, message, request.user.userdata, public)
 
     #update page
     form = ReplyForm()
     resolveform = ResolverCreditForm()
-    if user == bulletin.creator:
+    if request.user.is_authenticated and request.user.userdata == bulletin.creator:
         bulletinform = UpdateBulletinForm()
     else: bulletinform = {}
     return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform, 'resolveform':resolveform})
 
 
 def resolve(request):
-
-    user = UserData.objects.get(uid=request.session['who'])
     if request.method == 'POST':
         if request.POST.get('thread',''):
             pk = int(request.POST['thread'])
@@ -113,8 +109,6 @@ def resolve(request):
                 return HttpResponse('Nothing Happened')
             else:
                 if fromthread:
-                    #This code is non-functional.  Hopefully we'll run into an
-                    #error and fix this in the near future.
                     resolver = thread.users.exclude(user=request.user).get()
                     bulletin.resolver = resolver
                 else:
@@ -123,7 +117,7 @@ def resolve(request):
                         resolver = '.'.join(resolver.lower().split())
                         #May not work - we'll see!
                         resolver = UserData.objects.get(uid=resolver).userdata
-                        if resolver == user:
+                        if resolver == request.user.userdata:
                             return HttpResponse('Not yourself...')
                         bulletin.resolver = resolver
                         resolver.score = resolver.score + 1
@@ -143,7 +137,7 @@ def resolve(request):
 
 
 def update(request, pk):
-
+    
     #basic validation
     if pk > 0 and request.method == 'POST':
         bulletin = Bulletin.objects.get(pk=pk)
