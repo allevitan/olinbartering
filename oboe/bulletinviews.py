@@ -14,7 +14,7 @@ def create(request):
         form = CreateBulletinForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            creator = request.user.userdata
+            creator = UserData.objects.get(uid = request.session.get('who'))
             subject = data['subject']
             reltime = datetime.timedelta(hours=data['hiddenrel'])
             relevance = datetime.datetime.now() + reltime
@@ -22,7 +22,7 @@ def create(request):
             send = data['hiddensend']
             if location not in ["NA","EH","WH","AC","CC","MH","LP"]:
                 errors.append("that's not a real location")
-            
+
             if data['hiddentype'] == "Help":
                 helpbulletin = True
                 try: tag = Filter.objects.filter(helpfilter=True).get(name=data['tag'])
@@ -40,9 +40,9 @@ def create(request):
             else: errors.append("please enter a valid price.")
 
             message = data['missive']
-
+            uid = request.session.get('who')
             if not errors:
-                missive = outmail.createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free)
+                missive = outmail.createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free, uid)
                 if send == 'True':
                     outmail.sendToList(missive)
                 return HttpResponseRedirect("/home/")
@@ -137,7 +137,7 @@ def resolve(request):
 
 
 def update(request, pk):
-    
+
     #basic validation
     if pk > 0 and request.method == 'POST':
         bulletin = Bulletin.objects.get(pk=pk)

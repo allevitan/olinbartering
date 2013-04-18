@@ -1,12 +1,12 @@
 from django.core import mail
 from models import Bulletin, Missive, Reply_Thread, Reply
 
-def createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free):
+def createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free, uid):
     bulletin = Bulletin.objects.create(creator=creator, subject=subject, relevance=relevance, location=location, tag=tag, helpbulletin=helpbulletin, free=free)
     bulletin.save()
     missive = Missive.objects.create(message=message, bulletin=bulletin)
     missive.save()
-    sendToFilter(missive)
+    sendToFilter(missive, uid)
     return missive
 
 def updateBulletin(bulletin, message):
@@ -23,12 +23,12 @@ def replyToBulletin(bulletin, message, user, public):
         #save info
         thread.save()
     replyWithThread(thread, message, user, public)
-    
+
 def replyWithThread(thread, message, user, public):
     reply = Reply.objects.create(public=public, sender=user, message=message, thread=thread)
     reply.save()
     sendToCreator(reply)
-    
+
 
 
 def createEmail(missive):
@@ -39,14 +39,14 @@ def createEmail(missive):
         preface = "UPDATE: "
     else: preface = ""
     subject = "%s%s: %s" %(preface, missive.bulletin.tag.name, missive.bulletin.subject)
-    message = "From %s:\n" % missive.bulletin.creator.user.get_full_name() 
+    message = "From %s:\n" % (missive.bulletin.creator.get_full_name())
     for mess in missive.bulletin.missive_set.order_by("-timestamp"):
         message = "%s\n\n%s" % (message, missive.message)
     return mail.EmailMessage(subject, message)
 
-def sendToFilter(missive):
+def sendToFilter(missive, uid):
     email = createEmail(missive)
-    userlist = missive.bulletin.tag.userdata_set.exclude(user=missive.bulletin.creator)
+    userlist = missive.bulletin.tag.userdata_set.exclude(uid=uid)
     connection = mail.get_connection()
     connection.open()
     for user in userlist:
@@ -62,7 +62,7 @@ def sendToList(missive):
     email = createEmail(missive)
     if missive.bulletin.helpbulletin:
         pass#email.to = ['helpme@lists.olin.edu']
-    else: 
+    else:
         pass#email.to = ['carpediem@lists.olin.edu']
     try:
         email.send()
