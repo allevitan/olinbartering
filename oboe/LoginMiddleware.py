@@ -11,4 +11,5 @@ class PreventAccess():
     def _logged_in(self, request):
         if request.session.get('who'):
             return True
+            print 'Logged in'
         else: return False

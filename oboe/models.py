@@ -25,6 +25,9 @@ class UserData(models.Model):
     def __unicode__(self):
         return self.uid
 
+    def get_full_name(self):
+        return ' '.join([name.capitalize() for name in self.uid.split('.')])
+
 
 class Bulletin(models.Model):
     creator = models.ForeignKey(UserData, related_name="%(class)s_created")
