@@ -50,8 +50,9 @@ def sendToFilter(missive, uid):
     userlist = missive.bulletin.tag.userdata_set.exclude(uid=uid)
     connection = mail.get_connection()
     connection.open()
-    for user in userlist:
-        email.to = [user.user.email]
+    for userdata in userlist:
+        uid = userdata.uid
+        email.to = [cache.get('peeps')[uid]['email']]
         try:
             connection.send_messages([email])
         except:
