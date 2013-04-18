@@ -13,7 +13,7 @@ def is_webkit(request):
 
 def who_dis(request):
     dis = request.session.get('pk')
-    return {'me' : UserData.objects.get(pk=dis), 'my_pk': pk}
+    return {'me' : UserData.objects.get(pk=dis), 'my_pk': dis}
 
 def the_folk(request):
     return {'folk' : UserData.objects.all()}

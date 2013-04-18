@@ -29,7 +29,11 @@ function loadthread(pk){
 
 $(document).ready(function(){
   console.log("sup");
-  loadthread({{ mail.0.id }});
+  {% if mail %}
+    loadthread({{ mail.0.id }});
+  {% else %}
+    loadthread("help");
+  {% endif %}
   console.log({{ my_pk }});
   setInterval(checkForMail(),30000);
 });
