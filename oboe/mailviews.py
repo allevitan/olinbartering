@@ -77,12 +77,15 @@ def newmail(request):
 	new = "%s %d" %(new, reply.thread.pk)
     return HttpResponse(new)
 
+def intro(request):
+    return render(request, 'intros/mailintro.html')
 
 from django.conf.urls import patterns, url
 
 urls = patterns('',
 		url(r'^$', base),
 		url(r'^box/$', mailbox),
+        url(r'^thread/help/$', intro),
 		url(r'^thread/(?P<pk>\d+)/$', thread),
 		url(r'^newmail/$', newmail),
 )
