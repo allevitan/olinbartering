@@ -1,5 +1,6 @@
 from django.core import mail
 from models import Bulletin, Missive, Reply_Thread, Reply
+from django.core.cache import cache
 
 def createBulletin(subject, message, creator, location, relevance, tag, helpbulletin, free, uid):
     bulletin = Bulletin.objects.create(creator=creator, subject=subject, relevance=relevance, location=location, tag=tag, helpbulletin=helpbulletin, free=free)
@@ -72,7 +73,9 @@ def sendToList(missive):
 def sendToCreator(reply):
     subject = "RE: %s" % reply.thread.bulletin.subject
     message = "From %s:\n%s" %(reply.get_replier_name(),reply.message)
-    address = reply.get_to_email()
+    uid = reply.thread.bulletin.creator.uid
+    print cache.get('peeps')[uid]['email']
+    address = cache.get('peeps')[uid]['email']
     email = mail.EmailMessage(subject, message)
     email.to = [address]
     try:

@@ -80,9 +80,9 @@ def view(request, pk):
             if request.POST['visibility'] == 'Public':
                 public = True
             else: public = False
-            if request.user.userdata != bulletin.creator or public:
-                message = cleaned_data['message']
-                outmail.replyToBulletin(bulletin, message, request.user.userdata, public)
+            message = cleaned_data['message']
+            userdata = UserData.objects.get(uid=request.session.get('who'))
+            outmail.replyToBulletin(bulletin, message, userdata, public)
 
     #update page
     form = ReplyForm()

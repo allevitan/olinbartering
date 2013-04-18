@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.cache import cache
 import pathfinders
 
 class Filter(models.Model):
@@ -106,3 +107,5 @@ class Reply(models.Model):
     def __unicode__(self):
         return "%s" % self.message
 
+    def get_replier_name(self):
+        return self.sender.get_full_name()
