@@ -1,7 +1,7 @@
 {% extends "elements/bulletinwidget.html" %}
 
 {% block extrainfo %}
-{% if bulletin.anon or bulletin.tag.name == 'Helpme' %}
+{% if bulletin.tag.name == 'Helpme' %}
 Helpme
 {% else %}
 {{ bulletin.reply_thread_set.count }} Response{{ bulletin.reply_thread_set.count|pluralize }}
