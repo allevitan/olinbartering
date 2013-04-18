@@ -87,7 +87,7 @@ def view(request, pk):
     #update page
     form = ReplyForm()
     resolveform = ResolverCreditForm()
-    if request.user.is_authenticated and request.user.userdata == bulletin.creator:
+    if request.user.is_authenticated and request.session.get('who') == bulletin.creator.uid:
         bulletinform = UpdateBulletinForm()
     else: bulletinform = {}
     return render(request, 'bulletin.html', {'bulletin':bulletin, 'replies':replies, 'privatecount':privatecount, 'form':form, 'bulletinform':bulletinform, 'resolveform':resolveform})
