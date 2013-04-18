@@ -28,7 +28,9 @@ function loadthread(pk){
 }
 
 $(document).ready(function(){
+  console.log("sup");
   loadthread({{ mail.0.id }});
+  console.log({{ my_pk }});
   setInterval(checkForMail(),30000);
 });
 
